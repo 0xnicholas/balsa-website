@@ -5,6 +5,7 @@
 > **抓取日期**:**2026-10-01**(13:13–13:25 UTC,本机直连)。全程**只读**:未注册任何域名、未下单、未创建任何账号/org/scope、未登录 npm。
 > **一手来源**:各 TLD **registry RDAP**(端点由 IANA 的 `rdap/dns.json` bootstrap 直取,不经过聚合站)、公共 DNS over HTTPS(dns.google 与 cloudflare-dns.com **两个独立递归**)、GitHub REST API(认证调用)、npm registry 公开端点(三端点交叉标定,见 §3.3)、X 公开页面、`hstspreload.org` API。
 > **本文只呈现事实与候选,不替老板拍板**;需要人拍的点集中在 §4.1 的分叉与 §8 的行动清单。
+> **修订(2026-10-01,双轴评审回改)**:① §7 的域名复现命令改为**按 IANA bootstrap 逐 TLD 取端点**(旧版统一打 Google Registry 端点,查 `.run`/`.codes` 会问到**错的 registry**——而问错 registry 同样回 404,会把结论读反);② §3.1 的「四绿」列改为**三面**并显式给出四绿集;③ §4.2 增第 3 条与 §4.4——把与 balsa-framework **ADR-0013** 的冲突显式记账、给 `balsa.ai`/`balsa.org` 单列处置;④ §1.2 / §2.2 的绝对化措辞收紧(最短、全线)。
 
 ---
 
@@ -37,9 +38,9 @@
 ## 1. TL;DR
 
 1. **六个票面候选里,可注册的只有四个**:`balsa.run`、`balsa-ai.dev`、`getbalsa.dev`、`balsajs.dev`;**`balsa.dev` 与 `balsa.sh` 都已被占用**(§2.1)。
-2. **"balsa" 这个裸词在四个公开面全线被别人占着**:`balsa.com` / `balsa.dev` / `balsa.io` / `balsa.sh` / `balsa.app` / `balsa.ai` / `balsa.tools` / `balsa.build` / `balsa.org` / `balsa.net` 全部已注册;GitHub org `balsa`(**verified**,2020 年);X `@balsa`;npm org `@balsa`。**没有任何一个平台的裸 `balsa` 是空的。**
+2. **「balsa」这个裸词在本次查的**每一类**公开面都有主**:十个主流 TLD 全部已注册(`balsa.com` / `.dev` / `.io` / `.sh` / `.app` / `.ai` / `.tools` / `.build` / `.org` / `.net`);GitHub org `balsa`(**verified**,2020 年);X `@balsa`;npm org `@balsa`。→ **本批查到的这些面上,裸 `balsa` 没有一个空着**(唯一例外 = `balsa.so`,只有 DNS 证据、后缀生态位也弱,见 §2.1 / §6)。
 3. **npm org `@balsa` 已经存在**(名下 0 个包)——这与 balsa-framework[#45](https://github.com/0xnicholas/balsa-framework/issues/45) checklist 第 1 项「创建 npm org `@balsa`」的**票面假设相反**。判定经三端点标定(§3.3),签名是**组织**,不是个人 scope。→ 给框架侧的输入单列 §5。
-4. **三个 escape-hatch 根在「域名 + GitHub + X + npm scope」四个面上全绿**:`balsajs`、`getbalsa`、`balsa-run`(§3.1)。→ 建议**统一根**:域、GitHub org、X、npm scope 用同一个名,别在第二个面上再撞一次。
+4. **三个「同名根」在域名 + GitHub + X + npm scope 四面全绿**:`balsajs`(→ `balsajs.dev`)、`getbalsa`(→ `getbalsa.dev`)、`balsa-run`(→ `balsa.run`)(§2.1 / §3.1)。→ 建议就按**同名根**来选:四个公开面共用一个名字,别在第二个面上再撞一次。
 5. **推荐序**(理由与代价见 §4):**① `balsajs.dev` → ② `getbalsa.dev` → ③ `balsa.run`**;`.com` 变体(`balsajs.com` / `getbalsa.com`)同样空着,可一并拿下做跳转/防抢注。
 6. 一条与域名无关但**必须现在知道**的硬事实:**包 scope 的可选集是有限的,而 docs 侧的参考树、入口 shim、import-map 页与全部代码样例都已经按 `@balsa/core` 落地**(238 页生成树)——scope 若要改,现在改最便宜,发版之后改最贵(§5)。
 
@@ -74,7 +75,7 @@
 
 可注册的四类,**按"离原词有多远"排序**:
 
-1. **同词换 TLD**:`balsa.run`(最短,`.run` 与项目 tagline「run anywhere」同向)、`balsa.codes`、`balsa.so`;
+1. **同词换 TLD**:`balsa.run`(`.run` 与项目 tagline「run anywhere」同向)、`balsa.codes`、`balsa.so`(三个推荐里 `balsa.run` 最短,但这批里字符串最短的其实是 `balsa.so`——代价见 §6 第 2 条);
 2. **加后缀保原词**:`getbalsa.dev` / `getbalsa.com`——"getX" 是原词被占后的标准兜底形态,检索词"balsa"不变;
 3. **加生态后缀**:`balsajs.dev` / `balsajs.com`——JS/TS 生态的惯例形态(对照:Vue 用 `vuejs.org`),`.dev` 本身就适合开发者受众;
 4. **连字符变体**:`balsa-ai.dev`(`balsa-ai` 的 GitHub handle 已被占,见 §3.1 → 不建议作为**统一根**)。
@@ -88,6 +89,8 @@ curl -s https://data.iana.org/rdap/dns.json | jq -r '.services[] | select(.[0][]
 #   → ["https://rdap.identitydigital.services/rdap/"] (.run / .ai / .codes / .tools)
 #   → ["https://rdap.verisign.com/com/v1/"]           (.com / .net)
 #   → ["https://rdap.centralnic.com/build/"]          (.build)
+# ⚠️ 端点必须与 TLD 对上:问错 registry 会回 404(实测:Identity Digital 的端点对 .dev 名同样 404)
+#    ——错端的 404 不是可用性证据。§7 给了按 bootstrap 自动取端点的写法。
 
 curl -sS -o /dev/null -w '%{http_code}\n' \
   -H 'Accept: application/rdap+json' https://pubapi.registry.google/rdap/domain/balsa-ai.dev
@@ -108,7 +111,7 @@ curl -s 'https://cloudflare-dns.com/dns-query?name=balsajs.dev&type=NS' \
 
 ### 3.1 总表(方法见 §3.3)
 
-| 根 | GitHub | X | npm scope `@<根>` | 四绿? |
+| 根 | GitHub | X | npm scope `@<根>` | 三面全绿? |
 | --- | --- | --- | --- | --- |
 | `balsa` | ✗ **org**(verified,2020) | ✗ **@balsa** | ✗ **org 已存在**(0 包) | ✗ |
 | `balsa-ai` | ✗ user(2025-04-24,0 仓,无 bio) | ✓ 空 | ✓ 空 | ✗ |
@@ -120,6 +123,8 @@ curl -s 'https://cloudflare-dns.com/dns-query?name=balsajs.dev&type=NS' \
 | `balsa-framework` | ✓ 空 | ✓ 空 | ✓ 空 | **✓** |
 | `balsa-js` | ✓ 空 | ✓ 空 | ✓ 空 | **✓** |
 | `balsa-core` | ✓ 空 | ✓ 空 | ✓ 空 | **✓** |
+
+**四绿集**(三面全绿 **且** §2.1 / §2.2 里同名域可注册)= 只有三个:`balsajs` / `getbalsa` / `balsa-run`。表里 `balsa-framework` / `balsa-js` / `balsa-core` 三行只查了 handle 三面,**域名面未查**,不计入。
 
 **npm 包名(scoped 之外)**:`balsa` 这个**包名**是别人的浏览器日志库(最新 `1.1.0`,maintainer `nickfrosty`)——这是 #9 背景里已知的一条;而 `balsa-ai` / `balsajs` / `getbalsa` / `balsa-core` 四个**未加 scope 的包名**都空着。scope 内的包名 `@balsa/core` / `@balsa/mcp-server` / `@balsa/croner` 也都是 `404`(空)——**卡住的不是包名,是 scope 本身**(§3.2)。
 
@@ -172,15 +177,16 @@ curl -s https://registry.npmjs.org/-/org/balsa/team      # → 401 Missing "Bear
 **② `getbalsa.dev`(次选)** —— 保住原词,检索词"balsa"不变;四个面同样全绿(`getbalsa.dev` + GitHub `getbalsa` + X `@getbalsa` + npm `@getbalsa`);`getbalsa.com` 也空着。
 *代价*:"getX" 是**原词被占后的通用兜底**,品牌信息量为零;`docs.getbalsa.dev` 读起来长。
 
-**③ `balsa.run`(最短,贴 tagline)** —— apex 最短(9 字符),`.run` 与项目自述「run anywhere, no runtime baggage」同向;域本身 `404` 可注册;**handle 根要用连字符形态 `balsa-run`**(GH/X/npm 三绿)——因为 `@balsarun` 在 X 上已被占。
+**③ `balsa.run`(贴 tagline)** —— 三个推荐里 apex 最短(9 字符 vs 11 / 12),`.run` 与项目自述「run anywhere, no runtime baggage」同向;域本身 `404` 可注册;**handle 根要用连字符形态 `balsa-run`**(GH/X/npm 三绿)——因为 `@balsarun` 在 X 上已被占。
 *代价*:在 JS 语境里 `balsa.run` 读起来像**方法调用**(`balsa.run()`),与"域名"的直觉有摩擦;`.run` 的开发者生态位弱于 `.dev`。
 
 **不推荐作为统一根**:`balsa-ai.dev`(对应的 GitHub `balsa-ai` 已被 2025 年注册的账号占着,§3.1);`balsa.codes` / `balsa.so`(可用,但后缀与统一根一致性更差;`.so` 还只有 DNS 证据)。
 
-### 4.2 与域名选择无关、但会一起决定的两条
+### 4.2 与域名选择无关、但会一起决定的三条
 
-1. **统一根**:不管选哪一个,建议**域名 / GitHub org / X / npm scope 用同一个根**。现状是裸 `balsa` 在四个面全被占——再撞一次的成本比现在多花五分钟选同名根要高。
+1. **同名根**:不管选哪一个,建议**域名 / GitHub org / X / npm scope 用同一个根**。现状是裸 `balsa` 在被查的每一类面上都有主(§1.2)——再撞一次的成本,比现在多花五分钟选同名根要高。
 2. **`.dev` 与 `.com` 成对拿**:`.dev` 做正站,`.com` 做 301 或至少防抢注;可注册的两对(`balsajs.*` / `getbalsa.*`)都还空着。
+3. ⚠️ **「同名根」这条建议撞上 balsa-framework ADR-0013,必须显式记账**:该 ADR 的 Considered Options 明否「**新建 GitHub org 派生名**(`balsa-ai`/`balsafw` 等)」,并把 GitHub 归属定为「个人账号同名仓库(未来需要时仍可迁入 org)」;其 2026-09-30 的修订又把对外品牌定为伞形 **balsa**、子项目仓库名定为 `balsa-framework`。本文的「同名根」(尤其是**新建 org**)与该裁决的前提冲突——**本文不推翻它**:要么框架/品牌侧追加一条修订,要么沿用「个人账号 + 仓库名」的现状。见 §5 第 4 条与 §8 第 3 行。
 
 ### 4.3 快速对照
 
@@ -190,7 +196,14 @@ curl -s https://registry.npmjs.org/-/org/balsa/team      # → 401 Missing "Bear
 | **② `getbalsa.dev`** | ✓ | ✓ | ✓ | ✓ | `docs.getbalsa.dev` | 通用兜底形态,域名较长 |
 | **③ `balsa.run`** | ✓ | ✓ `balsa-run` | ✓ `@balsa-run` | ✓ `@balsa-run` | `docs.balsa.run` | 读起来像方法调用;根带连字符 |
 | `balsa.dev`(原意) | ✗ | ✗ | ✗ | ✗ | — | 四面全占,不可得 |
-| `balsa-ai.dev` | ✓ | ✗ | ✓ | ✓ | `docs.balsa-ai.dev` | GitHub handle 已占,统一根破 |
+| `balsa-ai.dev` | ✓ | ✗ | ✓ | ✓ | `docs.balsa-ai.dev` | GitHub handle 已占,同名根破 |
+
+### 4.4 已被占、但要单独记账的两条
+
+| 域 | 状态 | 处置 |
+| --- | --- | --- |
+| `balsa.ai` | 挂在 [Atom](https://www.atom.com/name/Balsa.ai) 市场上**待售**(registrar = Atom.com Domains LLC,NS `ns1`/`ns2.atom.com`) | **唯一能把裸 `balsa` 拿到手**的可谈路径(另一条 = npm/GitHub 的名字争议,§5 第 3 条)。价格未公开、**本文未核**。不进推荐序——它不是「可注册」,是一条「可谈」;要买先询价 |
+| `balsa.org` | 同名**非营利**在运("The Biotechnology and Life Science Advising Group",Squarespace 托管) | **不可谈**(同名缩写组织),不再考虑。RDAP 的 `expiration = 2026-10-08` 只作记账,**不当作会掉签**(§6 第 5 条) |
 
 ---
 
@@ -198,12 +211,12 @@ curl -s https://registry.npmjs.org/-/org/balsa/team      # → 401 Missing "Bear
 
 > 这一节不属于 #9 的交付面(域名/handle),但同批查到的**硬事实**会改变框架侧发布票的前提,故一并记录。
 
-1. **事实**:npm org `@balsa` **已存在**(§3.2 / §3.3)。balsa-framework[#45](https://github.com/0xnicholas/balsa-framework/issues/45) checklist 第 1 项「创建 npm org `@balsa`」按现状**无法直接完成**;`@balsa/core` 本身空着,但**空包名 ≠ 能发**——发布者必须是该 scope 的持有者。
+1. **事实**:npm org `@balsa` **已存在**(§3.2 / §3.3)。balsa-framework[#45](https://github.com/0xnicholas/balsa-framework/issues/45) checklist 第 1 项「创建 npm org `@balsa`」按现状**无法直接完成**;`@balsa/core` 本身空着,但**空包名 ≠ 能发**——发布者必须是该 scope 的持有者。ADR-0013 的 Consequences 原文写的是「截至 2026-09-28,该 scope 名下无任何已发布包,**可申领**」——本批证据反驳的正是「**可申领**」这一步:**名下 0 个包 ≠ 未被注册**。
 2. **若 scope 必须改**(例如改成 `@balsajs`,与 §4.1 的①同名),**现在改最便宜**:
    - 框架侧:尚未发布(#45 未做),包名/子路径导出/examples 是仓库内一致性改动;
    - docs 侧:参考树已经按 `@balsa/core` 生成并入库——**238 页生成树 + 10 个入口 shim**(入口 shim 文件名承载模块组名,`api-reference §4 F9` 明写"入口一挪全树哈希变")+ `import-map` 页 + 全站代码样例都要跟着重生成,`pnpm regen:api` / `pnpm verify:api` 能承担机械部分,但是一次全量返工。
 3. **若想留在 `@balsa`**:路径只有 npm 的名字争议/转让流程,需要商标或优先使用证据;而对手是一家 **2020 年**就在用这个名字、GitHub org **已被验证**、同持 `balsa.com` 与 X `@balsa` 的公司(§3.2)。成功率与时效本文**未核**。
-4. **不替裁决**:决策属 balsa-framework 的 [ADR-0013](https://github.com/0xnicholas/balsa-framework/blob/main/docs/adr/0013-naming-and-branding.md) / #45;本文只提供证据、代价与时序(发布前 / 发布后)。
+4. **不替裁决**:决策属 balsa-framework 的 [ADR-0013](https://github.com/0xnicholas/balsa-framework/blob/main/docs/adr/0013-naming-and-branding.md) / #45;本文只提供证据、代价与时序(发布前 / 发布后)。**GitHub 归属那一半同样有既有裁决**(ADR-0013 明否「新建派生 org」)——冲突与处置见 §4.2 第 3 条,本文只记不裁。
 
 **给 balsa-docs 的输入**:docs 侧只依赖 `<apex>`,与 scope 决策**解耦**——`docs.<apex>` 与包名是不是 `@balsa/*` 无关。故 [#29 上域](https://github.com/0xnicholas/balsa-docs/issues/29) 可以**在 scope 决策之前**落地(改一行 `src/lib/site.ts`);被 scope 决策影响的是 [#30 npm 0.1.0 切换](https://github.com/0xnicholas/balsa-docs/issues/30)。
 
@@ -225,15 +238,25 @@ curl -s https://registry.npmjs.org/-/org/balsa/team      # → 401 Missing "Bear
 ## 7. 复现法
 
 ```bash
-# ---- 域名:registry RDAP(先取端点,再查对象;404 = 可注册) ----
-curl -s https://data.iana.org/rdap/dns.json | jq -r '.services[][1][0]' | sort -u   # 各 registry 的 RDAP base
-for d in balsajs.dev getbalsa.dev balsa-ai.dev balsa.run balsa.codes; do
-  printf '%-14s ' "$d"
-  curl -sS -o /dev/null -w '%{http_code}\n' -H 'Accept: application/rdap+json' \
-    "https://pubapi.registry.google/rdap/domain/$d"      # .dev/.app → Google Registry
-    # .run/.ai/.codes/.tools → https://rdap.identitydigital.services/rdap/domain/$d
-    # .com/.net           → https://rdap.verisign.com/com|net/v1/domain/$d
+# ---- 域名:registry RDAP —— 端点**按 TLD 从 IANA bootstrap 取**,再查对象(404 = 可注册) ----
+# ⚠️ 端点必须与 TLD 对上:问错 registry 也会回 404(实测:Identity Digital 的端点对 .dev 名同样 404)
+#    ——错端的 404 **不是**可用性证据。
+BOOT=$(mktemp); curl -sS https://data.iana.org/rdap/dns.json -o "$BOOT"
+ep() { python3 -c "
+import json,sys
+t=sys.argv[1].rsplit('.',1)[1]
+b=json.load(open(sys.argv[2]))
+for s in b['services']:
+    if t in s[0]: print(s[1][0]); break
+" "$1" "$BOOT"; }
+for d in balsajs.dev getbalsa.dev balsa-ai.dev balsa.run balsa.codes getbalsa.com; do
+  base=$(ep "$d")
+  if [ -z "$base" ]; then printf '%-14s no RDAP in IANA bootstrap → 只走 DNS\n' "$d"; continue; fi
+  printf '%-14s %-46s ' "$d" "$base"
+  curl -sS -o /dev/null -w '%{http_code}\n' -H 'Accept: application/rdap+json' "${base}domain/$d"
 done
+# 实测（2026-10-01）：.dev/.app → pubapi.registry.google；.run/.ai/.codes/.tools → rdap.identitydigital.services；
+#                      .com/.net → rdap.verisign.com；.sh/.io/.so 不在 bootstrap（无 RDAP，只走 DNS）
 
 # ---- 域名:两个独立递归交叉验证(NXDOMAIN = 未注册) ----
 for res in https://dns.google/resolve https://cloudflare-dns.com/dns-query; do
@@ -258,10 +281,11 @@ curl -s 'https://hstspreload.org/api/v2/status?domain=dev' | jq -c .   # → pre
 | --- | --- | --- |
 | 1 | **老板**(本票的裁决点) | 拍板统一根:§4.1 的 ① / ② / ③;拍板是否连 `.com` 一起拿 |
 | 2 | **老板** | 在 registrar 下单(结算页验价,注意 premium 档),得 apex 控制权 |
-| 3 | **老板** | 建同名 GitHub org / X / npm org(四面对齐) |
+| 3 | **老板** | 建同名 **X 与 npm org**;GitHub 归属**先拍再动**——现状(个人账号,ADR-0013 原裁)还是新建同名 org(与该 ADR 的 Considered Options 冲突,§4.2 第 3 条) |
+| 3b | **老板**(可选) | 想拿**裸 `balsa`** 就先给 `balsa.ai` 询价(§4.4)——不进推荐序,是一条「可谈」路线 |
 | 4 | **老板** | DNS:把 apex 放进 Cloudflare zone,给 docs 留一条 `docs.<apex>` 的 CNAME/自动记录;**CAA 不得阻断证书签发**(balsa-docs delivery §3.3) |
 | 5 | balsa-docs | [#29 上域 PR](https://github.com/0xnicholas/balsa-docs/issues/29):改 `src/lib/site.ts` 一处 → canonical / sitemap / `llms.txt` 绝对链接 / manifest 同批更新,再按 delivery §13.4 验收 |
-| 6 | balsa-framework | [#45](https://github.com/0xnicholas/balsa-framework/issues/45) 的 scope 前提按 §5 复核后再动;发布前把 ADR-0013 的这条前提改写成事实 |
+| 6 | balsa-framework | [#45](https://github.com/0xnicholas/balsa-framework/issues/45) checklist 第 1 项(「创建 npm org `@balsa`」)按 §5 复核后再动;发布前给 ADR-0013 **追加一条修订**(该 ADR 惯例:正文保留当时的记录,新事实以修订块追加),更新「scope 可申领」与「GitHub 归属」两条前提 |
 
 ---
 
