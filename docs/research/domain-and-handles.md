@@ -5,7 +5,7 @@
 > **抓取日期**:**2026-10-01**(13:13–13:25 UTC,本机直连)。全程**只读**:未注册任何域名、未下单、未创建任何账号/org/scope、未登录 npm。
 > **一手来源**:各 TLD **registry RDAP**(端点由 IANA 的 `rdap/dns.json` bootstrap 直取,不经过聚合站)、公共 DNS over HTTPS(dns.google 与 cloudflare-dns.com **两个独立递归**)、GitHub REST API(认证调用)、npm registry 公开端点(三端点交叉标定,见 §3.3)、X 公开页面、`hstspreload.org` API。
 > **本文只呈现事实与候选,不替老板拍板**;需要人拍的点集中在 §4.1 的分叉与 §8 的行动清单。
-> **修订(2026-10-01,双轴评审回改)**:① §7 的域名复现命令改为**按 IANA bootstrap 逐 TLD 取端点**(旧版统一打 Google Registry 端点,查 `.run`/`.codes` 会问到**错的 registry**——而问错 registry 同样回 404,会把结论读反);② §3.1 的「四绿」列改为**三面**并显式给出四绿集;③ §4.2 增第 3 条与 §4.4——把与 balsa-framework **ADR-0013** 的冲突显式记账、给 `balsa.ai`/`balsa.org` 单列处置;④ §1.2 / §2.2 的绝对化措辞收紧(最短、全线)。
+> **修订(2026-10-01,双轴评审回改)**:① §7 的域名复现命令改为**按 IANA bootstrap 逐 TLD 取端点**(旧版统一打 Google Registry 端点,查 `.run`/`.codes` 会问到**错的 registry**——而问错 registry 同样回 404,会把结论读反);② §3.1 的「四绿」列改为**三面**并显式给出四绿集;③ §4.2 增第 3 条与 §4.4——把与 balsa-framework **ADR-0013** 的冲突显式记账、给 `balsa.ai`/`balsa.org` 单列处置;④ §1.2 / §2.2 的绝对化措辞收紧(最短、全线);⑤ 用词取消费商侧的术语表写法「docs 站」→「**文档站**」(balsa-docs `CONTEXT.md` 的定义),「escape-hatch 根」这个自造词一律换成自解释的「同名根」。
 
 ---
 
@@ -19,7 +19,7 @@
 **两个消费方,要求不同**:
 
 1. **营销站**(本仓库):apex 自持 + 品牌 handle 齐;
-2. **docs 站**(balsa-docs):[delivery §3.1 / §3.3 / §3.4](https://github.com/0xnicholas/balsa-docs/blob/main/docs/spec/delivery.md) 只要求交付**两样**——一个 `<apex>` + 一条 `<apex>` 内 `docs` 子域记录的控制权(形态固定 `docs.<apex>`,域落地由 docs 侧一行 PR 发起)。同节明写:`balsa.dev` **不是**默认前提(apex 是第三方个人站,`docs.balsa.dev` 落在其 zone 内)。
+2. **文档站**(balsa-docs):[delivery §3.1 / §3.3 / §3.4](https://github.com/0xnicholas/balsa-docs/blob/main/docs/spec/delivery.md) 只要求交付**两样**——一个 `<apex>` + 一条 `<apex>` 内 `docs` 子域记录的控制权(形态固定 `docs.<apex>`,域落地由 docs 侧一行 PR 发起)。同节明写:`balsa.dev` **不是**默认前提(apex 是第三方个人站,`docs.balsa.dev` 落在其 zone 内)。
 
 **判定法与证据强度**(每条结论都可由 §7 的命令重跑):
 
