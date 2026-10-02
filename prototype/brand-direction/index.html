@@ -602,10 +602,12 @@
     };
   });
 
-  // boot: honor ?variant= if present
-  const q = new URLSearchParams(location.search).get('variant');
-  const found = VARIANTS.findIndex(v => v.key === q);
+  // boot: honor ?variant= and ?theme= if present
+  const params = new URLSearchParams(location.search);
+  const found = VARIANTS.findIndex(v => v.key === params.get('variant'));
   if (found >= 0) idx = found;
+  const qTheme = params.get('theme');
+  if (qTheme === 'light' || qTheme === 'dark') themeMemo[VARIANTS[idx].key] = qTheme;
   apply();
 </script>
 </body>
