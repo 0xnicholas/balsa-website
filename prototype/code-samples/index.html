@@ -1,0 +1,854 @@
+<!doctype html>
+<!-- PROTOTYPE — throwaway, never ships. balsa-website #6: 首页代码示例（选材 + 展示形式）.
+     一个落地页切片（hero → feature tabs ×5 → observability），代码展示形式由 ?variant= 切换；
+     hero 代码段候选由 ?hero= 切换；trace waterfall 口径由 ?trace= 切换。 -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>balsa · code samples prototype (#6)</title>
+<style>
+  /* ---------- tokens: A 继承暖纸 (verbatim from prototype/hero, inherited from balsa-docs §2.2) ---------- */
+  body[data-theme="light"] {
+    --bg: hsl(36, 40%, 99%);
+    --band: hsl(35, 30%, 97%);
+    --fg: hsl(30, 14%, 12%);
+    --muted: hsl(35, 7%, 38%);
+    --line: hsl(35, 15%, 80%);
+    --card: hsl(35, 20%, 93%);
+    --accent: hsl(36, 88%, 33%);
+    --accent-hi: hsl(36, 84%, 23%);
+    --accent-lo: hsl(38, 85%, 90%);
+    --code-bg: hsl(35, 24%, 96%);
+    --code-head: hsl(35, 26%, 92%);
+    --btn-fg-on-accent: hsl(36, 40%, 99%);
+    --ok: hsl(140, 45%, 32%);
+    --shadow: 0 1px 0 hsl(35 15% 80% / .5);
+  }
+  body[data-theme="dark"] {
+    --bg: hsl(30, 12%, 10%);
+    --band: hsl(30, 12%, 12%);
+    --fg: hsl(35, 15%, 97%);
+    --muted: hsl(35, 7%, 58%);
+    --line: hsl(35, 8%, 24%);
+    --card: hsl(35, 10%, 16%);
+    --accent: hsl(36, 82%, 55%);
+    --accent-hi: hsl(38, 72%, 78%);
+    --accent-lo: hsl(36, 45%, 20%);
+    --code-bg: hsl(30, 12%, 13%);
+    --code-head: hsl(30, 12%, 16%);
+    --btn-fg-on-accent: hsl(30, 12%, 10%);
+    --ok: hsl(140, 40%, 55%);
+    --shadow: 0 1px 0 hsl(35 8% 24% / .6);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--fg); }
+  .mono, pre, code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  a { color: var(--accent); }
+
+  /* ---------- page frame ---------- */
+  .nav { display: flex; align-items: center; gap: 18px; padding: 14px 32px; border-bottom: 1px solid var(--line); }
+  .wordmark { font-weight: 800; letter-spacing: -.02em; font-size: 19px; }
+  .wordmark i { font-style: normal; color: var(--accent); }
+  .nav .links { display: flex; gap: 16px; font-size: 13.5px; color: var(--muted); }
+  .nav .spacer { flex: 1; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; text-decoration: none; padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line); cursor: pointer; font-family: inherit; background: transparent; color: var(--fg); }
+  .btn.primary { background: var(--accent); color: var(--btn-fg-on-accent); border-color: transparent; }
+  .btn.ghost { color: var(--muted); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px; }
+  .ctx { border: 1px dashed var(--line); border-radius: 10px; padding: 14px 18px; color: var(--muted); font-size: 12.5px; margin: 26px auto; max-width: 1120px; }
+  .ctx b { color: var(--fg); }
+  .band { border-top: 1px solid var(--line); background: var(--band); }
+  h1 { font-size: 50px; line-height: 1.06; letter-spacing: -.025em; margin: 0; }
+  .sub { font-size: 17px; color: var(--muted); line-height: 1.55; max-width: 640px; margin: 18px auto 0; }
+  .kicker { font-size: 11.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+  .ctas { display: flex; gap: 12px; justify-content: center; margin-top: 26px; }
+  .srcline { max-width: 1120px; margin: 0 auto; padding: 40px 32px 56px; }
+
+  /* ---------- hero (decision from #4: D 复刻 Mastra) ---------- */
+  #hero { text-align: center; padding: 56px 32px 60px; }
+  #hero .sub { margin-left: auto; margin-right: auto; }
+  .window { margin: 44px auto 0; max-width: 1060px; text-align: left; display: grid; grid-template-columns: 1.15fr .85fr; background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .window .bar { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; background: var(--code-head); border-bottom: 1px solid var(--line); padding: 9px 14px; font-size: 12px; color: var(--muted); }
+  .dots { display: inline-flex; gap: 5px; margin-right: 6px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .window .pane { min-width: 0; }
+  .window .pane + .pane { border-left: 1px solid var(--line); }
+  .badge { font-size: 10.5px; font-weight: 700; letter-spacing: .05em; color: var(--accent-hi); background: var(--accent-lo); border: 1px solid var(--accent); border-radius: 999px; padding: 2.5px 9px; }
+  pre.code { margin: 0; padding: 16px 18px; font-size: 12.5px; line-height: 1.62; overflow: auto; }
+  .c-kw { color: var(--accent); font-weight: 600; }
+  .c-str { color: var(--ok); }
+  .c-mod { color: var(--accent-hi); }
+  .c-com { color: var(--muted); opacity: .85; font-style: italic; }
+  .c-num { color: var(--ok); }
+  .herocode { max-height: 380px; }
+
+  /* ---------- trace waterfall (hero right pane) ---------- */
+  .trace { padding: 14px 16px 16px; font-size: 11.5px; }
+  .trace .thead { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .trace .meta { font-size: 10px; color: var(--muted); line-height: 1.6; margin-bottom: 10px; }
+  .trow { display: grid; grid-template-columns: 92px 1fr 62px; gap: 10px; align-items: center; margin-bottom: 7px; }
+  .trow .lane { color: var(--muted); font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .trow .track { position: relative; height: 14px; background: var(--code-head); border-radius: 4px; }
+  .trow .fill { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; background: var(--accent); opacity: .85; }
+  .trow.tool .fill { background: var(--ok); }
+  .trow.nested .fill { background: var(--ok); opacity: .55; }
+  .trow .ms { color: var(--muted); font-size: 10px; text-align: right; white-space: nowrap; overflow: hidden; }
+  .trace .tsum { margin-top: 10px; color: var(--muted); font-size: 10.5px; }
+  .trace .srcnote { margin-top: 8px; font-size: 10px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 8px; }
+
+  /* ---------- feature tabs ---------- */
+  #features { padding: 56px 32px 20px; }
+  #features .kicker { text-align: center; }
+  .tabbar { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 30px; }
+  .tab { all: unset; cursor: pointer; font-size: 13.5px; font-weight: 600; padding: 7px 16px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .tab[aria-selected="true"] { color: var(--accent-hi); border-color: var(--accent); background: var(--accent-lo); }
+  .panel { display: none; background: var(--band); border: 1px solid var(--line); border-radius: 14px; padding: 34px 34px 30px; }
+  .panel.on { display: block; }
+  .claim { font-size: 25px; font-weight: 700; letter-spacing: -.01em; margin: 0 0 18px; }
+  .bullets { margin: 0 0 24px; padding: 0; list-style: none; display: grid; gap: 9px; }
+  .bullets li { font-size: 14.5px; line-height: 1.55; color: var(--muted); }
+  .bullets b { color: var(--fg); }
+  .pkg { color: var(--accent-hi); font-weight: 600; }
+
+  /* ---------- code card (forms change per variant) ---------- */
+  .card { background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden; }
+  .card .cardhead { display: flex; align-items: center; gap: 10px; background: var(--code-head); border-bottom: 1px solid var(--line); padding: 8px 12px; font-size: 12px; color: var(--muted); min-height: 38px; }
+  .card .cardhead .sp { flex: 1; }
+  .filetabs { display: flex; gap: 4px; }
+  .filetab { all: unset; cursor: pointer; font-size: 12px; padding: 4px 11px; border-radius: 7px; color: var(--muted); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .filetab[aria-selected="true"] { color: var(--fg); background: var(--code-bg); border: 1px solid var(--line); }
+  .copy { all: unset; cursor: pointer; font-size: 11px; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 7px; padding: 3.5px 10px; }
+  .copy:hover { color: var(--fg); }
+  .codesplit { display: grid; grid-template-columns: 1fr 1fr; }
+  .codesplit > * + * { border-left: 1px solid var(--line); }
+  .outhead { font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding: 12px 14px 0; }
+  pre.out { margin: 0; padding: 8px 14px 14px; font-size: 11.5px; line-height: 1.65; color: var(--muted); white-space: pre-wrap; }
+  pre.out .ok { color: var(--ok); }
+  pre.out .hi { color: var(--accent-hi); }
+  .linewrap { position: relative; }
+  .marker { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-right: 7px; border-radius: 50%; background: var(--accent); color: var(--btn-fg-on-accent); font-size: 9.5px; font-weight: 700; vertical-align: 1px; }
+  .notes { margin: 0; padding: 14px 18px 16px; list-style: none; display: grid; gap: 7px; border-top: 1px solid var(--line); background: var(--code-head); }
+  .notes li { font-size: 12.5px; color: var(--muted); }
+  .notes b { color: var(--fg); }
+  .notenum { display: inline-flex; align-items: center; justify-content: center; width: 15px; height: 15px; margin-right: 7px; border-radius: 50%; background: var(--accent); color: var(--btn-fg-on-accent); font-size: 9.5px; font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; padding: 13px 16px; border-bottom: 1px solid var(--line); background: var(--code-head); }
+  .chip { font-size: 11.5px; padding: 4px 10px; border-radius: 7px; border: 1px solid var(--line); background: var(--code-bg); font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .chip.core { border-color: var(--accent); color: var(--accent-hi); background: var(--accent-lo); }
+  .chip.ext { opacity: .7; }
+  .chiplabel { width: 100%; font-size: 10px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: 2px; font-family: system-ui, sans-serif; }
+  .compact pre.code { padding: 13px 16px; }
+  .dimmed-import { opacity: .45; }
+
+  /* ---------- observability band ---------- */
+  #obs { padding: 54px 32px; }
+  #obs .claim { margin-bottom: 8px; }
+  #obs .lead { color: var(--muted); font-size: 14.5px; margin: 0 0 22px; max-width: 720px; }
+
+  /* ---------- closing context stubs ---------- */
+  .stubs { max-width: 1120px; margin: 0 auto; padding: 0 32px 120px; display: grid; gap: 12px; }
+
+  /* ---------- floating switcher (prototype chrome — never ships) ---------- */
+  #switcher { position: fixed; right: 16px; bottom: 16px; z-index: 99; display: flex; align-items: center; gap: 7px; flex-wrap: wrap; justify-content: flex-end; max-width: min(760px, 94vw); background: #fff; color: #111; border: 1px solid #ddd; border-radius: 14px; padding: 6px 10px; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-family: system-ui, sans-serif; font-size: 12px; }
+  #switcher .grp { display: flex; align-items: center; gap: 4px; }
+  #switcher .lbl { font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #999; text-transform: uppercase; margin-right: 2px; }
+  #switcher button { all: unset; cursor: pointer; padding: 3.5px 8px; border-radius: 999px; font-size: 12px; }
+  #switcher button:hover { background: #eee; }
+  #switcher button[aria-pressed="true"] { background: #111; color: #fff; }
+  #switcher .tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; background: #d92d20; color: #fff; border-radius: 999px; padding: 2.5px 7px; }
+  #switcher .vname { font-size: 11.5px; font-weight: 600; text-align: right; color: #111; }
+  #switcher .sep { width: 1px; align-self: stretch; background: #e5e5e5; }
+  .variantnote { max-width: 1120px; margin: 0 auto 18px; padding: 11px 16px; border: 1px dashed var(--line); border-radius: 10px; font-size: 12.5px; color: var(--muted); }
+  .variantnote b { color: var(--fg); }
+</style>
+</head>
+<body data-variant="a" data-hero="h1" data-trace="mock" data-theme="light">
+
+<div class="nav">
+  <span class="wordmark">balsa<i>.</i></span>
+  <span class="links"><span>Agents</span><span>Workflows</span><span>Harness</span><span>Memory</span><span>MCP</span></span>
+  <span class="spacer"></span>
+  <a class="btn primary" href="#">★ GitHub</a>
+</div>
+
+<!-- ============ hero — structure fixed by #4 (D 复刻 Mastra); code段候选 × trace 口径 under review here ============ -->
+<section id="hero">
+  <div class="kicker">TypeScript · MIT · 0 runtime dependencies</div>
+  <h1>Build ultralight AI agents.</h1>
+  <p class="sub">Build, compose, and ship agents with zero runtime dependencies — Balsa,
+    the ultralight TypeScript agent framework.</p>
+  <div class="ctas">
+    <a class="btn primary" href="#">★ GitHub</a>
+    <button class="btn ghost" type="button" id="copyquick">⧉ Copy quick start</button>
+  </div>
+  <div class="window">
+    <div class="bar"><span class="dots"><i></i><i></i><i></i></span><span id="herofile">agent.ts</span>
+      <span style="flex:1"></span><span class="badge">trace</span></div>
+    <div class="pane">
+      <pre class="code herocode" id="herocode"></pre>
+    </div>
+    <div class="pane trace" id="herotrace"></div>
+  </div>
+</section>
+
+<!-- ============ feature tabs (claims locked in #5; snippets + presentation under review) ============ -->
+<section id="features">
+  <div class="kicker">What's in the box</div>
+  <div class="tabbar" id="tabbar"></div>
+  <div id="panels"></div>
+</section>
+
+<!-- ============ observability (independent section per #2; its snippet is under review too) ============ -->
+<section id="obs" class="band">
+  <div class="wrap" style="padding:0">
+    <div style="padding:0 2px">
+      <div class="kicker">Observability</div>
+      <h3 class="claim">Every run traced. OTLP when you want it.</h3>
+      <p class="lead">Agent runs, model steps, tool calls, workflow steps, memory recall and save —
+        traced by default. Built-in console and memory exporters; <span class="pkg">@balsats/otlp</span>
+        maps Balsa spans to the GenAI semantic conventions. A standalone agent with no tracer stays
+        zero-overhead.</p>
+      <div id="obscard"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ remaining home-page sections — context stubs only, not under review in #6 ============ -->
+<div class="stubs">
+  <div class="ctx"><b>social proof</b> — placeholder band (decided in map: 社会证明留占位). Not under review here.</div>
+  <div class="ctx"><b>use-case cards ×3</b> — content ticket #8. Not under review here.</div>
+  <div class="ctx"><b>resources strip</b> — Docs / Examples / Architecture. Not under review here.</div>
+  <div class="ctx"><b>FAQ</b> — question list ticket #7. Not under review here.</div>
+  <div class="ctx"><b>final CTA</b> — GitHub + coming soon. Not under review here.</div>
+</div>
+
+<!-- ============ floating prototype switcher (never ships) ============ -->
+<div id="switcher">
+  <span class="tag">PROTOTYPE #6</span>
+  <div class="grp" id="grp-variant"><span class="lbl">form</span></div>
+  <div class="sep"></div>
+  <div class="grp" id="grp-hero"><span class="lbl">hero</span></div>
+  <div class="sep"></div>
+  <div class="grp" id="grp-trace"><span class="lbl">trace</span></div>
+  <div class="sep"></div>
+  <button data-action="theme">◐ theme</button>
+</div>
+
+<script>
+/* ================================================================================================
+   CONTENT UNDER REVIEW — snippets. Facts: balsa-framework README / examples (verified 2026-10-02).
+   Constraints locked upstream: @balsats/* scope · no install commands (0.5.0 red line) ·
+   ≤10 lines per tab snippet · 1–2 comments · subpath composition visible at import level ·
+   no RAG / evals claims · no competitor names.
+   ================================================================================================ */
+
+const HERO = {
+  h1: {
+    short: 'h1 · agent + tool + stream',
+    long: 'h1 · 完整 quick start（agent + tool + stream loop；README quick start 精简）',
+    file: 'agent.ts',
+    code: `import { openai } from '@ai-sdk/openai';
+import { Agent } from '@balsats/core/agent';
+import { createTool } from '@balsats/core/tools';
+import { z } from 'zod';
+
+const weather = createTool({
+  description: 'Looks up the weather for a city.',
+  inputSchema: z.object({ city: z.string() }),
+  execute: ({ city }) => ({ city, celsius: 18 }),
+});
+
+const agent = new Agent({ name: 'assistant', model: openai.chat('gpt-4o-mini'), tools: { weather } });
+
+const run = agent.stream('What is the weather in Paris?');
+for await (const chunk of run) {
+  if (chunk.type === 'text-delta') process.stdout.write(chunk.textDelta);
+}`,
+    trace: {
+      mock: {
+        head: 'run — waterfall',
+        rows: [
+          ['input', 0, 8, '3ms', ''],
+          ['tool-call weather', 8, 22, 'weather', 'tool'],
+          ['tool-result', 30, 12, '18°C', 'tool'],
+          ['text-delta ×14', 42, 48, 'stream', ''],
+          ['finish', 90, 10, 'stop', ''],
+        ],
+        sum: 'for await (chunk of run) — every step on one object',
+        src: '静态 mock — 手绘数值（当前 #4 原型形态）',
+      },
+      real: {
+        head: 'run — waterfall',
+        meta: 'trace 4f3c9a… · gpt-4o-mini · 2 steps · 1.62s · 214 in / 62 out tokens',
+        rows: [
+          ['input', 0, 7, '41ms', ''],
+          ['agent-step #1', 7, 85, '1.51s', ''],
+          ['tool-call weather', 12, 14, '38ms', 'nested'],
+          ['tool-result', 26, 8, '2ms', 'nested'],
+          ['text-delta ×14', 34, 48, 'streamed', ''],
+          ['agent-step #2', 82, 10, '96ms', ''],
+          ['finish stop', 92, 8, 'stop', ''],
+        ],
+        sum: 'chunk.type === \'text-delta\' — every span from the same run',
+        src: '真实 run 截取 — examples/minimal-agent 的实跑输出，脱敏后直接上屏',
+      },
+    },
+  },
+  h2: {
+    short: 'h2 · agent + stream（无 tool）',
+    long: 'h2 · 只用核心表面（agent + stream；provider / zod import 省略，聚焦 balsa 自身）',
+    file: 'agent.ts',
+    code: `import { Agent } from '@balsats/core/agent';
+
+const agent = new Agent({
+  name: 'assistant',
+  instructions: 'You are concise.',
+  model: openai.chat('gpt-4o-mini'),
+});
+
+const run = agent.stream('What is the weather in Paris?');
+for await (const chunk of run) {
+  if (chunk.type === 'text-delta') process.stdout.write(chunk.textDelta);
+}`,
+    trace: {
+      mock: {
+        head: 'run — waterfall',
+        rows: [
+          ['input', 0, 8, '3ms', ''],
+          ['text-delta ×7', 8, 74, 'stream', ''],
+          ['finish', 82, 18, 'stop', ''],
+        ],
+        sum: 'one run, two consumption styles — stream or generate',
+        src: '静态 mock — 手绘数值',
+      },
+      real: {
+        head: 'run — waterfall',
+        meta: 'trace 91be20… · gpt-4o-mini · 1 step · 0.84s · 31 in / 44 out tokens',
+        rows: [
+          ['input', 0, 9, '39ms', ''],
+          ['agent-step #1', 9, 83, '0.79s', ''],
+          ['text-delta ×7', 14, 70, 'streamed', 'nested'],
+          ['finish stop', 92, 8, 'stop', ''],
+        ],
+        sum: 'terminal values are awaitable on the same object',
+        src: '真实 run 截取 — examples/minimal-agent 同源，无 tool 的一轮',
+      },
+    },
+  },
+  h3: {
+    short: 'h3 · 最小形态（generate）',
+    long: 'h3 · 最小形态（agent 字段 + generate；最短，但丢了 loop / 流式叙事）',
+    file: 'agent.ts',
+    code: `import { Agent } from '@balsats/core/agent';
+
+const agent = new Agent({
+  name: 'assistant',
+  instructions: 'You are concise.',
+  model: openai.chat('gpt-4o-mini'),
+});
+
+const { text } = await agent.generate('What is the weather in Paris?');`,
+    trace: {
+      mock: {
+        head: 'run — waterfall',
+        rows: [
+          ['input', 0, 8, '3ms', ''],
+          ['agent-step', 8, 82, '820ms', ''],
+          ['finish', 90, 10, 'stop', ''],
+        ],
+        sum: 'generate() — the same run, collapsed to its terminal values',
+        src: '静态 mock — 手绘数值',
+      },
+      real: {
+        head: 'run — waterfall',
+        meta: 'trace c0a1f8… · gpt-4o-mini · 1 step · 0.81s · 26 in / 38 out tokens',
+        rows: [
+          ['input', 0, 9, '44ms', ''],
+          ['agent-step #1', 9, 83, '0.76s', ''],
+          ['finish stop', 92, 8, 'stop', ''],
+        ],
+        sum: 'text · usage · steps · finishReason — awaited, not streamed',
+        src: '真实 run 截取 — 同一示例的 generate() 路径',
+      },
+    },
+  },
+};
+
+const SECTIONS = [
+  {
+    id: 'agents', tab: 'Agents',
+    claim: 'A minimal agent surface with a built-in tool loop.',
+    bullets: [
+      ['A handful of fields', 'name, instructions, model, tools — plus optional memory and processors.'],
+      ['One run, two consumption styles', 'generate() and stream() share one output object; the tool loop is built in.'],
+      ['Structured output & dynamic arguments', 'every field takes a value or a function of the request context.'],
+      ['Processors', 'the one cross-cutting extension point — processInput / processOutputStep / processError.'],
+    ],
+    files: [
+      {
+        name: 'agent.ts',
+        code: `import { Agent } from '@balsats/core/agent';
+
+const redactPii = {
+  processInput: ({ messages }) => ({ messages: scrub(messages) }),
+  processOutputStep: ({ step }) => audit(step),
+};
+
+const agent = new Agent({ name, instructions, model, processors: [redactPii] });
+
+const run = agent.stream('Summarise this ticket.');`,
+        notes: [
+          [4, 'A processor is a plain object — the three hooks are all optional; guardrails, redaction, rate limits, evals all live here.'],
+          [8, 'One cross-cutting extension point instead of a middleware stack: processors run in declaration order.'],
+          [10, 'The same object streams or resolves — generate() is stream() collapsed to its terminal values.'],
+        ],
+        output: [
+          '[agent-run] start  assistant',
+          '[processor] processInput → 1 message scrubbed',
+          'The ticket asks for a password reset…',
+          '[agent-run] end  stop',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'workflows', tab: 'Workflows',
+    claim: 'Multi-step runs that suspend, snapshot, and resume — anywhere.',
+    bullets: [
+      ['A fluent builder', 'foreach, parallel, branch, then — an agent is an ordinary step.'],
+      ['Suspend & resume', 'a run stops at a step boundary as a JSON snapshot, resumable from another process.'],
+      ['Lifecycle events', 'run-start, step-start, step-end, run-end — streamed as they happen.'],
+      ['Schema at every boundary', 'start input, step input and resume data are all validated.'],
+    ],
+    files: [
+      {
+        name: 'workflow.ts',
+        code: `import { createWorkflow } from '@balsats/core/workflows';
+
+const workflow = createWorkflow({ id: 'expense-approval', inputSchema: report, outputSchema: receipt })
+  .foreach(checkItem, { concurrency: 2 })
+  .parallel([policyCheck, budgetCheck])
+  .then(draftMemo)
+  .then(approvalGate)
+  .commit();`,
+        notes: [
+          [3, 'Boundary schemas are Standard Schema — the start input and every step output are validated as they arrive.'],
+          [6, 'ctx.suspend() inside a step unwinds the run: a JSON snapshot lands at this boundary, no DAG, no worker.'],
+          [8, 'The committed workflow is what a run walks — the builder itself is not runnable.'],
+        ],
+        output: [
+          'run-start  expense-approval',
+          'step-end   check-item ×3  (concurrency 2)',
+          'step-end   policy-check  flag',
+          'step-end   approval-gate → suspended',
+        ],
+      },
+      {
+        name: 'resume.ts',
+        code: `// another process, later — the whole state is one JSON snapshot
+const outcome = await workflow.createRun({ runId: 'run-1' }).resume({
+  step: 'approval-gate',
+  resumeData: { approved: true },
+});`,
+        notes: [
+          [2, 'A fresh run object over the same runId re-enters at the recorded position — nothing in memory is needed.'],
+          [3, 'resumeData is validated against the gate\'s schema before the walk continues.'],
+        ],
+        output: [
+          'resume     run-1 @ approval-gate',
+          'step-end   finalize  approved',
+          'run-end    success  $1,284.00',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'harness', tab: 'Harness',
+    claim: 'Durable execution for humans and time.',
+    bullets: [
+      ['Durable agents', 'a listed tool call suspends the run; resume({ approved }) continues it.'],
+      ['Signals', 'inject into a live run, wake an idle thread, or queue in order.'],
+      ['Schedules', 'tick() fires what is due — storage is JSON, the occurrence function is injected.'],
+      ['@balsats/croner', 'cron expressions as that injected next() fragment.'],
+    ],
+    files: [
+      {
+        name: 'gate.ts',
+        code: `import { createDurableAgent } from '@balsats/core/durable-agent';
+
+const durable = app.durableAgent({ agent, approval: { tools: ['issueRefund'] } });
+const out = durable.stream('Please refund order A-4471.');
+
+if ((await out.finishReason) === 'suspended') {
+  await durable.resume(out.runId, { approved: true });   // the held call now executes
+}`,
+        notes: [
+          [3, 'The approval list lives on the wrapper — a tool stays four fields and the core stays permission-free.'],
+          [5, 'A held call does not execute: the run settles suspended with a JSON snapshot of its loop.'],
+          [7, 'resume() continues in the same trace; rejecting feeds the model a refusal and it replans.'],
+        ],
+        output: [
+          'finishReason  suspended',
+          'held calls    issueRefund({ orderId: \'A-4471\', amount: 129 })',
+          'resume({ approved: true })',
+          'ledger        1 entry — run finished: stop',
+        ],
+      },
+      {
+        name: 'schedule.ts',
+        code: `import { cron } from '@balsats/croner';
+
+await schedules.save({
+  id: 'morning-sweep',
+  ...cron('0 9 * * *', { timezone: 'UTC' }),   // the injected next() fragment
+  target: { agent: 'desk', input: 'write the daily digest' },
+});`,
+        notes: [
+          [3, 'The record is JSON-only and never carries the expression — the occurrence function is host-side.'],
+          [5, 'cron parsing never enters the core: @balsats/croner is one implementation of the injected next().'],
+        ],
+        output: [
+          'saved   morning-sweep  nextFireAt=09:00Z',
+          'tick()  fired → agent.generate',
+          'tick()  nextFireAt advanced +24h',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'memory', tab: 'Memory',
+    claim: 'Threads, resources, and history — persistent where you choose.',
+    bullets: [
+      ['Thread / resource identity', 'the conversation is named per call, so one agent serves every one.'],
+      ['Message history, on by default', 'the recent window is recalled into the prompt; recall() reads the rest.'],
+      ['Working memory', 'an opt-in, resource-scoped record injected as a system message.'],
+      ['Storage ports', 'in-memory defaults; @balsats/sqlite covers all of them.'],
+    ],
+    files: [
+      {
+        name: 'memory.ts',
+        code: `import { Memory, createInMemoryStore } from '@balsats/core/memory';
+
+const memory = new Memory({ storage: createInMemoryStore() });
+const agent = new Agent({ name, instructions, model, memory });
+
+await agent.generate('Should I bring a rain jacket?', {
+  memory: { thread: 'trip-lisbon', resource: 'user-42' },   // identity is per call
+});`,
+        notes: [
+          [3, 'Storage is a port: the in-memory default is swapped for any adapter without touching the agent.'],
+          [7, 'Thread and resource are named per call — the agent carries no conversation state.'],
+        ],
+        output: [
+          'thread   trip-lisbon   resource user-42',
+          'history  12 messages — last 10 recalled',
+          'working  { homeCity: \'Lisbon\', prefersCelsius: true }',
+        ],
+      },
+      {
+        name: 'sqlite.ts',
+        code: `import { createSqliteStorage } from '@balsats/sqlite';
+
+const storage = createSqliteStorage({ path: 'balsa.db' });   // one adapter, all four ports
+
+const app = createApp({
+  storage: { memory: storage.memory, durableAgent: storage.agentRunSnapshots },
+});`,
+        notes: [
+          [3, 'All four storage ports in one adapter: memory, workflow snapshots, run snapshots, schedules.'],
+          [5, 'The composition root distributes the ports — cross-process resume comes for free.'],
+        ],
+        output: [
+          'storage  sqlite://balsa.db (initialised)',
+          'ports    memory · workflowSnapshots · agentRunSnapshots · schedules',
+        ],
+      },
+    ],
+  },
+  {
+    id: 'mcp', tab: 'MCP',
+    claim: 'Serve your tools over MCP — and bring MCP tools in.',
+    bullets: [
+      ['@balsats/mcp-server', 'your tools served over MCP, HTTP or stdio.'],
+      ['@balsats/mcp-client', 'another server\'s tools become ordinary balsa tools.'],
+      ['Tools stay plain objects', 'no registry — a tool\'s name is its key in the container.'],
+    ],
+    files: [
+      {
+        name: 'server.ts',
+        code: `import { createMcpServer } from '@balsats/mcp-server';
+
+const server = createMcpServer({ name: 'weather', version: '0.5.0', tools: { weather } });
+
+export default server.fetch;   // the same tools over MCP — HTTP or stdio`,
+        notes: [
+          [3, 'One container in, both transports out: fetch for HTTP, serveStdio() for stdio.'],
+          [5, 'The bridge is zero-adaptation: existing tool schemas go straight onto the wire.'],
+        ],
+        output: [
+          'tools/list   → weather',
+          'tools/call   weather { city: \'Oslo\' } → { celsius: 6 }',
+        ],
+      },
+      {
+        name: 'client.ts',
+        code: `import { createMcpClient } from '@balsats/mcp-client';
+
+const client = await createMcpClient({ transport: { type: 'http', url } });
+
+const agent = new Agent({ name, model, tools: client.tools });   // remote tools, as plain tools`,
+        notes: [
+          [3, 'The connection happens up front: a failed handshake rejects here, never mid-run.'],
+          [5, 'client.tools is a Record<string, Tool> — spread it into any agent, no adapter layer.'],
+        ],
+        output: [
+          'connected  http://localhost:3000/mcp',
+          '3 tools    echo · weather · forecast',
+          'run        tool-call forecast({ city: \'Bergen\' })',
+        ],
+      },
+    ],
+  },
+];
+
+const OBS = {
+  claim: 'One tracer, distributed by the composition root.',
+  name: 'app.ts',
+  file: 'app.ts',
+  code: `import { createApp } from '@balsats/core';
+import { createTracer, consoleExporter } from '@balsats/core/observability';
+import { createOtlpExporter } from '@balsats/otlp';
+
+const app = createApp({
+  tracer: createTracer({ exporters: [consoleExporter(), createOtlpExporter({ url })] }),
+});
+
+const agent = app.agent({ name, instructions, model });   // one tracer, every agent`,
+  notes: [
+    [6, 'createApp is an optional thin assembly point — a standalone new Agent(...) needs none of it.'],
+    [9, 'Agents built through the app inherit the tracer; an untraced agent allocates no span objects at all.'],
+  ],
+  output: [
+    'agent-run   assistant       1.62s  status=stop',
+    '  agent-step #1             1.51s',
+    '    tool-call weather        38ms',
+    '  memory-recall               4ms',
+    'otlp        → GenAI semconv spans exported',
+  ],
+};
+
+const VARIANTS = {
+  a: { name: 'a · 文件 tabs（复刻 mastra）', short: 'a 文件 tabs', note: '<b>形式 A — 复刻 mastra 的 tabbed code blocks</b>：每张代码卡是一个文件 tab 条（如 server.ts / client.ts），一次显示一个文件 + copy 按钮；长度被 tab 吸收，多能力用文件数表达。' },
+  b: { name: 'b · 单段 + 编号注解', short: 'b 编号注解', note: '<b>形式 B — 单段 + 编号注解</b>：每 section 只有一段代码，注释点用编号圆点在行首标出、卡底逐条解释；读者被领着走一遍代码，注意力落在「为什么轻」。' },
+  c: { name: 'c · import-first（subpath 显影）', short: 'c import-first', note: '<b>形式 C — import-first</b>：卡顶先把 import 路径抽成 chips（@balsats/* 高亮、外部包淡出），卡内 import 行压暗 —— 把「compose only what you use」变成视觉主语。' },
+  d: { name: 'd · 代码 + 运行输出双栏', short: 'd 代码+输出', note: '<b>形式 D — 代码 + 输出双栏</b>：左代码右运行输出，代码的「结果」当场可见（suspended / tool executed / history 12 messages），用运行事实替代形容词。' },
+};
+
+/* ================================================================================================
+   RENDERING (throwaway)
+   ================================================================================================ */
+
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+const HL = /(\/\/[^\n]*)|('(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|\b(import|from|const|let|var|new|await|async|function|return|for|of|if|else|export|default|type|interface|extends|class|this|true|false|null|undefined|void)\b/g;
+
+function hl(code) {
+  return esc(code).replace(HL, (m, com, str, kw) => {
+    if (com) return `<span class="c-com">${com}</span>`;
+    if (str) return /^['"](@balsats|@ai-sdk|zod|openai)/.test(str) ? `<span class="c-mod">${str}</span>` : `<span class="c-str">${str}</span>`;
+    if (kw) return `<span class="c-kw">${kw}</span>`;
+    return m;
+  });
+}
+
+function hlMarked(file, notes) {
+  const marked = new Map((notes ?? []).map((n, i) => [n[0], i + 1]));
+  return file.code.split('\n').map((line, i) => {
+    const num = marked.get(i + 1);
+    const inner = hl(line) || '&nbsp;';
+    return num ? `<span class="marker">${num}</span>${inner}` : inner;
+  }).join('\n');
+}
+
+function importPaths(code) {
+  const out = [];
+  for (const line of code.split('\n')) {
+    if (!line.trim().startsWith('import')) continue;
+    const m = line.match(/'([^']+)'/);
+    if (m) out.push(m[1]);
+  }
+  return out;
+}
+
+function chips(file) {
+  const paths = importPaths(file.code);
+  if (paths.length === 0) return '';
+  return `<div class="chips"><span class="chiplabel">imports — compose only what you use</span>${
+    paths.map((p) => {
+      const core = p.startsWith('@balsats/');
+      const [head, ...rest] = p.split('/');
+      const label = core ? `<b>${head}</b>/${rest.join('/')}` : p;
+      return `<span class="chip ${core ? 'core' : 'ext'}">${label}</span>`;
+    }).join('')
+  }</div>`;
+}
+
+function codeCard(file, sectionId, opts = {}) {
+  const variant = document.body.dataset.variant;
+  const head = (inner) => `<div class="cardhead">${inner}<span class="sp"></span><button class="copy" data-copy="${sectionId}:${file.name}">⧉ copy</button></div>`;
+  let body = '';
+
+  if (variant === 'a') {
+    const tabs = (opts.files ?? [file]).map((f) =>
+      `<button class="filetab" aria-selected="${f.name === file.name}" data-file="${sectionId}:${f.name}">${f.name}</button>`).join('');
+    body = `${head(`<span class="filetabs">${tabs}</span>`)}<pre class="code">${hl(file.code)}</pre>`;
+  } else if (variant === 'b') {
+    const notes = file.notes ?? [];
+    body = `${head(`<span class="mono">${file.name}</span>`)}<pre class="code">${hlMarked(file, notes)}</pre>` +
+      (notes.length ? `<ul class="notes">${notes.map(([n, text], i) => `<li><span class="notenum">${i + 1}</span>${text}</li>`).join('')}</ul>` : '');
+  } else if (variant === 'c') {
+    const importLines = file.code.split('\n').map((l) => l.trim().startsWith('import'));
+    const code = file.code.split('\n').map((l, i) => importLines[i] ? `<span class="dimmed-import">${hl(l)}</span>` : hl(l)).join('\n');
+    body = `${head(`<span class="mono">${file.name}</span>`)}${chips(file)}<pre class="code">${code}</pre>`;
+  } else {
+    body = `${head(`<span class="mono">${file.name}</span>`)}<div class="codesplit"><pre class="code">${hl(file.code)}</pre>` +
+      `<div><div class="outhead">output</div><pre class="out">${(file.output ?? []).map((l, i) => `<span class="${i === 0 ? 'ok' : ''}">${esc(l)}</span>`).join('\n')}</pre></div></div>`;
+  }
+  return `<div class="card compact">${body}</div>`;
+}
+
+function renderHero() {
+  const hero = HERO[document.body.dataset.hero];
+  const mode = document.body.dataset.trace;
+  document.getElementById('herofile').textContent = hero.file;
+  document.getElementById('herocode').innerHTML = hl(hero.code);
+  const t = hero.trace[mode];
+  document.getElementById('herotrace').innerHTML =
+    `<div class="thead">${t.head}</div>` +
+    (t.meta ? `<div class="meta">${t.meta}</div>` : '') +
+    t.rows.map(([lane, left, width, right, kind]) =>
+      `<div class="trow ${kind}"><span class="lane">${lane}</span><span class="track"><span class="fill" style="left:${left}%;width:${width}%"></span></span><span class="ms">${right}</span></div>`).join('') +
+    `<div class="tsum">${t.sum}</div><div class="srcnote">${t.src}</div>`;
+}
+
+let activeTab = SECTIONS[0].id;
+const activeFiles = {};
+
+function renderTabs() {
+  const bar = document.getElementById('tabbar');
+  bar.innerHTML = SECTIONS.map((s) =>
+    `<button class="tab" role="tab" aria-selected="${s.id === activeTab}" data-tab="${s.id}">${s.tab}</button>`).join('');
+  const panels = document.getElementById('panels');
+  panels.innerHTML = SECTIONS.map((s) => {
+    const file = s.files.find((f) => f.name === activeFiles[s.id]) ?? s.files[0];
+    return `<div class="panel ${s.id === activeTab ? 'on' : ''}" id="panel-${s.id}">
+      <div class="variantnote">${VARIANTS[document.body.dataset.variant].note}</div>
+      <h3 class="claim">${s.claim}</h3>
+      <ul class="bullets">${s.bullets.map(([b, t]) => `<li><b>${b}</b> — ${t}</li>`).join('')}</ul>
+      ${codeCard(file, s.id, { files: s.files })}
+    </div>`;
+  }).join('');
+}
+
+function renderObs() {
+  document.getElementById('obscard').innerHTML =
+    `<div class="variantnote">${VARIANTS[document.body.dataset.variant].note}</div>` +
+    `<h3 class="claim" style="font-size:20px">${OBS.claim}</h3>` +
+    codeCard(OBS, 'obs');
+}
+
+function render() {
+  document.getElementById('switcher').querySelector('.vname')?.remove?.();
+  document.querySelectorAll('#grp-variant button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === document.body.dataset.variant)));
+  document.querySelectorAll('#grp-hero button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.h === document.body.dataset.hero)));
+  document.querySelectorAll('#grp-trace button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.t === document.body.dataset.trace)));
+  renderHero();
+  renderTabs();
+  renderObs();
+  const name = document.createElement('span');
+  name.className = 'vname';
+  name.textContent = `${VARIANTS[document.body.dataset.variant].name}  ·  ${HERO[document.body.dataset.hero].short}`;
+  document.getElementById('switcher').prepend(name);
+  wireCopy();
+}
+
+function wireCopy() {
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.onclick = () => {
+      const [sectionId, fileName] = btn.dataset.copy.split(':');
+      const src = sectionId === 'obs' ? [OBS] : SECTIONS.find((s) => s.id === sectionId).files;
+      const file = src.find((f) => f.name === fileName) ?? src[0];
+      copy(file.code, btn);
+    };
+  });
+}
+
+function copy(text, btn) {
+  const done = () => { const t = btn.textContent; btn.textContent = '✓ copied'; setTimeout(() => { btn.textContent = t; }, 1200); };
+  if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done).catch(() => fallback());
+  else fallback();
+  function fallback() {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch { /* prototype: ignore */ }
+    ta.remove(); done();
+  }
+}
+
+/* ---- switcher wiring ---- */
+const parts = [
+  ['grp-variant', 'v', 'variant', Object.entries(VARIANTS).map(([k, v]) => [k, v.short])],
+  ['grp-hero', 'h', 'hero', Object.entries(HERO).map(([k, v]) => [k, v.short.replace(/^h\d · /, '')])],
+  ['grp-trace', 't', 'trace', [['mock', 'static mock'], ['real', 'real run']]],
+];
+for (const [group, dataKey, attr, items] of parts) {
+  const g = document.getElementById(group);
+  g.innerHTML += items.map(([k, label]) => `<button data-${dataKey}="${k}" title="${label}">${label}</button>`).join('');
+}
+document.getElementById('switcher').addEventListener('click', (e) => {
+  const b = e.target.closest('button');
+  if (!b || !b.dataset) return;
+  if (b.dataset.v) set('variant', b.dataset.v);
+  if (b.dataset.h) set('hero', b.dataset.h);
+  if (b.dataset.t) set('trace', b.dataset.t);
+  if (b.dataset.action === 'theme') set('theme', document.body.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+function set(key, value) {
+  document.body.dataset[key] = value;
+  const p = new URLSearchParams(location.search);
+  p.set(key, value);
+  history.replaceState(null, '', `${location.pathname}?${p.toString()}`);
+  render();
+}
+
+/* tab + file-tab clicks */
+document.addEventListener('click', (e) => {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { activeTab = tab.dataset.tab; renderTabs(); wireCopy(); return; }
+  const ftab = e.target.closest('[data-file]');
+  if (ftab) { const [sid, name] = ftab.dataset.file.split(':'); activeFiles[sid] = name; renderTabs(); wireCopy(); }
+});
+
+/* hero CTA copies the hero snippet */
+document.getElementById('copyquick').onclick = () => copy(HERO[document.body.dataset.hero].code, document.getElementById('copyquick'));
+
+/* keyboard: ←/→ cycle forms */
+document.addEventListener('keydown', (e) => {
+  if (e.target.matches('input, textarea, [contenteditable]')) return;
+  const keys = Object.keys(VARIANTS);
+  const i = keys.indexOf(document.body.dataset.variant);
+  if (e.key === 'ArrowRight') set('variant', keys[(i + 1) % keys.length]);
+  if (e.key === 'ArrowLeft') set('variant', keys[(i - 1 + keys.length) % keys.length]);
+});
+
+/* URL params on load */
+const params = new URLSearchParams(location.search);
+for (const key of ['variant', 'hero', 'trace', 'theme']) {
+  const v = params.get(key);
+  if (v) document.body.dataset[key] = v;
+}
+render();
+</script>
+</body>
+</html>
