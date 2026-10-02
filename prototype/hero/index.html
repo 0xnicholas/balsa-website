@@ -1,0 +1,379 @@
+<!doctype html>
+<!-- PROTOTYPE — throwaway, never ships. balsa-website #4: hero headline/sub copy × right-side visual form.
+     Three structurally different hero variants on the decided A tokens (balsa-docs §2.2 继承暖纸),
+     switchable via ?variant=a|b|c. Headline alternates are clickable to mix copy across forms. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>balsa · hero prototype (#4)</title>
+<style>
+  /* ---------- tokens: A 继承暖纸 (inherited verbatim from balsa-docs §2.2 via prototype/brand-direction) ---------- */
+  body[data-theme="light"] {
+    --bg: hsl(36, 40%, 99%);        /* #fdfdfb */
+    --band: hsl(35, 30%, 97%);
+    --fg: hsl(30, 14%, 12%);
+    --muted: hsl(35, 7%, 38%);
+    --line: hsl(35, 15%, 80%);
+    --card: hsl(35, 20%, 93%);
+    --accent: hsl(36, 88%, 33%);    /* #9e630a */
+    --accent-hi: hsl(36, 84%, 23%);
+    --accent-lo: hsl(38, 85%, 90%);
+    --code-bg: hsl(35, 24%, 96%);
+    --code-head: hsl(35, 26%, 92%);
+    --btn-fg-on-accent: hsl(36, 40%, 99%);
+    --ok: hsl(140, 45%, 32%);
+    --shadow: 0 1px 0 hsl(35 15% 80% / .5);
+  }
+  body[data-theme="dark"] {
+    --bg: hsl(30, 12%, 10%);        /* #1d1a16 */
+    --band: hsl(30, 12%, 12%);
+    --fg: hsl(35, 15%, 97%);
+    --muted: hsl(35, 7%, 58%);
+    --line: hsl(35, 8%, 24%);
+    --card: hsl(35, 10%, 16%);
+    --accent: hsl(36, 82%, 55%);
+    --accent-hi: hsl(38, 72%, 78%); /* #efd29f */
+    --accent-lo: hsl(36, 45%, 20%);
+    --code-bg: hsl(30, 12%, 13%);
+    --code-head: hsl(30, 12%, 16%);
+    --btn-fg-on-accent: hsl(30, 12%, 10%);
+    --ok: hsl(140, 40%, 55%);
+    --shadow: 0 1px 0 hsl(35 8% 24% / .6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--fg);
+    transition: background .2s, color .2s;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  a { color: var(--accent); }
+
+  /* ---------- page frame: slim nav + hero + section hint (context only) ---------- */
+  .nav {
+    display: flex; align-items: center; gap: 18px;
+    padding: 14px 32px; border-bottom: 1px solid var(--line);
+  }
+  .wordmark { font-weight: 800; letter-spacing: -.02em; font-size: 19px; }
+  .wordmark i { font-style: normal; color: var(--accent); }
+  .nav .links { display: flex; gap: 16px; font-size: 13.5px; color: var(--muted); }
+  .nav .spacer { flex: 1; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    padding: 9px 16px; border-radius: 8px; border: 1px solid var(--line);
+  }
+  .btn.primary { background: var(--accent); color: var(--btn-fg-on-accent); border-color: transparent; }
+  .btn.ghost { color: var(--muted); }
+  .btn.ghost b { font-weight: 600; font-size: 10.5px; letter-spacing: .06em; color: var(--accent);
+    background: var(--accent-lo); border-radius: 999px; padding: 2px 7px; }
+  .section-hint {
+    border-top: 1px solid var(--line); background: var(--band);
+    padding: 26px 32px 90px; color: var(--muted); font-size: 12px; letter-spacing: .14em;
+    text-transform: uppercase; text-align: center;
+  }
+
+  /* ---------- hero scaffolding (structure differs per variant) ---------- */
+  .hero { padding: 56px 32px 64px; }
+  .hero .kicker {
+    font-size: 11.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 14px;
+  }
+  h1 { font-size: 44px; line-height: 1.08; letter-spacing: -.025em; font-weight: 800; margin: 0 0 16px; }
+  .sub { font-size: 17px; line-height: 1.55; color: var(--muted); margin: 0 0 26px; max-width: 34em; }
+  .ctas { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .hero .fine { margin-top: 18px; font-size: 12.5px; color: var(--muted); }
+
+  /* copy-in-play: clickable headline alternates */
+  .copyrow { margin-top: 26px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .copyrow .lbl { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+  .copychip {
+    all: unset; cursor: pointer; font-size: 12px; color: var(--muted);
+    border: 1px dashed var(--line); border-radius: 999px; padding: 4px 11px;
+  }
+  .copychip:hover { color: var(--fg); }
+  .copychip[aria-pressed="true"] { color: var(--accent-hi); border-color: var(--accent); border-style: solid; background: var(--accent-lo); }
+
+  /* ---------- shared card chrome (editor / terminal / manifest) ---------- */
+  .card {
+    background: var(--code-bg); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow); overflow: hidden;
+  }
+  .card .bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--code-head); border-bottom: 1px solid var(--line);
+    padding: 9px 14px; font-size: 12px; color: var(--muted);
+  }
+  .dots { display: inline-flex; gap: 5px; margin-right: 6px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+  .card pre { margin: 0; padding: 16px 18px; font-size: 12.5px; line-height: 1.62; overflow: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .badge {
+    font-size: 10.5px; font-weight: 700; letter-spacing: .05em;
+    color: var(--accent-hi); background: var(--accent-lo); border: 1px solid var(--accent);
+    border-radius: 999px; padding: 2.5px 9px;
+  }
+  .c-kw { color: var(--accent); font-weight: 600; }
+  .c-str { color: var(--ok); }
+  .c-mod { color: var(--accent-hi); }
+  .c-com { color: var(--muted); opacity: .85; }
+  .note {
+    font-size: 10.5px; color: var(--muted); display: inline-block;
+    border-top: 1px solid var(--line); padding-top: 2px; margin-top: 6px;
+  }
+
+  /* ---------- variant layout: A = split text → editor ---------- */
+  #v-a .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; max-width: 1180px; margin: 0 auto; }
+
+  /* ---------- variant layout: B = stacked, centered headline over terminal ---------- */
+  #v-b .hero { max-width: 900px; margin: 0 auto; text-align: center; }
+  #v-b h1 { font-size: 46px; }
+  #v-b .sub { margin-left: auto; margin-right: auto; }
+  #v-b .ctas { justify-content: center; }
+  #v-b .copyrow { justify-content: center; }
+  #v-b .card { margin-top: 42px; text-align: left; }
+  #v-b pre .p { color: var(--accent); font-weight: 700; }
+  #v-b pre .dim { color: var(--muted); }
+
+  /* ---------- variant layout: C = mirrored, manifest dominates left ---------- */
+  #v-c .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 52px; align-items: center; max-width: 1180px; margin: 0 auto; }
+  .manifest { padding: 18px 20px 20px; }
+  .manifest .pkg { font-size: 13.5px; font-weight: 700; margin-bottom: 12px; }
+  .exports { display: flex; flex-wrap: wrap; gap: 9px; }
+  .ex {
+    font-size: 12.5px; padding: 6px 12px; border-radius: 8px;
+    border: 1px solid var(--line); background: var(--card);
+  }
+  .ex.in { border-color: var(--accent); color: var(--accent-hi); background: var(--accent-lo); }
+  .ex .dot { font-weight: 800; margin-right: 6px; }
+  .ex.in .dot { color: var(--accent); }
+  .ex.out { opacity: .55; }
+  .manifest .ledger { margin-top: 16px; font-size: 12px; color: var(--muted); line-height: 1.7; }
+  .manifest .ledger b { color: var(--fg); }
+
+  /* ---------- floating switcher (prototype chrome — never ships) ---------- */
+  #switcher { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 99;
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; color: #111; border: 1px solid #ddd; border-radius: 999px;
+    padding: 6px 12px; box-shadow: 0 6px 24px rgba(0,0,0,.18); font-family: system-ui, sans-serif; }
+  #switcher button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 15px; line-height: 1; }
+  #switcher button:hover { background: #eee; }
+  #switcher .tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; background: #d92d20; color: #fff;
+    border-radius: 999px; padding: 2.5px 7px; }
+  #switcher .name { font-size: 13px; font-weight: 600; min-width: 190px; text-align: center; }
+  #switcher .theme { font-size: 11px; color: #666; cursor: pointer; all: unset; padding: 4px 8px; border-radius: 999px; }
+  #switcher .theme:hover { background: #eee; }
+</style>
+</head>
+<body data-variant="a" data-theme="light">
+
+<!-- page frame (shared, context only — structure under judgment is the hero) -->
+<div class="nav">
+  <span class="wordmark">balsa<i>.</i></span>
+  <span class="links"><span>Agents</span><span>Workflows</span><span>Harness</span><span>Memory</span><span>MCP</span></span>
+  <span class="spacer"></span>
+  <a class="btn primary" href="#">GitHub</a>
+</div>
+
+<!-- ============ variant A · 代码卡（product = a small surface）============ -->
+<section class="v" id="v-a">
+  <div class="hero">
+    <div>
+      <div class="kicker">TypeScript · MIT</div>
+      <h1 data-h>Compose only what you use.</h1>
+      <p class="sub" data-s>Every Balsa subsystem ships behind its own subpath export — <b>zero runtime
+        dependencies</b>. What you don't import doesn't ship.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#">★ GitHub</a>
+        <a class="btn ghost" href="#">Docs <b>coming soon</b></a>
+      </div>
+      <div class="copyrow" data-copy>
+        <span class="lbl">headline alternates</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="bar"><span class="dots"><i></i><i></i><i></i></span>weather.ts</div>
+      <pre><span class="c-kw">import</span> { openai } <span class="c-kw">from</span> <span class="c-str">'@ai-sdk/openai'</span>;
+<span class="c-kw">import</span> { Agent } <span class="c-kw">from</span> <span class="c-mod">'@balsa/core/agent'</span>;   <span class="c-com">// one import per subsystem</span>
+<span class="c-kw">import</span> { createTool } <span class="c-kw">from</span> <span class="c-mod">'@balsa/core/tools'</span>;
+<span class="c-kw">import</span> { z } <span class="c-kw">from</span> <span class="c-str">'zod'</span>;
+
+<span class="c-kw">const</span> weather = createTool({
+  description: <span class="c-str">'Looks up the current weather for a city.'</span>,
+  inputSchema: z.object({ city: z.string() }),
+  execute: ({ city }) => ({ city, celsius: <span class="c-mod">18</span> }),
+}); <span class="c-com">// a tool is four fields</span>
+
+<span class="c-kw">const</span> agent = <span class="c-kw">new</span> Agent({
+  name: <span class="c-str">'assistant'</span>,
+  instructions: <span class="c-str">'You are concise.'</span>,
+  model: openai.chat(<span class="c-str">'gpt-4o-mini'</span>),
+  tools: { weather },
+});
+
+<span class="c-kw">for await</span> (<span class="c-kw">const</span> chunk <span class="c-kw">of</span> agent.stream(<span class="c-str">'Weather in Paris?'</span>)) {
+  <span class="c-kw">if</span> (chunk.type === <span class="c-str">'text-delta'</span>) process.stdout.write(chunk.textDelta);
+}</pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ variant B · 终端（run anywhere, embed in your app）============ -->
+<section class="v" id="v-b" style="display:none">
+  <div class="hero">
+    <div>
+      <div class="kicker">TypeScript · MIT</div>
+      <h1 data-h>Agents without the runtime baggage.</h1>
+      <p class="sub" data-s>No database. No queue. No resident process. The ultralight TypeScript agent
+        framework that embeds in your application.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#">★ GitHub</a>
+        <a class="btn ghost" href="#">Docs <b>coming soon</b></a>
+      </div>
+      <div class="copyrow" data-copy>
+        <span class="lbl">headline alternates</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="bar"><span class="dots"><i></i><i></i><i></i></span>sh — your-app <span class="badge">0.5.0 not yet on npm</span></div>
+      <pre><span class="p">$</span> npm install @balsa/core
+<span class="dim">+ @balsa/core</span>
+<span class="dim">runtime dependencies: 0</span>
+
+<span class="p">$</span> node weather.ts
+It's 18°C in Paris. ☀︎
+
+<span class="p">$</span> <span style="opacity:.35">▍</span></pre>
+    </div>
+  </div>
+</section>
+
+<!-- ============ variant C · 清单卡（what you don't import doesn't ship）============ -->
+<section class="v" id="v-c" style="display:none">
+  <div class="hero">
+    <div class="card manifest">
+      <div class="bar"><span class="dots"><i></i><i></i><i></i></span>package manifest — <span class="mono">@balsa/core</span></div>
+      <div class="manifest">
+        <div class="pkg">subpath exports</div>
+        <div class="exports">
+          <span class="ex in"><span class="dot">●</span>agent</span>
+          <span class="ex in"><span class="dot">●</span>tools</span>
+          <span class="ex out"><span class="dot">○</span>memory</span>
+          <span class="ex out"><span class="dot">○</span>workflows</span>
+          <span class="ex out"><span class="dot">○</span>signals</span>
+          <span class="ex out"><span class="dot">○</span>schedules</span>
+          <span class="ex out"><span class="dot">○</span>processors</span>
+        </div>
+        <div class="ledger">
+          <span class="mono">runtime dependencies: <b>0</b></span><br>
+          ghosted = not imported — costs nothing, doesn't ship<br>
+          enforced by a CI byte budget
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="kicker">TypeScript · MIT</div>
+      <h1 data-h>Ultralight TypeScript agent framework.</h1>
+      <p class="sub" data-s>Compose only what you use — run anywhere, no runtime baggage. Agents, memory,
+        workflows, and a harness of durable agents, signals, and schedules.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#">★ GitHub</a>
+        <a class="btn ghost" href="#">Docs <b>coming soon</b></a>
+      </div>
+      <div class="copyrow" data-copy>
+        <span class="lbl">headline alternates</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-hint">▾ next: feature tabs — agents / workflows / harness / memory / mcp ▾</div>
+
+<!-- ============ floating prototype switcher (never ships) ============ -->
+<div id="switcher">
+  <span class="tag">THROWAWAY</span>
+  <button id="prev" aria-label="previous variant">←</button>
+  <span class="name" id="vname"></span>
+  <button id="next" aria-label="next variant">→</button>
+  <button class="theme" data-action="theme">◐ theme</button>
+</div>
+
+<script>
+  // throwaway wiring: variant cycling + theme + headline-alternate swapping
+  const VARIANTS = [
+    { key: 'a', name: 'A · 代码卡 (small surface)', note: 'split: text → editor card' },
+    { key: 'b', name: 'B · 终端 (embed + run)',     note: 'stacked: centered → terminal' },
+    { key: 'c', name: 'C · 清单卡 (import map)',    note: 'mirrored: manifest → text' },
+  ];
+
+  // headline / sub pairs (README-grounded; absolute facts only — no KB/test numbers, no competitors)
+  const COPY = [
+    { id: 'H1', h: 'Ultralight TypeScript agent framework.',
+      s: 'Compose only what you use — run anywhere, no runtime baggage. Zero runtime dependencies, every subsystem a subpath export.' },
+    { id: 'H2', h: 'Compose only what you use.',
+      s: 'Every Balsa subsystem ships behind its own subpath export — zero runtime dependencies. What you don\u2019t import doesn\u2019t ship.' },
+    { id: 'H3', h: 'Agents without the runtime baggage.',
+      s: 'No database. No queue. No resident process. The ultralight TypeScript agent framework that embeds in your application.' },
+    { id: 'H4', h: 'An agent framework that behaves like a library.',
+      s: 'Model instances straight from the AI SDK ecosystem, a tool is four fields, one cross-cutting extension point. Balsa composes into your app.' },
+  ];
+  const DEFAULT_COPY = { a: 'H2', b: 'H3', c: 'H1' };
+  const chosen = { ...DEFAULT_COPY };
+
+  const body = document.body;
+  let idx = 0;
+  let theme = 'light';
+
+  function wireCopyChips() {
+    document.querySelectorAll('.v').forEach(v => {
+      const row = v.querySelector('[data-copy]');
+      row.querySelectorAll('.copychip').forEach(c => c.remove());
+      COPY.forEach(cp => {
+        const chip = document.createElement('button');
+        chip.className = 'copychip';
+        chip.textContent = cp.id + ' · ' + cp.h;
+        chip.setAttribute('aria-pressed', String(cp.id === chosen[v.id.slice(2)]));
+        chip.onclick = () => { chosen[v.id.slice(2)] = cp.id; applyCopy(v); wireCopyChips(); };
+        row.appendChild(chip);
+      });
+    });
+  }
+  function applyCopy(v) {
+    const cp = COPY.find(c => c.id === chosen[v.id.slice(2)]) || COPY[0];
+    v.querySelector('[data-h]').textContent = cp.h;
+    v.querySelector('[data-s]').innerHTML = cp.s;
+  }
+
+  function apply() {
+    const v = VARIANTS[idx];
+    body.dataset.variant = v.key;
+    body.dataset.theme = theme;
+    document.querySelectorAll('.v').forEach(el => { el.style.display = 'none'; });
+    document.getElementById('v-' + v.key).style.display = '';
+    document.getElementById('vname').textContent = v.name;
+    try { history.replaceState(null, '', '?variant=' + v.key); } catch (e) { /* file:// */ }
+  }
+
+  document.getElementById('prev').onclick = () => { idx = (idx + VARIANTS.length - 1) % VARIANTS.length; apply(); };
+  document.getElementById('next').onclick = () => { idx = (idx + 1) % VARIANTS.length; apply(); };
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.key === 'ArrowLeft') document.getElementById('prev').click();
+    if (e.key === 'ArrowRight') document.getElementById('next').click();
+  });
+  document.querySelector('[data-action="theme"]').onclick = () => {
+    theme = theme === 'dark' ? 'light' : 'dark'; apply();
+  };
+
+  const q = new URLSearchParams(location.search).get('variant');
+  if (VARIANTS.some(v => v.key === q)) idx = VARIANTS.findIndex(v => v.key === q);
+  document.querySelectorAll('.v').forEach(applyCopy);
+  wireCopyChips();
+  apply();
+</script>
+</body>
+</html>
