@@ -11,7 +11,7 @@
  * content collections that render them, so the page and its gate cannot agree by construction.
  */
 
-import { attributeValue, codeBlocksOf, elementOf, hasAttribute, textOf } from './html.ts';
+import { attributeValue, codeBlocksOf, elementOf, hasAttribute, missingCodeSurface, occurrences, textOf, times } from './html.ts';
 
 export type FeatureBullet = { lead: string; text: string };
 export type FeatureFile = { file: string; code: string };
@@ -227,15 +227,6 @@ const forbiddenTerms: readonly { pattern: RegExp; reason: string }[] = [
 const panelPattern = /<div\b[^>]*\bdata-feature-panel\b[^>]*>/gi;
 const tabPattern = /<button\b[^>]*\bdata-feature-tab\b[^>]*>[\s\S]*?<\/button>/gi;
 
-function occurrences(haystack: string, needle: string): number {
-	return haystack.split(needle).length - 1;
-}
-
-/** `3 times`, `1 time` — the counts the gate prints read as sentences. */
-function times(count: number): string {
-	return `${count} time${count === 1 ? '' : 's'}`;
-}
-
 /** Each feature panel's opening tag and the markup up to the next panel. */
 function featurePanels(section: string): { tag: string; body: string }[] {
 	const openings = [...section.matchAll(panelPattern)];
@@ -374,10 +365,10 @@ export function featureIssues(page: { path: string; html: string }): string[] {
 		});
 
 		for (const pre of panel.body.matchAll(/<pre\b[^>]*>/gi)) {
-			const className = attributeValue(pre[0], 'class') ?? '';
-			if (!className.includes('astro-code')) {
+			const missing = missingCodeSurface(pre[0]);
+			if (missing.includes('astro-code')) {
 				issues.push(`${page.path}: a \`${feature.tab}\` code block is not the \`astro-code\` surface (SPEC §8.5)`);
-			} else if (!className.includes('github-light') || !className.includes('github-dark')) {
+			} else if (missing.length > 0) {
 				issues.push(`${page.path}: a \`${feature.tab}\` code block is missing its Shiki theme pair (SPEC §8.5)`);
 			}
 		}

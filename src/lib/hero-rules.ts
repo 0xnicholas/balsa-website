@@ -5,7 +5,7 @@
  * its gate cannot agree by construction.
  */
 
-import { attributeValue, codeOf, elementOf, linksOf, textOf } from './html.ts';
+import { attributeValue, codeOf, elementOf, linksOf, missingCodeSurface, textOf } from './html.ts';
 import { hslToHex } from './brand-tokens.ts';
 import { LINKS } from './links.ts';
 
@@ -157,13 +157,10 @@ export function heroCodeIssues(page: HeroPage): string[] {
 	if (pre === undefined) {
 		issues.push(`${page.path}: the hero code pane has no code block (SPEC §3.1)`);
 	} else {
-		const className = attributeValue(pre, 'class') ?? '';
-		for (const expected of ['astro-code', 'github-light', 'github-dark']) {
-			if (!className.includes(expected)) {
-				issues.push(`${page.path}: the hero code block is missing \`${expected}\` (SPEC §8.5)`);
-			}
+		for (const expected of missingCodeSurface(pre)) {
+			issues.push(`${page.path}: the hero code block is missing \`${expected}\` (SPEC §8.5)`);
 		}
-		if (/(^|\s)shiki(\s|$)/.test(className)) {
+		if (/(^|\s)shiki(\s|$)/.test(attributeValue(pre, 'class') ?? '')) {
 			issues.push(`${page.path}: the code block carries a \`shiki\` class — the site uses \`astro-code\` (SPEC §8.5)`);
 		}
 		if (/line-numbers/i.test(pre)) {

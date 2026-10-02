@@ -1,8 +1,8 @@
 /**
  * Reading the HTML this build emits — a scanner for the shapes the rule modules need, not a
  * general parser: a `>` inside an attribute value would end a tag early, and nested elements
- * of the same kind are not tracked. Shared by the origin, telemetry, shell, hero and feature
- * rules.
+ * of the same kind are not tracked. Shared by the origin, telemetry, shell, hero, feature and
+ * band rules.
  */
 
 /** One attribute value from a tag string, or `null` when the tag does not carry it. */
@@ -60,6 +60,16 @@ export function textOf(html: string): string {
 	return decodeEntities(html.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
 
+/** How many non-overlapping times `needle` occurs in `text`. */
+export function occurrences(text: string, needle: string): number {
+	return text.split(needle).length - 1;
+}
+
+/** `1 time` / `3 times` — the counts the gates print read as sentences. */
+export function times(count: number): string {
+	return `${count} time${count === 1 ? '' : 's'}`;
+}
+
 /**
  * The outer HTML of the first `<tag>` element of a fragment, or `null`. With a `marker` (a class
  * name, `id="…"` or data attribute) it returns the first element whose opening tag carries that
@@ -99,4 +109,13 @@ export function codeBlocksOf(html: string): string[] {
 /** The rendered text of the first `<pre>` block in a fragment, verbatim minus its last newline. */
 export function codeOf(html: string): string | null {
 	return codeBlocksOf(html)[0] ?? null;
+}
+
+/** SPEC §8.5: the classes every code block carries — the `astro-code` surface and its theme pair. */
+export const codeSurfaceClasses = ['astro-code', 'github-light', 'github-dark'] as const;
+
+/** The §8.5 code-surface classes a `<pre>` tag is missing, in `codeSurfaceClasses` order. */
+export function missingCodeSurface(tag: string): string[] {
+	const className = attributeValue(tag, 'class') ?? '';
+	return codeSurfaceClasses.filter((expected) => !className.includes(expected));
 }

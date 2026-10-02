@@ -1,20 +1,39 @@
 ---
-// The home page: hero → feature tabs → the shared final CTA today; observability, social proof,
-// use-case cards, resources strip and FAQ land in slices 05–07 (#23–#25). Section order is fixed
-// by SPEC §3 — insert the coming sections in place.
+// The home page: hero → feature tabs → the observability band → the social-proof placeholder →
+// the resources strip → the shared final CTA today; the use-case cards (#25) and the FAQ ×9 (#24)
+// land in later slices. Section order is fixed by SPEC §3 — insert the coming sections in place.
 import { getCollection, getEntry } from 'astro:content';
 import FeatureTabs from '../components/FeatureTabs.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Hero from '../components/Hero.astro';
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+import Observability from '../components/Observability.astro';
+import ResourcesStrip from '../components/ResourcesStrip.astro';
+import SocialProof from '../components/SocialProof.astro';
 
 const hero = await getEntry('hero', 'home');
 const snippet = await getEntry('snippets', 'agent');
+const appSnippet = await getEntry('snippets', 'app');
 const trace = await getEntry('traces', 'hero');
 const finalCta = await getEntry('finalCta', 'default');
+const observability = await getEntry('observability', 'home');
+const socialProof = await getEntry('socialProof', 'default');
+const resources = await getEntry('resources', 'default');
 const features = (await getCollection('features')).sort((a, b) => a.data.order - b.data.order);
-if (!hero || !snippet || !trace || !finalCta || features.length !== 5) {
-	throw new Error('the home page needs its content entries (SPEC §3.1 / §3.2 / §3.8 / §7.2 / §7.5)');
+if (
+	!hero ||
+	!snippet ||
+	!appSnippet ||
+	!trace ||
+	!finalCta ||
+	!observability ||
+	!socialProof ||
+	!resources ||
+	features.length !== 5
+) {
+	throw new Error(
+		'the home page needs its content entries (SPEC §3.1 / §3.2 / §3.3 / §3.4 / §3.6 / §3.8 / §7.2 / §7.4 / §7.5)',
+	);
 }
 ---
 <MarketingLayout
@@ -29,5 +48,15 @@ if (!hero || !snippet || !trace || !finalCta || features.length !== 5) {
 		trace={trace.data}
 	/>
 	<FeatureTabs features={features.map((entry) => ({ id: entry.id, ...entry.data }))} />
+	<Observability
+		kicker={observability.data.kicker}
+		claim={observability.data.claim}
+		lead={observability.data.lead}
+		codeClaim={observability.data.codeClaim}
+		file={appSnippet.data.file}
+		code={appSnippet.data.code}
+	/>
+	<SocialProof kicker={socialProof.data.kicker} line={socialProof.data.line} />
+	<ResourcesStrip kicker={resources.data.kicker} links={resources.data.links} />
 	<FinalCta heading={finalCta.data.heading} sub={finalCta.data.sub} />
 </MarketingLayout>

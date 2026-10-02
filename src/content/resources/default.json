@@ -1,0 +1,17 @@
+{
+	"kicker": "Go deeper",
+	"links": [
+		{
+			"label": "Docs",
+			"key": "docs"
+		},
+		{
+			"label": "Examples",
+			"key": "examples"
+		},
+		{
+			"label": "Architecture",
+			"key": "architecture"
+		}
+	]
+}

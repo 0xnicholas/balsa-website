@@ -15,3 +15,7 @@ export const LINKS = {
 
 /** Every href an external link may carry (SPEC §8.8 ⑤: no retired repo name, one constant). */
 export const allowedExternalLinks: readonly string[] = [...Object.values(LINKS), SITE.origin];
+
+/** The three keys the resources strip draws from (SPEC §3.6); their values are the constants above. */
+export const resourceLinkKeys = ['docs', 'examples', 'architecture'] as const;
+export type ResourceLinkKey = (typeof resourceLinkKeys)[number];
