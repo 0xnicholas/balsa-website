@@ -1,0 +1,7 @@
+{
+	"order": 3,
+	"title": "Platform & developer infra",
+	"claim": "Shared agent primitives your product teams compose.",
+	"route": "/developer-infrastructure/",
+	"mock": "console"
+}

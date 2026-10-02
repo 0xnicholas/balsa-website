@@ -35,7 +35,7 @@ if (home === undefined) {
 
 const css = shippedCss(dist, [home]);
 const scripts = shippedScripts(dist, [home]);
-/** Where the trace green may live: the one component that draws the trace. */
+/** Where the trace green may live: the one declaration file, and the components that draw a trace. */
 const sources = ['src/components', 'src/layouts', 'src/styles'].flatMap((directory) =>
 	filesUnder(path.join(repoRoot, directory))
 		.filter((file) => /\.(?:astro|css|ts)$/.test(file))
@@ -52,7 +52,7 @@ const checks = [
 	[traceIssues(home), `trace: the §7.5 meta line, ${traceRows.length} lanes with their coordinates and tones, the summary`],
 	[finalCtaIssues(home), 'final CTA: the §3.8 copy, the GitHub action and the passive pill'],
 	[shikiIssues(css), "Shiki: the `.astro-code` dark switch reads the block's `--shiki-*` pair"],
-	[trailIssues(css, sources), 'trace green: declared once per theme, trace-only'],
+	[trailIssues(css, sources), 'trace green: declared once, consumed only by the trace-drawing components'],
 	[copyScriptIssues(scripts), 'copy: the shipped script writes the clipboard, shows `✓ copied` and resets'],
 ];
 

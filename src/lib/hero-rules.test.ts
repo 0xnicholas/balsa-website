@@ -21,6 +21,7 @@ import {
 	traceSummary,
 	trailGreen,
 	trailIssues,
+	traceGreenDeclaration,
 } from './hero-rules.ts';
 import { LINKS } from './links.ts';
 
@@ -143,26 +144,37 @@ test('the final CTA is the shared copy, the GitHub action and a passive pill', (
 	assert.match(finalCtaIssues(noHeading)[0]!, /final CTA heading/);
 });
 
-test('the shipped CSS switches the code surface and declares the trace green once', () => {
+test('the shipped CSS switches the code surface; the trace green is declared once and trace-only', () => {
 	const css = `
 		.astro-code { padding: 1rem 1.15rem; font-size: 0.8125rem; }
 		@media (prefers-color-scheme: dark) { .astro-code, .astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; } }
-		.trace { --trace-green: ${trailGreen.light}; }
-		@media (prefers-color-scheme: dark) { .trace { --trace-green: ${trailGreen.dark}; } }
+		:root { --trace-green: ${trailGreen.light}; }
+		@media (prefers-color-scheme: dark) { :root { --trace-green: ${trailGreen.dark}; } }
 	`;
 	assert.deepEqual(shikiIssues(css), []);
-	assert.deepEqual(trailIssues(css, [{ path: 'src/components/TraceWaterfall.astro', text: css }]), []);
+	assert.deepEqual(trailIssues(css, [{ path: traceGreenDeclaration, text: css }]), []);
 
 	assert.match(shikiIssues('@media (prefers-color-scheme: dark) { .other { color: red } }')[0]!, /astro-code/);
 	assert.match(trailIssues('.trace {}', [])[0]!, /missing the light trace green/);
+	// The literal lives in the one declaration file: a component restating it is a spread.
 	assert.match(
 		trailIssues(css, [{ path: 'src/components/Hero.astro', text: '.x { color: hsl(140, 45%, 32%) }' }])[0]!,
 		/trace-only/,
 	);
+	// The use-case cards' trace console draws trace / tool states too: it may read the var…
+	assert.deepEqual(
+		trailIssues(css, [{ path: 'src/components/mocks/MockTraceConsole.astro', text: '.mock-status { color: var(--trace-green) }' }]),
+		[],
+	);
+	// …but a component that merely repaints with it is a spread as well.
+	assert.match(
+		trailIssues(css, [{ path: 'src/components/SocialProof.astro', text: '.x { color: var(--trace-green) }' }])[0]!,
+		/trace green/,
+	);
 	// The minifier may ship the hex form instead of the spec's hsl().
 	const hex = `@media (prefers-color-scheme: dark) { .astro-code { color: var(--shiki-dark) } }
-		.trace { --trace-green: #2d7645; }
-		@media (prefers-color-scheme: dark) { .trace { --trace-green: #5eba7d; } }`;
+		:root { --trace-green: #2d7645; }
+		@media (prefers-color-scheme: dark) { :root { --trace-green: #5eba7d; } }`;
 	assert.deepEqual(trailIssues(hex, []), []);
 });
 

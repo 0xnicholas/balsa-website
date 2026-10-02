@@ -3,7 +3,8 @@
  * section inside them. A section that reads on the page — no surface of its own — may wear
  * `text-white` (headings), `text-gray-2` (body), `text-gray-3` (muted) and `text-text-accent`
  * (links / kickers), and nothing else: every foreground it ships is then one the audit measured.
- * Shared by the home-band and FAQ rules.
+ * Shared by the home-band and FAQ rules; the use-case rules reuse its colour-class readers
+ * (`colourClassesOf` / `colourUtilities`) for the mocks' own allow-list.
  */
 
 import { attributeValue, elementOf } from './html.ts';
@@ -20,7 +21,7 @@ const colourToken =
 	/^(?:text|bg|border|fill|stroke)-(?:white|black|gray-[1-7]|accent(?:-low|-high)?|text-accent|text-invert|bg-accent)$/;
 
 /** The colour-class tokens of a class list, variant prefixes (`hover:`, `aria-selected:`) dropped. */
-function colourUtilities(classes: string): string[] {
+export function colourUtilities(classes: string): string[] {
 	const found: string[] = [];
 	for (const raw of classes.split(/\s+/)) {
 		if (raw === '') continue;
@@ -31,7 +32,7 @@ function colourUtilities(classes: string): string[] {
 }
 
 /** Every colour class the fragment's elements carry, in document order. */
-function colourClassesOf(fragment: string): string[] {
+export function colourClassesOf(fragment: string): string[] {
 	return [...fragment.matchAll(/class\s*=\s*"([^"]*)"/gi)].flatMap((match) => colourUtilities(match[1]!));
 }
 

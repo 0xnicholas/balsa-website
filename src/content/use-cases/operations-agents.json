@@ -1,0 +1,7 @@
+{
+	"order": 2,
+	"title": "Operations agents",
+	"claim": "Agents that handle the busywork around your team — with a human on the risky steps.",
+	"route": "/operations-agents/",
+	"mock": "thread"
+}

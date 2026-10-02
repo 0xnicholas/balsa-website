@@ -1,0 +1,7 @@
+{
+	"order": 1,
+	"title": "In-product agents",
+	"claim": "Add an assistant to the app you already run — no second service to operate.",
+	"route": "/in-product-agents/",
+	"mock": "chat"
+}

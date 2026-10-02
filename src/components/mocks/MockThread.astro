@@ -1,0 +1,22 @@
+---
+// SPEC §3.5 mock ②: a team thread with the approval gate — a message from `@agent`, the approval
+// card (`Refund order A-4471`, `Approve` / `Reject`) and the `suspended` badge. Neutral labels
+// only, no real names; the controls are inert stand-ins, not buttons.
+import MockWindow from './MockWindow.astro';
+---
+<MockWindow>
+	<div class="flex flex-col gap-3 p-4 text-sm">
+		<p class="text-gray-3"><span class="font-mono text-xs text-text-accent">@ops</span> — Customer asked again about order A-4471.</p>
+		<p class="text-gray-2"><span class="font-mono text-xs text-text-accent">@agent</span> — The refund is ready — I've paused before sending it.</p>
+		<div class="rounded-lg border border-gray-5 p-3" data-mock-approval>
+			<div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+				<p class="font-medium text-white">Refund order A-4471</p>
+				<span class="ml-auto rounded-full bg-accent-low px-2 py-0.5 font-mono text-xs text-accent-high" data-mock-badge>suspended</span>
+			</div>
+			<div class="mt-3 flex gap-2">
+				<span class="rounded-md bg-bg-accent px-2.5 py-1 text-xs font-medium text-text-invert" data-mock-action="approve">Approve</span>
+				<span class="rounded-md border border-gray-5 px-2.5 py-1 text-xs font-medium text-gray-2" data-mock-action="reject">Reject</span>
+			</div>
+		</div>
+	</div>
+</MockWindow>

@@ -1,8 +1,8 @@
 ---
 // The trace waterfall (SPEC §7.5): a real run's static capture — the card head meta, one row
 // per span (lane, its 0–100% bar, the right-hand value) and the card foot summary. Accent bars
-// for ordinary spans, the site's trace-green for tool rows; the green is declared here and
-// nowhere else (it does not spread into the brand palette).
+// for ordinary spans, the site's trace-green for tool rows; the green is declared once in
+// `src/styles/trace-ink.css` (it does not spread into the brand palette).
 export type TraceRow = {
 	lane: string;
 	left: number;
@@ -38,17 +38,6 @@ const { meta, rows, summary } = Astro.props;
 </div>
 
 <style>
-	.trace {
-		/* SPEC §7.5 轨迹绿: the site's own auxiliary colour, for tool / nested spans only. */
-		--trace-green: hsl(140, 45%, 32%);
-	}
-
-	@media (prefers-color-scheme: dark) {
-		.trace {
-			--trace-green: hsl(140, 40%, 55%);
-		}
-	}
-
 	[data-tone='accent'] .trace-bar {
 		background-color: var(--sl-color-accent);
 	}

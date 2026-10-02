@@ -9,12 +9,14 @@
  *   - `features`      — the home feature tabs, one entry per tab (SPEC §3.2/§7.3)
  *   - `observability` — the observability band's copy and card claim (SPEC §3.3)
  *   - `socialProof`   — the social-proof placeholder band's copy (SPEC §3.4)
+ *   - `useCaseIntro`  — the use-case cards' section intro (SPEC §3.5)
+ *   - `useCases`      — the three use-case cards, later the use-case pages (SPEC §3.5/§4.3)
  *   - `resources`     — the resources strip's kicker and its three links (SPEC §3.6)
  *   - `faq`           — the global FAQ ×9, shared by the home and use-case pages (SPEC §3.7)
  *   - `snippets`      — code samples by file name (SPEC §7), one JSON per file
  *   - `traces`        — the hero's trace waterfall, a real run's static capture (SPEC §7.5)
  *
- * `useCases` and `keywordPages` land with their slices (#25 and later) in the same shape.
+ * `keywordPages` lands with its slice (later) in the same shape.
  */
 
 import { glob } from 'astro/loaders';
@@ -75,6 +77,29 @@ const socialProof = defineCollection({
 	}),
 });
 
+const useCaseIntro = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/use-case-intro' }),
+	schema: z.object({
+		/** SPEC §3.5 引言【终稿·勿改】: the section's heading and its second line. */
+		heading: z.string(),
+		sub: z.string(),
+	}),
+});
+
+const useCases = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/use-cases' }),
+	schema: z.object({
+		/** The card's place on the home page (SPEC §3.5: in-product → operations → platform). */
+		order: z.number().int(),
+		title: z.string(),
+		claim: z.string(),
+		/** The use-case page the card title — and the whole card — links to (SPEC §2.1). */
+		route: z.string(),
+		/** Which host-interface mock the card carries (SPEC §3.5 brief ①–③). */
+		mock: z.enum(['chat', 'thread', 'console']),
+	}),
+});
+
 const resources = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/resources' }),
 	schema: z.object({
@@ -125,4 +150,16 @@ const traces = defineCollection({
 	}),
 });
 
-export const collections = { hero, finalCta, features, observability, socialProof, resources, faq, snippets, traces };
+export const collections = {
+	hero,
+	finalCta,
+	features,
+	observability,
+	socialProof,
+	useCaseIntro,
+	useCases,
+	resources,
+	faq,
+	snippets,
+	traces,
+};

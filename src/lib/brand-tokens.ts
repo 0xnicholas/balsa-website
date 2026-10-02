@@ -401,8 +401,8 @@ function renderingRoles(theme: Theme, tokens: TokenSet) {
 	};
 }
 
-/** WCAG AA for normal text; §5.5 audits exactly these rendered pairs. */
-const AA = 4.5;
+/** WCAG AA for normal text; §5.5 audits exactly these rendered pairs, and the slice gates reuse it. */
+export const AA = 4.5;
 
 export type AuditRow = {
 	theme: Theme;

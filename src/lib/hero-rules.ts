@@ -278,6 +278,17 @@ export function shikiIssues(css: string): string[] {
 	return issues;
 }
 
+/**
+ * SPEC §7.5 判定③: the trace green is declared once — in `trace-ink.css` — and consumed only by
+ * the components that draw trace / tool states: the hero's `TraceWaterfall` and the use-case
+ * cards' trace-console mock (SPEC §3.5 brief ③).
+ */
+export const traceGreenDeclaration = 'src/styles/trace-ink.css';
+export const traceGreenConsumers = [
+	'src/components/TraceWaterfall.astro',
+	'src/components/mocks/MockTraceConsole.astro',
+] as const;
+
 /** SPEC §7.5: the trace green is declared once and stays trace-only. */
 export function trailIssues(css: string, sources: readonly { path: string; text: string }[]): string[] {
 	const issues: string[] = [];
@@ -293,12 +304,20 @@ export function trailIssues(css: string, sources: readonly { path: string; text:
 		}
 	}
 
+	// The literal lives in one file; a component that restates it is a spread.
 	const needles = greens.flatMap(({ hsl }) => [hsl.toLowerCase(), hslToHex(hsl)]);
 	for (const source of sources) {
-		if (source.path.endsWith('TraceWaterfall.astro')) continue;
+		if (source.path === traceGreenDeclaration) continue;
 		const text = source.text.toLowerCase();
 		if (needles.some((needle) => text.includes(needle))) {
 			issues.push(`${source.path}: the trace green is trace-only — it does not spread (SPEC §7.5)`);
+		}
+	}
+	// So does a component that repaints with it without drawing a trace / tool state.
+	for (const source of sources) {
+		if (source.path === traceGreenDeclaration || (traceGreenConsumers as readonly string[]).includes(source.path)) continue;
+		if (source.text.includes('--trace-green')) {
+			issues.push(`${source.path}: reads the trace green — it stays with the components that draw trace states (SPEC §7.5)`);
 		}
 	}
 	return issues;
