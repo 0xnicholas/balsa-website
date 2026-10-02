@@ -1,0 +1,47 @@
+---
+import tokenCss from '../styles/global.css?raw';
+import { parseLandingTokens, themeColorValues } from '../lib/brand-tokens.ts';
+import { SITE } from '../lib/site.ts';
+import '../styles/global.css';
+
+export interface Props {
+	title: string;
+	description: string;
+}
+
+const { title, description } = Astro.props;
+
+// The `theme-color` pair is each theme's resolved `--sl-color-black` (SPEC §5.3), read out of
+// the token layer at build time — the value is never written here a second time.
+const parsed = parseLandingTokens(tokenCss);
+if (parsed.errors.length > 0) {
+	throw new Error(`src/styles/global.css is not a valid brand token layer:\n${parsed.errors.join('\n')}`);
+}
+const themeColor = themeColorValues(parsed.tokens);
+
+// canonical and og:url are the page's own address on the one origin (SPEC §2.6); `site` in
+// astro.config.mjs comes from the same constant, so the head cannot name a second host.
+const canonical = new URL(Astro.url.pathname, SITE.origin).href;
+---
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<meta property="og:site_name" content="Balsats" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta name="theme-color" media="(prefers-color-scheme: light)" content={themeColor.light} />
+		<meta name="theme-color" media="(prefers-color-scheme: dark)" content={themeColor.dark} />
+		{/* og:image + favicon land with their assets in slice 02 (#20), which owns the site-level
+		    assets; this head already derives the origin-bound tags from SITE.origin. */}
+		<slot name="head" />
+	</head>
+	<body class="bg-black font-sans text-gray-2">
+		<slot />
+	</body>
+</html>
