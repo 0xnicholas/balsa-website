@@ -95,6 +95,12 @@ function lineAt(text: string, index: number): number {
 	return text.slice(0, index).split('\n').length;
 }
 
+/** Every match of one red-line rule in a text, the `g` flag ensured for `matchAll`. */
+export function ruleMatches(rule: CopyRule, text: string): RegExpMatchArray[] {
+	const flags = rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`;
+	return [...text.matchAll(new RegExp(rule.pattern.source, flags))];
+}
+
 /**
  * Every red-line finding in the given files, as `path:line` lines naming the rule and the
  * match. Findings are per rule per line: one install command in a code sample is one finding,
@@ -111,8 +117,7 @@ export function copyIssues(files: readonly BuiltFile[]): string[] {
 			// site face (Tailwind's `MIT License` banner), so they are stripped for that rule.
 			const text = rule.stripComments && /\.(?:css|js)$/.test(file.path) ? withoutBlockComments(file.text) : file.text;
 
-			const flags = rule.pattern.flags.includes('g') ? rule.pattern.flags : `${rule.pattern.flags}g`;
-			for (const match of text.matchAll(new RegExp(rule.pattern.source, flags))) {
+			for (const match of ruleMatches(rule, text)) {
 				const line = lineAt(text, match.index ?? 0);
 				const key = `${file.path}:${line}:${rule.id}`;
 				if (seen.has(key)) continue;

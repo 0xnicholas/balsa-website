@@ -10,10 +10,11 @@
  *   - `observability` — the observability band's copy and card claim (SPEC §3.3)
  *   - `socialProof`   — the social-proof placeholder band's copy (SPEC §3.4)
  *   - `resources`     — the resources strip's kicker and its three links (SPEC §3.6)
+ *   - `faq`           — the global FAQ ×9, shared by the home and use-case pages (SPEC §3.7)
  *   - `snippets`      — code samples by file name (SPEC §7), one JSON per file
  *   - `traces`        — the hero's trace waterfall, a real run's static capture (SPEC §7.5)
  *
- * `faq`, `useCases` and `keywordPages` land with their slices (#24 and later) in the same shape.
+ * `useCases` and `keywordPages` land with their slices (#25 and later) in the same shape.
  */
 
 import { glob } from 'astro/loaders';
@@ -83,6 +84,17 @@ const resources = defineCollection({
 	}),
 });
 
+const faq = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/faq' }),
+	schema: z.object({
+		/** The question's place on the page (SPEC §3.7: nine, in this order). */
+		order: z.number().int(),
+		question: z.string(),
+		/** 1–3 sentences, self-contained, no links (SPEC §3.7). */
+		answer: z.string(),
+	}),
+});
+
 const snippets = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/snippets' }),
 	schema: z.object({
@@ -113,4 +125,4 @@ const traces = defineCollection({
 	}),
 });
 
-export const collections = { hero, finalCta, features, observability, socialProof, resources, snippets, traces };
+export const collections = { hero, finalCta, features, observability, socialProof, resources, faq, snippets, traces };

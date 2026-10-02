@@ -1,0 +1,5 @@
+{
+	"order": 6,
+	"question": "Does Balsats support MCP?",
+	"answer": "Yes. @balsats/mcp-server serves your tools over MCP through HTTP or stdio, and @balsats/mcp-client brings another server's tools in as ordinary Balsats tools — plain objects, no registry. Both ship with the first release."
+}

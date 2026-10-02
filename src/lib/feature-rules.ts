@@ -12,6 +12,7 @@
  */
 
 import { attributeValue, codeBlocksOf, elementOf, hasAttribute, missingCodeSurface, occurrences, textOf, times } from './html.ts';
+import { terminologyHits } from './terminology.ts';
 
 export type FeatureBullet = { lead: string; text: string };
 export type FeatureFile = { file: string; code: string };
@@ -208,22 +209,6 @@ const agent = new Agent({ name, model, tools: client.tools });   // remote tools
 	},
 ];
 
-/**
- * SPEC §3.2: the words the tabs never carry — the as-tool narrative (an advanced model that
- * belongs to docs) and the "Harness module" reading — plus the CONTEXT.md vocabulary the memory
- * panel must keep (thread / resource identity, working memory; no session / short- / long-term
- * memory).
- */
-const forbiddenTerms: readonly { pattern: RegExp; reason: string }[] = [
-	{ pattern: /\bas-tool\b/i, reason: 'the as-tool composition story stays off the tabs (SPEC §3.2)' },
-	{ pattern: /\bsupervisor\b/i, reason: 'multi-agent composition is as-tool, not supervisor (CONTEXT.md)' },
-	{ pattern: /\bsub-?agent\b/i, reason: 'the vocabulary is as-tool composition, not sub-agent (CONTEXT.md)' },
-	{ pattern: /\bthe harness module\b/i, reason: 'Harness is a documentation category name, not a module (SPEC §3.2)' },
-	{ pattern: /\bsessions?\b/i, reason: 'memory is thread / resource identity, never a session (CONTEXT.md)' },
-	{ pattern: /\bshort-term\b/i, reason: 'working memory is resource-scoped — no short-term memory (CONTEXT.md)' },
-	{ pattern: /\blong-term\b/i, reason: 'working memory is resource-scoped — no long-term memory (CONTEXT.md)' },
-];
-
 const panelPattern = /<div\b[^>]*\bdata-feature-panel\b[^>]*>/gi;
 const tabPattern = /<button\b[^>]*\bdata-feature-tab\b[^>]*>[\s\S]*?<\/button>/gi;
 
@@ -375,11 +360,8 @@ export function featureIssues(page: { path: string; html: string }): string[] {
 	});
 
 	const sectionText = textOf(section);
-	for (const { pattern, reason } of forbiddenTerms) {
-		const match = sectionText.match(pattern);
-		if (match !== null) {
-			issues.push(`${page.path}: the feature tabs read \`${match[0]}\` — ${reason}`);
-		}
+	for (const { term, reason } of terminologyHits(sectionText)) {
+		issues.push(`${page.path}: the feature tabs read \`${term}\` — ${reason}`);
 	}
 
 	return issues;

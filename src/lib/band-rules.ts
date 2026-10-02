@@ -10,6 +10,7 @@
  * construction.
  */
 
+import { sectionColourIssues } from './colour-rules.ts';
 import { attributeValue, codeBlocksOf, elementOf, linksOf, missingCodeSurface, occurrences, tagsOf, textOf, times } from './html.ts';
 import { LINKS, type ResourceLinkKey } from './links.ts';
 
@@ -48,9 +49,6 @@ export const resourceLinks: readonly BandResourceLink[] = [
 	{ label: 'Architecture', key: 'architecture' },
 ];
 
-/** SPEC §5.5: the audited foreground roles on the page background — the bands' only text colours. */
-export const auditedBandTextRoles = ['text-white', 'text-gray-2', 'text-gray-3', 'text-text-accent'] as const;
-
 /* ---------------------------------------------------------------- reading the page */
 
 const bands = [
@@ -58,6 +56,9 @@ const bands = [
 	{ marker: 'data-social-proof', label: 'social-proof' },
 	{ marker: 'data-resources', label: 'resources' },
 ] as const;
+
+/** The three bands as §5.5 sections — the colour scan's names include the noun. */
+const bandSections = bands.map(({ marker, label }) => ({ marker, label: `${label} band` }));
 
 /** The markup of a band, or `null` when the page does not carry it. */
 function bandOf(page: BandPage, marker: string): string | null {
@@ -286,50 +287,11 @@ export function resourcesIssues(page: BandPage): string[] {
 
 /**
  * SPEC §5.5: the three bands read on the page background, and their text wears only the roles the
- * AA audit covers there: `text-white` (headings), `text-gray-2` (body), `text-gray-3` (muted),
- * `text-text-accent` (kicker / links). A band that paints its own surface would leave that audit.
+ * AA audit covers there (`src/lib/colour-rules.ts`) — a band that paints its own surface, or a
+ * role the audit never measured, is a finding.
  */
 export function bandColorIssues(page: BandPage): string[] {
-	const issues: string[] = [];
-	for (const { marker, label } of bands) {
-		const section = bandOf(page, marker);
-		if (section === null) continue;
-
-		const opening = section.slice(0, section.indexOf('>') + 1);
-		const surface = colourUtilities(attributeValue(opening, 'class') ?? '').filter((token) => token.startsWith('bg-'));
-		if (surface.length > 0) {
-			issues.push(
-				`${page.path}: the ${label} band paints its own surface with \`${surface[0]}\` — the §5.5 audited pairs are the page-background pairs (SPEC §5.5)`,
-			);
-		}
-
-		for (const match of section.matchAll(/class\s*=\s*"([^"]*)"/gi)) {
-			for (const token of colourUtilities(match[1]!)) {
-				if (!token.startsWith('text-')) continue;
-				if (!(auditedBandTextRoles as readonly string[]).includes(token)) {
-					issues.push(
-						`${page.path}: the ${label} band paints text with \`${token}\` — §5.5 audits text-white / text-gray-2 / text-gray-3 / text-text-accent on the page (SPEC §5.5)`,
-					);
-				}
-			}
-		}
-	}
-	return issues;
-}
-
-/** The token layer's colour families — `text-3xl`, `text-center` and `border-b` are not colours. */
-const colourToken =
-	/^(?:text|bg|border|fill|stroke)-(?:white|black|gray-[1-7]|accent(?:-low|-high)?|text-accent|text-invert|bg-accent)$/;
-
-/** The colour-class tokens of a class list, variant prefixes (`hover:`, `aria-selected:`) dropped. */
-function colourUtilities(classes: string): string[] {
-	const found: string[] = [];
-	for (const raw of classes.split(/\s+/)) {
-		if (raw === '') continue;
-		const token = raw.slice(raw.lastIndexOf(':') + 1);
-		if (colourToken.test(token)) found.push(token);
-	}
-	return found;
+	return sectionColourIssues(page, bandSections);
 }
 
 /**
