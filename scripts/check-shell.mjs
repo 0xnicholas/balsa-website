@@ -12,7 +12,7 @@
  */
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { builtPages, failGate, filesUnder, readText, runChecks, startGate } from './lib/cli.mjs';
+import { builtPages, failGate, readText, runChecks, shippedCss, shippedScripts, startGate } from './lib/cli.mjs';
 import { faviconIssues, llmsIssues, ogImageIssues } from '../src/lib/asset-rules.ts';
 import {
 	footerIssues,
@@ -50,25 +50,8 @@ const binary = (file) => {
 	}
 };
 
-// The shell's styles ship in two shapes: the global token/utility sheet as a `.css` file, and a
-// page's scoped component CSS inlined as a `<style>` block (small enough that Astro inlines it).
-// The behaviour rules read both, so where a rule lives does not decide whether it counts.
-const css = [
-	...filesUnder(dist)
-		.filter((file) => file.endsWith('.css'))
-		.map((file) => readText(path.join(dist, file)) ?? ''),
-	...built.flatMap((page) =>
-		[...page.html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((match) => match[1] ?? ''),
-	),
-].join('\n');
-const scripts = [
-	...filesUnder(dist)
-		.filter((file) => file.endsWith('.js'))
-		.map((file) => readText(path.join(dist, file)) ?? ''),
-	...built.flatMap((page) =>
-		[...page.html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map((match) => match[1] ?? ''),
-	),
-];
+const css = shippedCss(dist, built);
+const scripts = shippedScripts(dist, built);
 
 /** The components that render the shell; their sources carry the animation / subresource rules. */
 const shellComponents = ['src/components/Header.astro', 'src/components/Footer.astro'];

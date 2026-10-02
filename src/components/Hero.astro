@@ -1,0 +1,78 @@
+---
+// The home hero (SPEC §3.1): H1 → sub → CTA row (GitHub · Copy quick start) → the product
+// window below it — window dots + the `agent.ts` file tab + the `trace` badge in the bar, the
+// code on the left, the same run's trace on the right. No kicker, no `coming soon` control of
+// its own (the pill lives in the header, the final CTA and the FAQ), and no session title in
+// the window bar. Narrow screens stack the two panes, each keeping its own horizontal scroll.
+import { Code } from 'astro:components';
+import { LINKS } from '../lib/links.ts';
+import Copy from './icons/Copy.astro';
+import Star from './icons/Star.astro';
+import TraceWaterfall, { type TraceRow } from './TraceWaterfall.astro';
+
+export interface Props {
+	h1: string;
+	sub: string;
+	file: string;
+	code: string;
+	trace: { meta: string; rows: readonly TraceRow[]; summary: string };
+}
+
+const { h1, sub, file, code, trace } = Astro.props;
+---
+<section class="px-6 py-20" data-hero>
+	<div class="mx-auto flex max-w-3xl flex-col items-center text-center">
+		<h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">{h1}</h1>
+		<p class="mt-5 max-w-2xl text-lg leading-relaxed text-gray-2">{sub}</p>
+		<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+			<a href={LINKS.github} class="btn btn-primary"><Star />GitHub</a>
+			<button type="button" class="btn btn-ghost" data-copy-quick-start>
+				<Copy />
+				<span data-copy-label>Copy quick start</span>
+			</button>
+		</div>
+	</div>
+
+	<div class="mx-auto mt-12 max-w-5xl overflow-hidden rounded-xl border border-gray-5 bg-gray-7 dark:bg-gray-6" data-window>
+		<div class="flex items-center gap-3 border-b border-gray-5 px-4 py-2.5" data-window-bar>
+			<span class="flex gap-1.5" aria-hidden="true">
+				<i class="size-2.5 rounded-full bg-gray-5"></i>
+				<i class="size-2.5 rounded-full bg-gray-5"></i>
+				<i class="size-2.5 rounded-full bg-gray-5"></i>
+			</span>
+			<span class="font-mono text-xs text-gray-2" data-file-tab>{file}</span>
+			<span class="ml-auto rounded-full border border-gray-5 px-2.5 py-0.5 font-mono text-xs text-gray-3" data-trace-badge>
+				trace
+			</span>
+		</div>
+		<div class="grid md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+			<div class="overflow-x-auto border-b border-gray-5 p-4 md:border-r md:border-b-0" data-hero-code>
+				<Code code={code} lang="ts" themes={{ light: 'github-light', dark: 'github-dark' }} />
+			</div>
+			<div class="overflow-x-auto p-4">
+				<TraceWaterfall meta={trace.meta} rows={trace.rows} summary={trace.summary} />
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import { wireCopyButton } from '../lib/clipboard.ts';
+
+	const button = document.querySelector<HTMLButtonElement>('[data-copy-quick-start]');
+	const pane = document.querySelector<HTMLElement>('[data-hero-code]');
+	const label = button?.querySelector<HTMLElement>('[data-copy-label]');
+	if (button && pane && label) {
+		const idle = label.textContent ?? '';
+		wireCopyButton(button, () => pane, {
+			onCopied: () => {
+				label.textContent = '✓ copied';
+				button.setAttribute('aria-label', 'Copied');
+			},
+			onReset: () => {
+				label.textContent = idle;
+				button.removeAttribute('aria-label');
+			},
+		});
+	}
+</script>

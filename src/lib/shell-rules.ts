@@ -12,7 +12,16 @@
  */
 
 import { wordmark } from './brand.ts';
-import { attributeValue, attributesOf, tagsOf } from './html.ts';
+import {
+	attributeValue,
+	attributesOf,
+	decodeEntities,
+	elementOf,
+	linksOf,
+	tagsOf,
+	textOf,
+	type MarkupLink,
+} from './html.ts';
 import { LINKS } from './links.ts';
 import { routeOf } from './link-rules.ts';
 
@@ -89,48 +98,6 @@ export const keywordRoutes = [
 /** SPEC §2.2: the three disclosure panels and the buttons that control them. */
 export const disclosureIds = ['use-cases-menu', 'site-menu', 'mobile-use-cases'] as const;
 
-/* ------------------------------------------------------------------ reading the markup */
-
-const entityPatterns: readonly [RegExp, string][] = [
-	[/&(?:amp|#38|#x26);/gi, '&'],
-	[/&(?:lt|#60|#x3c);/gi, '<'],
-	[/&(?:gt|#62|#x3e);/gi, '>'],
-	[/&(?:quot|#34|#x22);/gi, '"'],
-	[/&(?:apos|#39|#x27);/gi, "'"],
-	[/&(?:nbsp|#160|#xa0);/gi, ' '],
-];
-
-/** A decent HTML entity set for the copy this site ships (the five named ones plus nbsp). */
-function decodeEntities(text: string): string {
-	let decoded = text;
-	for (const [pattern, replacement] of entityPatterns) decoded = decoded.replace(pattern, replacement);
-	return decoded;
-}
-
-/** The rendered text of a fragment: tags become spaces, entities decode, whitespace collapses. */
-function textOf(html: string): string {
-	return decodeEntities(html.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
-}
-
-type ShellLink = { href: string; text: string; index: number };
-
-/** Every `<a href>` of a fragment, in document order, with its position for order checks. */
-function linksOf(html: string): ShellLink[] {
-	return [...html.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/gi)].map((match) => {
-		const tag = match[0].slice(0, match[0].indexOf('>') + 1);
-		return {
-			href: attributeValue(tag, 'href') ?? '',
-			text: textOf(match[1]!),
-			index: match.index ?? 0,
-		};
-	});
-}
-
-/** The outer HTML of the first `<tag>` element of a fragment, or `null`. */
-function elementOf(html: string, tag: string): string | null {
-	return html.match(new RegExp(`<${tag}\\b[^>]*>[\\s\\S]*?<\\/${tag}\\s*>`, 'i'))?.[0] ?? null;
-}
-
 /* ------------------------------------------------------------------ header */
 
 /** What the header of every page must carry, per SPEC §2.2. */
@@ -199,7 +166,7 @@ export function headerIssues(page: ShellPage): string[] {
 		navLinks.Docs,
 		navLinks.GitHub,
 		{ index: header.indexOf(comingSoon), text: comingSoon },
-	].filter((entry): entry is ShellLink => entry !== undefined && entry.index !== -1);
+	].filter((entry): entry is MarkupLink => entry !== undefined && entry.index !== -1);
 	if (order.length === 7) {
 		for (let index = 1; index < order.length; index += 1) {
 			if (order[index]!.index < order[index - 1]!.index) {

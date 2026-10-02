@@ -79,6 +79,34 @@ export function builtPages(directory) {
 		.map((file) => ({ path: file, html: readFileSync(path.join(directory, file), 'utf8') }));
 }
 
+/**
+ * The styles the pages ship: every `.css` file plus the `<style>` blocks inlined into the pages
+ * (Astro inlines small scoped styles). The shell and hero gates read this, so where a rule lives
+ * does not decide whether it counts.
+ */
+export function shippedCss(directory, pages) {
+	return [
+		...filesUnder(directory)
+			.filter((file) => file.endsWith('.css'))
+			.map((file) => readFileSync(path.join(directory, file), 'utf8')),
+		...pages.flatMap((page) =>
+			[...page.html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((match) => match[1] ?? ''),
+		),
+	].join('\n');
+}
+
+/** The scripts the pages ship: every `.js` file plus the inline `<script>` blocks. */
+export function shippedScripts(directory, pages) {
+	return [
+		...filesUnder(directory)
+			.filter((file) => file.endsWith('.js'))
+			.map((file) => readFileSync(path.join(directory, file), 'utf8')),
+		...pages.flatMap((page) =>
+			[...page.html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map((match) => match[1] ?? ''),
+		),
+	];
+}
+
 /** Read JSON with a message a human can act on; returns `{ value }` or `{ error }`. */
 export function readJson(file) {
 	let text;

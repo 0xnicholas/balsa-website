@@ -1,14 +1,30 @@
 ---
-// The home page. It carries the shell plus the public tagline until the hero lands in slice
-// 03 (#21); the §2.6 title and description are already the locked values.
-import { publicTagline } from '../lib/brand.ts';
+// The home page: the hero and the shared final CTA today; the feature tabs, observability,
+// social proof, use-case cards, resources strip and FAQ land in slices 04–07 (#22–#25).
+// Section order is fixed by SPEC §3 — insert the coming sections between the two.
+import { getEntry } from 'astro:content';
+import FinalCta from '../components/FinalCta.astro';
+import Hero from '../components/Hero.astro';
 import MarketingLayout from '../layouts/MarketingLayout.astro';
+
+const hero = await getEntry('hero', 'home');
+const snippet = await getEntry('snippets', 'agent');
+const trace = await getEntry('traces', 'hero');
+const finalCta = await getEntry('finalCta', 'default');
+if (!hero || !snippet || !trace || !finalCta) {
+	throw new Error('the home page needs its content entries (SPEC §3.1 / §3.8 / §7.2 / §7.5)');
+}
 ---
 <MarketingLayout
 	title="Balsats — ultralight TypeScript AI agent framework"
 	description="Balsats is an ultralight TypeScript agent framework: compose only what you use, run anywhere, with zero runtime dependencies."
 >
-	<section class="mx-auto max-w-6xl px-6 py-20">
-		<p class="max-w-prose text-lg leading-relaxed">{publicTagline}</p>
-	</section>
+	<Hero
+		h1={hero.data.h1}
+		sub={hero.data.sub}
+		file={snippet.data.file}
+		code={snippet.data.code}
+		trace={trace.data}
+	/>
+	<FinalCta heading={finalCta.data.heading} sub={finalCta.data.sub} />
 </MarketingLayout>
