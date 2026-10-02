@@ -1,8 +1,9 @@
 ---
-// The home page: the hero and the shared final CTA today; the feature tabs, observability,
-// social proof, use-case cards, resources strip and FAQ land in slices 04–07 (#22–#25).
-// Section order is fixed by SPEC §3 — insert the coming sections between the two.
-import { getEntry } from 'astro:content';
+// The home page: hero → feature tabs → the shared final CTA today; observability, social proof,
+// use-case cards, resources strip and FAQ land in slices 05–07 (#23–#25). Section order is fixed
+// by SPEC §3 — insert the coming sections in place.
+import { getCollection, getEntry } from 'astro:content';
+import FeatureTabs from '../components/FeatureTabs.astro';
 import FinalCta from '../components/FinalCta.astro';
 import Hero from '../components/Hero.astro';
 import MarketingLayout from '../layouts/MarketingLayout.astro';
@@ -11,8 +12,9 @@ const hero = await getEntry('hero', 'home');
 const snippet = await getEntry('snippets', 'agent');
 const trace = await getEntry('traces', 'hero');
 const finalCta = await getEntry('finalCta', 'default');
-if (!hero || !snippet || !trace || !finalCta) {
-	throw new Error('the home page needs its content entries (SPEC §3.1 / §3.8 / §7.2 / §7.5)');
+const features = (await getCollection('features')).sort((a, b) => a.data.order - b.data.order);
+if (!hero || !snippet || !trace || !finalCta || features.length !== 5) {
+	throw new Error('the home page needs its content entries (SPEC §3.1 / §3.2 / §3.8 / §7.2 / §7.5)');
 }
 ---
 <MarketingLayout
@@ -26,5 +28,6 @@ if (!hero || !snippet || !trace || !finalCta) {
 		code={snippet.data.code}
 		trace={trace.data}
 	/>
+	<FeatureTabs features={features.map((entry) => ({ id: entry.id, ...entry.data }))} />
 	<FinalCta heading={finalCta.data.heading} sub={finalCta.data.sub} />
 </MarketingLayout>

@@ -6,11 +6,11 @@
  * Collections so far:
  *   - `hero`      — the home hero's H1 and sub (SPEC §3.1 【终稿·勿改】)
  *   - `finalCta`  — the shared final CTA's heading and sub (SPEC §3.8)
+ *   - `features`  — the home feature tabs, one entry per tab (SPEC §3.2/§7.3)
  *   - `snippets`  — code samples by file name (SPEC §7), one JSON per file
  *   - `traces`    — the hero's trace waterfall, a real run's static capture (SPEC §7.5)
  *
- * `faq`, `features`, `useCases` and `keywordPages` land with their slices (#22–#24, #26–#30)
- * in the same shape.
+ * `faq`, `useCases` and `keywordPages` land with their slices (#23 and later) in the same shape.
  */
 
 import { glob } from 'astro/loaders';
@@ -30,6 +30,21 @@ const finalCta = defineCollection({
 	schema: z.object({
 		heading: z.string(),
 		sub: z.string(),
+	}),
+});
+
+const features = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/features' }),
+	schema: z.object({
+		/** The tab order on the home page (SPEC §3.2: Agents → Workflows → Harness → Memory → MCP). */
+		order: z.number().int(),
+		/** The tab label; the entry's id is the panel's anchor (`#agents` …). */
+		tab: z.string(),
+		claim: z.string(),
+		/** SPEC §3.2: a panel carries 3–5 supporting bullets. */
+		bullets: z.array(z.object({ lead: z.string(), text: z.string() })).min(3).max(5),
+		/** The code card's file tabs, in order — one or two files (SPEC §7.1/§7.3). */
+		files: z.array(z.object({ file: z.string(), code: z.string() })).min(1).max(2),
 	}),
 });
 
@@ -63,4 +78,4 @@ const traces = defineCollection({
 	}),
 });
 
-export const collections = { hero, finalCta, snippets, traces };
+export const collections = { hero, finalCta, features, snippets, traces };

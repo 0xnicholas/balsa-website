@@ -1,13 +1,19 @@
 /**
  * Reading the HTML this build emits — a scanner for the shapes the rule modules need, not a
  * general parser: a `>` inside an attribute value would end a tag early, and nested elements
- * of the same kind are not tracked. Shared by the origin, telemetry, shell and hero rules.
+ * of the same kind are not tracked. Shared by the origin, telemetry, shell, hero and feature
+ * rules.
  */
 
 /** One attribute value from a tag string, or `null` when the tag does not carry it. */
 export function attributeValue(tag: string, name: string): string | null {
 	const match = tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, 'i'));
 	return match === null ? null : (match[1] ?? match[2] ?? '');
+}
+
+/** Whether a tag string carries an attribute at all — `hidden` is often a bare boolean. */
+export function hasAttribute(tag: string, name: string): boolean {
+	return new RegExp(`[\\s"']${name}(?=[\\s=>/])`, 'i').test(tag);
 }
 
 /** Every opening tag of one kind, in document order. */
@@ -79,11 +85,18 @@ export function linksOf(html: string): MarkupLink[] {
 	});
 }
 
+/**
+ * The rendered text of every `<pre>` block in a fragment, in document order, verbatim minus
+ * each block's last newline. Tags go with no separator: the code's own spacing is what a copy
+ * button has to reproduce.
+ */
+export function codeBlocksOf(html: string): string[] {
+	return [...html.matchAll(/<pre\b[^>]*>([\s\S]*?)<\/pre>/gi)].map((match) =>
+		decodeEntities(match[1]!.replace(/<[^>]*>/g, '')).replace(/\n$/, ''),
+	);
+}
+
 /** The rendered text of the first `<pre>` block in a fragment, verbatim minus its last newline. */
 export function codeOf(html: string): string | null {
-	const pre = elementOf(html, 'pre');
-	if (pre === null) return null;
-	// Tags go with no separator: the code's own spacing is what a copy button has to reproduce.
-	const inner = pre.replace(/^<pre\b[^>]*>/, '').replace(/<\/pre>$/, '');
-	return decodeEntities(inner.replace(/<[^>]*>/g, '')).replace(/\n$/, '');
+	return codeBlocksOf(html)[0] ?? null;
 }
