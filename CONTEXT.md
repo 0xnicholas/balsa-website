@@ -56,3 +56,11 @@ _Avoid_: 客户故事卡、案例卡(balsa 无客户案例);能力清单(能力�
 **关键词页 (Keyword page)**:
 按搜索词建立的说明页,首发四页(`/ai-agent-framework`、`/ai-agents`、`/ai-workflows`、`/ai-agent-observability`),服务搜索与 LLM 收录;内容只讲 balsa 自身能力。
 _Avoid_: SEO 页(泛指)、行业页
+
+**维护者署名 (Maintainer attribution)**:
+站点公开面上代表 balsa 的个人标识:只到 GitHub handle(`@0xnicholas`),不出现真实姓名与邮箱;footer 的 `©` 行保持项目名义,不随署名改变。
+_Avoid_: 实名署名、作者邮箱、团队页(balsa 无团队)
+
+**许可分工 (License split)**:
+站点与项目的版权口径分工:代码与示例 = Apache-2.0;站点文案与图形 = 版权保留。写在法务页与 `/about`,避免 footer 的 `© balsa · Apache-2.0` 并排被读成「站点内容也是 Apache-2.0」。
+_Avoid_: 全站开源(代码与文案混谈)、内容许可(未定,不表态)
