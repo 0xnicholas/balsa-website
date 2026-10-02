@@ -10,9 +10,11 @@ Three structurally different hero variants on the decided brand direction
 | `a` | 代码卡 | split: text → editor card w/ README quick start, annotated ("one import per subsystem", "a tool is four fields") | H2 `Compose only what you use.` |
 | `b` | 终端 | stacked: centered headline → terminal card (`npm install` → run), amber `0.5.0 not yet on npm` tension badge | H3 `Agents without the runtime baggage.` |
 | `c` | 清单卡 | mirrored: import-map manifest (subpath-export chips, ghosted = not imported) → text | H1 `Ultralight TypeScript agent framework.` |
+| `d` | 复刻 Mastra | centered stack + wide product window: code pane + trace-waterfall pane (`input → tool-call → tool-result → text-delta → finish`) | H5 `Build ultralight AI agents.` |
 
-All three carry clickable **headline alternates** (H1–H4, README-grounded) so copy can be mixed
-across forms — click a chip to swap headline + sub live, per variant.
+All variants carry clickable **headline alternates** (H1–H6, README-grounded) so copy can be mixed
+across forms — click a chip to swap headline + sub live, per variant. H6 (`Build AI agents.`) is a
+literal mastra-sentence replica, flagged 慎用.
 
 ## Run
 

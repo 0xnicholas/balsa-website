@@ -13,7 +13,7 @@ mkdirSync('.screenshots', { recursive: true });
 
 const bg = async () => { await page.waitForTimeout(250); return page.evaluate(() => getComputedStyle(document.body).backgroundColor); };
 
-for (const v of ['a', 'b', 'c']) {
+for (const v of ['a', 'b', 'c', 'd']) {
   await page.goto(url + '?variant=' + v);
   const h0 = await page.locator(`#v-${v} [data-h]`).innerText();
   console.log(`variant ${v}: headline="${h0.slice(0, 40)}…"`);

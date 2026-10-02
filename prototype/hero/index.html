@@ -154,6 +154,24 @@
   .manifest .ledger { margin-top: 16px; font-size: 12px; color: var(--muted); line-height: 1.7; }
   .manifest .ledger b { color: var(--fg); }
 
+  /* ---------- variant layout: D = mastra replica — centered stack + wide product window ---------- */
+  #v-d .hero { max-width: 1120px; margin: 0 auto; text-align: center; }
+  #v-d .sub { margin-left: auto; margin-right: auto; }
+  #v-d .ctas { justify-content: center; }
+  #v-d .copyrow { justify-content: center; }
+  #v-d .window { margin-top: 46px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; }
+  #v-d .window .pane { min-width: 0; }
+  #v-d .window .pane + .pane { border-left: 1px solid var(--line); }
+  .trace { padding: 14px 16px 16px; font-size: 11.5px; }
+  .trace .thead { font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .trow { display: grid; grid-template-columns: 86px 1fr 44px; gap: 10px; align-items: center; margin-bottom: 7px; }
+  .trow .lane { color: var(--muted); font-size: 10.5px; }
+  .trow .track { position: relative; height: 14px; background: var(--code-head); border-radius: 4px; }
+  .trow .fill { position: absolute; top: 2px; bottom: 2px; border-radius: 3px; background: var(--accent); opacity: .85; }
+  .trow.tool .fill { background: var(--ok); }
+  .trow .ms { color: var(--muted); font-size: 10px; text-align: right; }
+  .trace .tsum { margin-top: 10px; color: var(--muted); font-size: 10.5px; }
+
   /* ---------- floating switcher (prototype chrome — never ships) ---------- */
   #switcher { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 99;
     display: flex; align-items: center; gap: 10px;
@@ -290,6 +308,53 @@ It's 18°C in Paris. ☀︎
   </div>
 </section>
 
+<!-- ============ variant D · 复刻 Mastra (centered stack + product window: code + trace waterfall) ============ -->
+<section class="v" id="v-d" style="display:none">
+  <div class="hero">
+    <div>
+      <div class="kicker">TypeScript · MIT</div>
+      <h1 data-h>Build ultralight AI agents.</h1>
+      <p class="sub" data-s>Build, compose, and ship agents with zero runtime dependencies — Balsa,
+        the ultralight TypeScript agent framework.</p>
+      <div class="ctas">
+        <a class="btn primary" href="#">★ GitHub</a>
+        <a class="btn ghost" href="#">Docs <b>coming soon</b></a>
+      </div>
+      <div class="copyrow" data-copy>
+        <span class="lbl">headline alternates</span>
+      </div>
+    </div>
+    <div class="card window">
+      <div class="bar"><span class="dots"><i></i><i></i><i></i></span>assistant — weather.ts <span style="flex:1"></span>
+        <span class="badge">trace</span></div>
+      <div class="pane">
+        <pre><span class="c-kw">import</span> { Agent } <span class="c-kw">from</span> <span class="c-mod">'@balsa/core/agent'</span>;
+<span class="c-kw">import</span> { createTool } <span class="c-kw">from</span> <span class="c-mod">'@balsa/core/tools'</span>;
+
+<span class="c-kw">const</span> agent = <span class="c-kw">new</span> Agent({
+  name: <span class="c-str">'assistant'</span>,
+  instructions: <span class="c-str">'You are concise.'</span>,
+  model: openai.chat(<span class="c-str">'gpt-4o-mini'</span>),
+  tools: { weather },
+});
+
+<span class="c-kw">const</span> run = agent.stream(
+  <span class="c-str">'Weather in Paris?'</span>,
+);</pre>
+      </div>
+      <div class="pane trace">
+        <div class="thead">run — waterfall</div>
+        <div class="trow"><span class="lane">input</span><span class="track"><span class="fill" style="left:0;width:8%"></span></span><span class="ms">3ms</span></div>
+        <div class="trow tool"><span class="lane">tool-call</span><span class="track"><span class="fill" style="left:8%;width:22%"></span></span><span class="ms">weather</span></div>
+        <div class="trow tool"><span class="lane">tool-result</span><span class="track"><span class="fill" style="left:30%;width:12%"></span></span><span class="ms">18°C</span></div>
+        <div class="trow"><span class="lane">text-delta</span><span class="track"><span class="fill" style="left:42%;width:48%"></span></span><span class="ms">stream</span></div>
+        <div class="trow"><span class="lane">finish</span><span class="track"><span class="fill" style="left:90%;width:8%"></span></span><span class="ms">stop</span></div>
+        <div class="tsum">for await (chunk of run) — every step on one object</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <div class="section-hint">▾ next: feature tabs — agents / workflows / harness / memory / mcp ▾</div>
 
 <!-- ============ floating prototype switcher (never ships) ============ -->
@@ -307,6 +372,7 @@ It's 18°C in Paris. ☀︎
     { key: 'a', name: 'A · 代码卡 (small surface)', note: 'split: text → editor card' },
     { key: 'b', name: 'B · 终端 (embed + run)',     note: 'stacked: centered → terminal' },
     { key: 'c', name: 'C · 清单卡 (import map)',    note: 'mirrored: manifest → text' },
+    { key: 'd', name: 'D · 复刻 Mastra (product window)', note: 'centered + code/trace waterfall' },
   ];
 
   // headline / sub pairs (README-grounded; absolute facts only — no KB/test numbers, no competitors)
@@ -319,8 +385,12 @@ It's 18°C in Paris. ☀︎
       s: 'No database. No queue. No resident process. The ultralight TypeScript agent framework that embeds in your application.' },
     { id: 'H4', h: 'An agent framework that behaves like a library.',
       s: 'Model instances straight from the AI SDK ecosystem, a tool is four fields, one cross-cutting extension point. Balsa composes into your app.' },
+    { id: 'H5', h: 'Build ultralight AI agents.',
+      s: 'Build, compose, and ship agents with zero runtime dependencies — Balsa, the ultralight TypeScript agent framework.' },
+    { id: 'H6', h: 'Build AI agents.',
+      s: 'Build, compose, and run agents that embed anywhere — with Balsa, the ultralight TypeScript agent framework. (H6 = mastra 句式逐字复刻，慎用)' },
   ];
-  const DEFAULT_COPY = { a: 'H2', b: 'H3', c: 'H1' };
+  const DEFAULT_COPY = { a: 'H2', b: 'H3', c: 'H1', d: 'H5' };
   const chosen = { ...DEFAULT_COPY };
 
   const body = document.body;
