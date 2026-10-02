@@ -77,3 +77,26 @@
 	--font-sans: var(--sl-font);
 	--font-mono: var(--sl-font-mono);
 }
+
+/* Keyboard focus (SPEC §2.7): one visible ring for every interactive element, in the theme's
+   own link colour. Stated once here — components do not restyle focus. */
+:where(a[href], button, summary, [tabindex]):focus-visible {
+	outline: 2px solid var(--sl-color-text-accent);
+	outline-offset: 2px;
+}
+
+/* Reduced motion (SPEC §2.7): nothing smooth, nothing fading, whatever a later section asks
+   for. The OS preference wins site-wide, so no component has to remember this. */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}

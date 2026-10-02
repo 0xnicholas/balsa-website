@@ -5,7 +5,7 @@
  * layout or component that renders (that would be a second point to change).
  */
 
-import { attributeValue } from './html.ts';
+import { attributesOf } from './html.ts';
 import { routeOf, routeOfHtmlFile } from './link-rules.ts';
 
 export type BuiltPage = { path: string; html: string };
@@ -16,25 +16,6 @@ export function originIssues(origin: string): string[] {
 	return /^https?:\/\/[^/]+$/.test(origin)
 		? []
 		: [`\`${origin}\` is not a bare origin — SITE.origin is scheme + host, no trailing slash (SPEC §2.4)`];
-}
-
-const linkPattern = /<link\b[^>]*>/gi;
-const metaPattern = /<meta\b[^>]*>/gi;
-
-/** Values of every `<tag … rel/property="key" … name-attribute>` in a page. */
-function headValues(html: string, tag: 'link' | 'meta', key: string, valueAttribute: string): string[] {
-	const pattern = tag === 'link' ? linkPattern : metaPattern;
-	const keyAttribute = tag === 'link' ? 'rel' : 'property';
-	const values: string[] = [];
-
-	for (const match of html.matchAll(pattern)) {
-		const token = match[0];
-		if (attributeValue(token, keyAttribute) !== key) continue;
-		const value = attributeValue(token, valueAttribute);
-		if (value !== null) values.push(value);
-	}
-
-	return values;
 }
 
 /** The route a built HTML file serves; `404.html` is an error page, not a canonical page. */
@@ -54,7 +35,7 @@ export function canonicalIssues(input: { pages: readonly BuiltPage[]; origin: st
 		const route = canonicalRouteOf(page.path);
 		if (route === null) continue;
 
-		const canonicals = headValues(page.html, 'link', 'canonical', 'href');
+		const canonicals = attributesOf(page.html, 'link', 'rel', 'canonical', 'href');
 		const expected = `${input.origin}${route}`;
 		if (canonicals.length === 0) {
 			issues.push(`${page.path}: no <link rel="canonical"> — every page points at itself on ${input.origin}`);
@@ -76,7 +57,7 @@ export function ogUrlIssues(input: { pages: readonly BuiltPage[]; origin: string
 		const route = canonicalRouteOf(page.path);
 		if (route === null) continue;
 
-		const urls = headValues(page.html, 'meta', 'og:url', 'content');
+		const urls = attributesOf(page.html, 'meta', 'property', 'og:url', 'content');
 		const expected = `${input.origin}${route}`;
 		if (urls.length === 0) {
 			issues.push(`${page.path}: no <meta property="og:url"> (SPEC §2.6)`);

@@ -1,18 +1,14 @@
 ---
-// The green-skeleton home page (#19): the wordmark and the public tagline (SPEC §2.3, 【终稿·勿改】)
-// on the brand token layer, in both themes. The header, footer and hero land in slices 02/03.
-import BaseLayout from '../layouts/BaseLayout.astro';
+// The home page. It carries the shell plus the public tagline until the hero lands in slice
+// 03 (#21); the §2.6 title and description are already the locked values.
+import { publicTagline } from '../lib/brand.ts';
+import MarketingLayout from '../layouts/MarketingLayout.astro';
 ---
-<BaseLayout
+<MarketingLayout
 	title="Balsats — ultralight TypeScript AI agent framework"
 	description="Balsats is an ultralight TypeScript agent framework: compose only what you use, run anywhere, with zero runtime dependencies."
 >
-	<header class="px-6 py-8">
-		<a href="/" class="text-xl font-semibold tracking-tight text-white">Balsats</a>
-	</header>
-	<main class="px-6 py-16">
-		<p class="max-w-prose text-lg leading-relaxed">
-			Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage.
-		</p>
-	</main>
-</BaseLayout>
+	<section class="mx-auto max-w-6xl px-6 py-20">
+		<p class="max-w-prose text-lg leading-relaxed">{publicTagline}</p>
+	</section>
+</MarketingLayout>

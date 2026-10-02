@@ -43,9 +43,11 @@ const shards = new Map(
 		.map((file) => [file, readText(path.join(dist, file)) ?? '']),
 );
 
-// The origin literal is allowed in exactly two places: the constant, and the static robots
-// file whose value `robotsIssues` checks against the constant. Unit tests are not the site
-// face — they carry the literal as test data and never render a page.
+// The origin literal is allowed in two checked static assets — `public/robots.txt` (its
+// `Sitemap:` line) and `public/llms.txt` (every page URL) — plus the constant itself. Their
+// values are verified against the constant by `robotsIssues` here and by `llmsIssues` in the
+// shell gate, so neither can drift into a second origin. Unit tests are not the site face —
+// they carry the literal as test data and never render a page.
 const scannedFiles = [
 	...filesUnder(path.join(repoRoot, 'src'))
 		.filter((file) => /\.(?:ts|astro|css|mjs|json)$/.test(file) && !file.endsWith('.test.ts'))
@@ -64,8 +66,12 @@ const checks = [
 	[robotsIssues({ robots: readText(path.join(dist, 'robots.txt')), origin }), 'robots.txt allows crawling and names the sitemap index'],
 	[sitemapIssues({ index: sitemapIndex, shards, origin, routes }), `the sitemap lists exactly the ${routes.length} built page(s)`],
 	[
-		singlePointIssues({ files: scannedFiles, origin, allowedPaths: ['src/lib/site.ts', 'public/robots.txt'] }),
-		'the origin literal lives in src/lib/site.ts (and the checked robots.txt) only',
+		singlePointIssues({
+			files: scannedFiles,
+			origin,
+			allowedPaths: ['src/lib/site.ts', 'public/robots.txt', 'public/llms.txt'],
+		}),
+		'the origin literal lives in src/lib/site.ts (and the two checked static assets) only',
 	],
 ];
 

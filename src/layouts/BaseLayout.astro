@@ -22,6 +22,10 @@ const themeColor = themeColorValues(parsed.tokens);
 // canonical and og:url are the page's own address on the one origin (SPEC §2.6); `site` in
 // astro.config.mjs comes from the same constant, so the head cannot name a second host.
 const canonical = new URL(Astro.url.pathname, SITE.origin).href;
+
+// One static card for the whole site (SPEC §5.3): the head names it, the width/height pair
+// lets the crawler lay it out, and nothing here generates a second image per page.
+const ogImage = new URL('/og.png', SITE.origin).href;
 ---
 <!doctype html>
 <html lang="en">
@@ -35,10 +39,12 @@ const canonical = new URL(Astro.url.pathname, SITE.origin).href;
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<meta property="og:url" content={canonical} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta property="og:image" content={ogImage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 		<meta name="theme-color" media="(prefers-color-scheme: light)" content={themeColor.light} />
 		<meta name="theme-color" media="(prefers-color-scheme: dark)" content={themeColor.dark} />
-		{/* og:image + favicon land with their assets in slice 02 (#20), which owns the site-level
-		    assets; this head already derives the origin-bound tags from SITE.origin. */}
 		<slot name="head" />
 	</head>
 	<body class="bg-black font-sans text-gray-2">

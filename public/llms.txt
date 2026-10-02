@@ -1,0 +1,13 @@
+# Balsats
+
+- [Balsats — ultralight TypeScript AI agent framework](https://balsats.com/)
+- [About — Balsats](https://balsats.com/about/)
+- [Privacy policy — Balsats](https://balsats.com/privacy-policy/)
+- [Terms of service — Balsats](https://balsats.com/terms-of-service/)
+- [In-product agents — Balsats](https://balsats.com/in-product-agents/)
+- [Operations agents — Balsats](https://balsats.com/operations-agents/)
+- [Platform & developer infra — Balsats](https://balsats.com/developer-infrastructure/)
+- [AI agent framework for TypeScript — Balsats](https://balsats.com/ai-agent-framework/)
+- [AI agents for TypeScript — Balsats](https://balsats.com/ai-agents/)
+- [AI workflows for TypeScript — Balsats](https://balsats.com/ai-workflows/)
+- [AI agent observability for TypeScript — Balsats](https://balsats.com/ai-agent-observability/)
