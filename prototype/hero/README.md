@@ -1,6 +1,6 @@
 # prototype/hero — THROWAWAY
 
-**Question (balsa-website #4)**: hero 区的 headline / sub-headline 文案 + 右侧视觉形式。
+**Question (balsats-website #4)**: hero 区的 headline / sub-headline 文案 + 右侧视觉形式。
 
 Three structurally different hero variants on the decided brand direction
 (A 继承暖纸 tokens, inherited verbatim from balsa-docs §2.2 via `prototype/brand-direction`):
