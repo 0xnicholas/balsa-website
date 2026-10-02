@@ -1,7 +1,7 @@
 # 调研:域名与 handle 可用性——balsa 营销站 + docs 子域
 
 > **报告**:`docs/research/domain-and-handles.md` @ 分支 `research/domain-and-handles`(本仓库)。
-> **研究方**:wayfinder 研究票 [#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsa-website/issues/9);地图 [#1](https://github.com/0xnicholas/balsa-website/issues/1)。
+> **研究方**:wayfinder 研究票 [#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsats-website/issues/9);地图 [#1](https://github.com/0xnicholas/balsats-website/issues/1)。
 > **抓取日期**:**2026-10-01**(13:13–13:25 UTC,本机直连)。全程**只读**:未注册任何域名、未下单、未创建任何账号/org/scope、未登录 npm。
 > **一手来源**:各 TLD **registry RDAP**(端点由 IANA 的 `rdap/dns.json` bootstrap 直取,不经过聚合站)、公共 DNS over HTTPS(dns.google 与 cloudflare-dns.com **两个独立递归**)、GitHub REST API(认证调用)、npm registry 公开端点(三端点交叉标定,见 §3.3)、X 公开页面、`hstspreload.org` API。
 > **本文只呈现事实与候选,不替老板拍板**;需要人拍的点集中在 §4.1 的分叉与 §8 的行动清单。
@@ -300,7 +300,7 @@ curl -s 'https://hstspreload.org/api/v2/status?domain=dev' | jq -c .   # → pre
 
 - **apex = `balsats.com`(单一 apex)**:营销站 = `https://balsats.com`,文档站 = `https://docs.balsats.com`(形态仍是 `docs.<apex>`,与 delivery §3.1 的形态要求一致)。
 - **覆盖 §4.1 的推荐序**:① `balsajs.dev` / ② `getbalsa.dev` / ③ `balsa.run` 均不采用。**理由归 owner,本节不替其补理由**;只记两笔账——该根**不在**原票面候选集内(§0),且它与 §4.2 第 2 条「`.dev` + `.com` 成对拿」的取向不同(正站直接用 `.com`)。
-- 落地票:营销站 / 域侧 = [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16);文档站仓库侧 = [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)(机制沿用 [balsa-docs #29](https://github.com/0xnicholas/balsa-docs/issues/29))。
+- 落地票:营销站 / 域侧 = [balsats-website #16](https://github.com/0xnicholas/balsats-website/issues/16);文档站仓库侧 = [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)(机制沿用 [balsa-docs #29](https://github.com/0xnicholas/balsa-docs/issues/29))。
 
 ### 9.2 复核总表(2026-10-02 01:14 UTC)
 
@@ -350,13 +350,13 @@ curl -s -o /dev/null -w '%{http_code}\n' -A 'Mozilla/5.0' https://x.com/balsats
 | §8 行 | 状态(2026-10-02) |
 | --- | --- |
 | 1(拍板统一根) | ✅ 已拍 = `balsats.com`;GitHub `balsats` 与 npm `@balsats` 同名可申领;**X 已被占**(§9.3 第 1 条) |
-| 2(下单) | ⏳ [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16)——结算页验价、注意 premium 档(§4.2 原口径不变) |
+| 2(下单) | ⏳ [balsats-website #16](https://github.com/0xnicholas/balsats-website/issues/16)——结算页验价、注意 premium 档(§4.2 原口径不变) |
 | 3(建同名 X / npm org) | ◐ npm `@balsats` 空、GitHub `balsats` 空可建;**X 不可得**,取舍见 §9.3 第 1 条 |
-| 4(apex 进 zone + `docs.<apex>` 记录) | ⏳ [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16),目标主机名 = `docs.balsats.com`;**CAA 不得阻断签发**(原口径不变) |
+| 4(apex 进 zone + `docs.<apex>` 记录) | ⏳ [balsats-website #16](https://github.com/0xnicholas/balsats-website/issues/16),目标主机名 = `docs.balsats.com`;**CAA 不得阻断签发**(原口径不变) |
 | 5(balsa-docs 上域 PR) | ◐ [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44):`site` 常量 + fixture + 四份规范同批切到 `docs.balsats.com`(机制沿用 #29) |
 | 6(balsa-framework / ADR-0013) | 不变;补一条:该 ADR 的「同名 org」前提在 X 面上本就无解(§9.3 第 4 条) |
 | 3b(裸 `balsa` 询价) | 不变,与本次裁决无关 |
 
 ---
 
-_产出方:[#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsa-website/issues/9)(wayfinder 研究票);消费方:本仓库的[地图 #1](https://github.com/0xnicholas/balsa-website/issues/1) 与 balsa-docs 的 [#29](https://github.com/0xnicholas/balsa-docs/issues/29) / [#30](https://github.com/0xnicholas/balsa-docs/issues/30)。附记 §9(2026-10-02)追加的消费方:[balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16) 与 [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)。_
+_产出方:[#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsats-website/issues/9)(wayfinder 研究票);消费方:本仓库的[地图 #1](https://github.com/0xnicholas/balsats-website/issues/1) 与 balsa-docs 的 [#29](https://github.com/0xnicholas/balsa-docs/issues/29) / [#30](https://github.com/0xnicholas/balsa-docs/issues/30)。附记 §9(2026-10-02)追加的消费方:[balsats-website #16](https://github.com/0xnicholas/balsats-website/issues/16) 与 [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)。_
