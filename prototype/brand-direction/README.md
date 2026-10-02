@@ -1,6 +1,6 @@
 # prototype/brand-direction — THROWAWAY
 
-**Question (balsa-website #3)**: landing 继承 balsa-docs 的琥珀 token（A），还是差异化（B / C）？
+**Question (balsats-website #3)**: landing 继承 balsa-docs 的琥珀 token（A），还是差异化（B / C）？
 Three landing brand-direction variants on one page, switchable via `?variant=a|b|c`.
 
 | key | name | premise | default theme |
