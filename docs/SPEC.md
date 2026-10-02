@@ -1,17 +1,17 @@
-# balsa 营销站 SPEC（交接就绪）
+# Balsats 营销站 SPEC（交接就绪）
 
-> **状态**：交接就绪。本文是 balsa 营销站的唯一构建依据——后续构建会话只读本文件（不读 issue tracker），据此把站点建出来。
+> **状态**：交接就绪。本文是 Balsats 营销站的唯一构建依据——后续构建会话只读本文件（不读 issue tracker），据此把站点建出来。
 > **日期**：2026-10-02
 > **范围**：只交付 spec；不含建站、不初始化工程、不部署。建站是下一个会话。
-> **来源（provenance）**：Wayfinder 地图 [#1](https://github.com/0xnicholas/balsats-website/issues/1)（其 "Decisions so far" 是全量决策索引，并定义取代规则）+ tickets [#2](https://github.com/0xnicholas/balsats-website/issues/2) – [#16](https://github.com/0xnicholas/balsats-website/issues/16) + 技术调研报告（`docs/research/astro-tech.md` @ `research/astro-tech` `d8ff13e`）+ 域名调研报告（`docs/research/domain-and-handles.md` @ `research/domain-and-handles` `4ff64e5` + 附记 `bfe7310`）+ 三个原型（`prototype/brand-direction` @ `fd4f11b`、`prototype/hero` @ `301f3b7`、`prototype/code-samples` @ `7524499`）+ balsa-docs 品牌规范 `docs/spec/brand-visual.md`。逐条见 §12。
-> **取代规则摘要**（来源冲突时按此读）：npm scope 一律 `@balsats/*`（`@balsa/*` 作废）；单一 apex = **`balsats.com`**（营销站 `https://balsats.com`、文档站 `https://docs.balsats.com`，覆盖 [#9](https://github.com/0xnicholas/balsats-website/issues/9) 的推荐序）；仓库现行名 = `0xnicholas/balsats-framework` / `balsats-docs`（旧名经 301，站面写现行名）；[#15](https://github.com/0xnicholas/balsats-website/issues/15) 取代 [#12](https://github.com/0xnicholas/balsats-website/issues/12) 的 Newsletter 槽 → footer Project = `About · GitHub`，全站无表单、无 email 收集面、无社区/社交外链；票面 corpus 为中文，站面文案一律英文。
+> **来源（provenance）**：Wayfinder 地图 [#1](https://github.com/0xnicholas/balsats-website/issues/1)（其 "Decisions so far" 是全量决策索引，并定义取代规则）+ tickets [#2](https://github.com/0xnicholas/balsats-website/issues/2) – [#16](https://github.com/0xnicholas/balsats-website/issues/16) + 技术调研报告（`docs/research/astro-tech.md` @ `research/astro-tech` `d8ff13e`）+ 域名调研报告（`docs/research/domain-and-handles.md` @ `research/domain-and-handles` `4ff64e5` + 附记 `bfe7310`）+ 三个原型（`prototype/brand-direction` @ `fd4f11b`、`prototype/hero` @ `301f3b7`、`prototype/code-samples` @ `7524499`）+ balsats-docs 品牌规范 `docs/spec/brand-visual.md`。逐条见 §12。
+> **取代规则摘要**（来源冲突时按此读）：npm scope 一律 `@balsats/*`（旧 scope 作废）；单一 apex = **`balsats.com`**（营销站 `https://balsats.com`、文档站 `https://docs.balsats.com`，覆盖 [#9](https://github.com/0xnicholas/balsats-website/issues/9) 的推荐序）；仓库现行名 = `0xnicholas/balsats-framework` / `balsats-docs`（旧名经 301，站面写现行名）；[#15](https://github.com/0xnicholas/balsats-website/issues/15) 取代 [#12](https://github.com/0xnicholas/balsats-website/issues/12) 的 Newsletter 槽 → footer Project = `About · GitHub`，全站无表单、无 email 收集面、无社区/社交外链；票面 corpus 为中文，站面文案一律英文。
 
 ### 写作时事实核验（2026-10-02 晚，构建前必须处理）
 
-本 SPEC 写作期间，框架侧出现两条**晚于票据语料**的公开面变化；它们没有被任何一张网站票覆盖，构建会话开工前必须先与 owner 确认处置：
+本 SPEC 写作期间，框架侧出现两条**晚于票据语料**的公开面变化：第 1 条仍需构建前与 owner 确认；第 2 条已由 owner 拍定（见下）。
 
 1. **0.5.0 已发布**。核验：`npm view @balsats/core version` → `0.5.0`（2026-10-02；框架 README / ROADMAP 已翻转「已发布」口径，commit `6a1dbc7`）。而 §6 的 CTA 切换信号正是「registry 可见」——**该信号已触发**，但网站侧切换方案（install 命令 / Copy agent prompt 模式）仍未拍。构建前先拍切换与否；双版文案已备在 §6.2。
-2. **品牌字面改名**。框架侧同日把对外品牌名 `Balsa` → **`Balsats`**、仓库 `balsa-framework` → `balsats-framework`（ADR-0013 修订 + 改名清扫 `6683ebb`；`balsats-docs` / `balsats-website` 亦为现行仓库名）。而网站票据语料与本站 `CONTEXT.md` 的锁定字面仍是「balsa」。**本 SPEC 全面保留票面锁定字面（balsa）**；构建前必须确认是否把全站字面随框架改名（替换面清单见 §10 未决①）。未拍前按本 SPEC 字面施工。
+2. **品牌字面 = `Balsats`（owner 已拍「传播」，2026-10-02，ticket [#17](https://github.com/0xnicholas/balsats-website/issues/17)）**。框架侧同日完成品牌改名与仓库改名（ADR-0013 修订 + 改名清扫 `6683ebb`；`balsats-docs` / `balsats-website` 同步改名）。全站站面字面统一 **`Balsats`**（wordmark / H1 / hero sub / FAQ 题干与答案 / `/about` / 法务页 / footer `©` 行 / 页面 title 后缀 / OG 文本）；本 SPEC 与 `CONTEXT.md` 已按此扫毕。npm 0.5.0 tarball 内的 README / description 仍是发布前口径、不可回改（新旧并存窗口 = 既有事实，不构成站面回退）。
 3. **旧名/旧域一律按现行名读**：票面中的 `github.com/0xnicholas/balsa-framework` → `.../balsats-framework`；`docs.balsajs.dev` → `docs.balsats.com`。链接表（§2.4）已按现行名写好。
 
 ### 标记约定
@@ -25,7 +25,7 @@
 
 ## 1. 一页速览
 
-**站点是什么**：balsa——ultralight TypeScript AI agent 框架（core 零运行时依赖）——的营销站。英文优先；IA 以 mastra.ai 为内部参照（站上永不点名）；主 CTA = GitHub + `coming soon`；社会证明只留占位；不点名竞品；数据口径 = 架构事实 + 绝对值。
+**站点是什么**：Balsats——ultralight TypeScript AI agent 框架（core 零运行时依赖）——的营销站。英文优先；IA 以 mastra.ai 为内部参照（站上永不点名）；主 CTA = GitHub + `coming soon`；社会证明只留占位；不点名竞品；数据口径 = 架构事实 + 绝对值。
 
 **交付物**：11 个页面（首页 + `/about` + 2 法务页 + 3 用例页 + 4 关键词页）+ Astro 默认 404。技术形态固定为：Astro 静态站、`output: 'static'`、**不装任何 adapter**、产物 = 可移植的 `dist/` 静态目录（部署目标因此可以继续 TBD）。
 
@@ -67,7 +67,7 @@
 组成（顺序固定）【#12 §1】：
 
 ```
-balsa（文字 wordmark，链 /） · Use cases ▾ · Docs · GitHub · coming soon pill
+Balsats（文字 wordmark，链 /） · Use cases ▾ · Docs · GitHub · coming soon pill
 ```
 
 - **`Use cases ▾`** 下拉三项（标题 = 用例页 H1，逐字；描述文案【SPEC 起草·可润色】）：
@@ -78,7 +78,7 @@ balsa（文字 wordmark，链 /） · Use cases ▾ · Docs · GitHub · coming 
 | `Operations agents` | `Busywork handled — with a human on the risky steps.` | `/operations-agents` |
 | `Platform & developer infra` | `Primitives your product teams compose.` | `/developer-infrastructure` |
 
-- **`coming soon` pill**【本 SPEC 定稿】：纯状态徽标，**非链接**、不带版本号，全小写（与 final CTA 的 coming soon 同口径，见 §3.1 注）；发布后版本 = fog（§10 未决②）。这是三个 CTA 切换点之三（§6.2）。
+- **`coming soon` pill**【本 SPEC 定稿】：纯状态徽标，**非链接**、不带版本号，全小写（与 final CTA 的 coming soon 同口径，见 §3.1 注）；发布后版本 = fog（§10 未决①）。这是三个 CTA 切换点之三（§6.2）。
 - **裁掉且不得出现**：`Pricing` / `Customers`（无页面）、`Product ▾`（只有一个产品）、`Resources ▾`（与 `Docs` 重复、上线前同指 GitHub）；关键词页 ×4 **不进 header**（只进 footer）。
 - **无页内锚点导航**；**不设 promo 条**；**不做站内搜索**。
 - 交互：`Use cases ▾` 桌面端为可键盘操作的下拉（`aria-expanded`、Esc 关闭、点击外部关闭）；移动端收进 hamburger（`Use cases` 折叠组 + `Docs` / `GitHub` 平铺 + pill）。
@@ -86,7 +86,7 @@ balsa（文字 wordmark，链 /） · Use cases ▾ · Docs · GitHub · coming 
 
 ### 2.3 Footer（四栏 + 左品牌块 + 法务行）
 
-- **左品牌块**：wordmark `balsa`（链 `/`）+ 公开 tagline（逐字，【终稿·勿改】）：
+- **左品牌块**：wordmark `Balsats`（链 `/`）+ 公开 tagline（逐字，【终稿·勿改】）：
 
 ```
 Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage.
@@ -106,7 +106,7 @@ Ultralight TypeScript agent framework. Compose only what you use — run anywher
 | `Developers` | `Docs` / `Examples` / `Architecture` | §2.4 链接表 |
 | `Project` | `About` / `GitHub` | `/about` / `links.github` |
 
-- **法务行**：`© 2026 balsa · Apache-2.0`（逐字，【终稿·勿改】；**静态字符串**，不用构建期动态年份）+ `Privacy`（`/privacy-policy`）· `Terms`（`/terms-of-service`）。
+- **法务行**：`© 2026 Balsats · Apache-2.0`（逐字，【终稿·勿改】；**静态字符串**，不用构建期动态年份）+ `Privacy`（`/privacy-policy`）· `Terms`（`/terms-of-service`）。
 - **不设** status/trust 行；`llms.txt` / `llms-manifest.json` **不进 footer**；footer **不写个人名义**（署名与主体信息归 `/about` 与法务页）。
 - **Newsletter 槽已删除且不渲染**（#15 取代 #12）：Project 栏只有 `About · GitHub`；全站无表单、无 email 收集面。
 - **launch updates 通道 = GitHub Releases**（#15）：站点侧不新增任何承接面（无 section / 表单带 / footer 槽）；「Watch → Releases only」是留给访客的动作。
@@ -119,7 +119,7 @@ Ultralight TypeScript agent framework. Compose only what you use — run anywher
 | 入口 | 现在（docs 站未上线） | 切换后 |
 | --- | --- | --- |
 | `Docs`（header + footer Developers + 首页 Resources 细带 + 各页 Learn more 的 docs 目标） | `https://github.com/0xnicholas/balsats-framework`（README 即当前文档主入口） | 原位换 `https://docs.balsats.com` |
-| `Examples` | `https://github.com/0xnicholas/balsats-framework/tree/main/examples` | 不变（上线后是否改指 docs 站 = fog，§10 未决⑦） |
+| `Examples` | `https://github.com/0xnicholas/balsats-framework/tree/main/examples` | 不变（上线后是否改指 docs 站 = fog，§10 未决⑥） |
 | `Architecture` | `https://github.com/0xnicholas/balsats-framework/tree/main/docs/architecture` | 同上 |
 | `GitHub`（header / footer / 全站 CTA） | `https://github.com/0xnicholas/balsats-framework` | 不变（org 迁移 = 发布后另起 effort；**不写** `github.com/balsats/...` 占位） |
 | `Issues`（/about 与法务页的联系渠道） | `https://github.com/0xnicholas/balsats-framework/issues` | 不变 |
@@ -149,21 +149,21 @@ export const LINKS = {
 
 ### 2.6 页面 title 与 meta description
 
-title 后缀统一 `— balsa`；关键词页 title 为票据锁定口径（`<Keyword> for TypeScript — balsa`）。其余为【SPEC 起草·可润色】：
+title 后缀统一 `— Balsats`；关键词页 title 为票据锁定口径（`<Keyword> for TypeScript — Balsats`）。其余为【SPEC 起草·可润色】：
 
 | 页面 | title | meta description |
 | --- | --- | --- |
-| `/` | `balsa — ultralight TypeScript AI agent framework` | `balsa is an ultralight TypeScript agent framework: compose only what you use, run anywhere, with zero runtime dependencies.` |
-| `/about` | `About — balsa` | `About balsa — why the project exists, who maintains it, and how code and content are licensed.` |
-| `/privacy-policy` | `Privacy policy — balsa` | `Privacy policy for the balsa marketing site: a static site with no accounts, no cookies and no tracking.` |
-| `/terms-of-service` | `Terms of service — balsa` | `Terms of service for the balsa website and project: pre-1.0, provided as-is, code under Apache-2.0.` |
-| `/in-product-agents` | `In-product agents — balsa` | `Embed an assistant in the app you already run — streaming, tool calls and human handoff, with no second service to operate.` |
-| `/operations-agents` | `Operations agents — balsa` | `Agents that handle the busywork around your team — MCP tools, approval gates and schedules, with a human on the risky steps.` |
-| `/developer-infrastructure` | `Platform & developer infra — balsa` | `Shared agent primitives your product teams compose — subpath imports, capability packages added one at a time, OTLP observability.` |
-| `/ai-agent-framework` | `AI agent framework for TypeScript — balsa` 【终稿】 | `An AI agent framework for TypeScript: a library, not infrastructure you operate — zero runtime dependencies, nothing new to run.` |
-| `/ai-agents` | `AI agents for TypeScript — balsa` 【终稿】 | `AI agents in TypeScript: a handful of fields, a built-in tool loop, streaming runs, and memory named per call — no hidden state.` |
-| `/ai-workflows` | `AI workflows for TypeScript — balsa` 【终稿】 | `AI workflows in TypeScript: typed steps, validated boundaries, and JSON snapshots that resume a run in another process.` |
-| `/ai-agent-observability` | `AI agent observability for TypeScript — balsa` 【终稿】 | `AI agent observability for TypeScript: spans for runs, model steps, tool calls and memory — exported to your collector over OTLP.` |
+| `/` | `Balsats — ultralight TypeScript AI agent framework` | `Balsats is an ultralight TypeScript agent framework: compose only what you use, run anywhere, with zero runtime dependencies.` |
+| `/about` | `About — Balsats` | `About Balsats — why the project exists, who maintains it, and how code and content are licensed.` |
+| `/privacy-policy` | `Privacy policy — Balsats` | `Privacy policy for the Balsats marketing site: a static site with no accounts, no cookies and no tracking.` |
+| `/terms-of-service` | `Terms of service — Balsats` | `Terms of service for the Balsats website and project: pre-1.0, provided as-is, code under Apache-2.0.` |
+| `/in-product-agents` | `In-product agents — Balsats` | `Embed an assistant in the app you already run — streaming, tool calls and human handoff, with no second service to operate.` |
+| `/operations-agents` | `Operations agents — Balsats` | `Agents that handle the busywork around your team — MCP tools, approval gates and schedules, with a human on the risky steps.` |
+| `/developer-infrastructure` | `Platform & developer infra — Balsats` | `Shared agent primitives your product teams compose — subpath imports, capability packages added one at a time, OTLP observability.` |
+| `/ai-agent-framework` | `AI agent framework for TypeScript — Balsats` 【终稿】 | `An AI agent framework for TypeScript: a library, not infrastructure you operate — zero runtime dependencies, nothing new to run.` |
+| `/ai-agents` | `AI agents for TypeScript — Balsats` 【终稿】 | `AI agents in TypeScript: a handful of fields, a built-in tool loop, streaming runs, and memory named per call — no hidden state.` |
+| `/ai-workflows` | `AI workflows for TypeScript — Balsats` 【终稿】 | `AI workflows in TypeScript: typed steps, validated boundaries, and JSON snapshots that resume a run in another process.` |
+| `/ai-agent-observability` | `AI agent observability for TypeScript — Balsats` 【终稿】 | `AI agent observability for TypeScript: spans for runs, model steps, tool calls and memory — exported to your collector over OTLP.` |
 
 - `canonical` / `og:url` / sitemap / robots 全部从 `SITE.origin` 单点派生；`og:image` = `https://balsats.com/og.png`（1200×630 单张静态，§5.3）；`og:title` / `og:description` 复用本表。
 - 除 `og:site_name` 外不新增社交 meta（无 Twitter card 定制——不新增未锁内容）。
@@ -197,7 +197,7 @@ Hero → Feature tabs ×5（Agents / Workflows / Harness / Memory / MCP）→ Ob
 
 ```
 H1:  Build ultralight AI agents.
-Sub: Build, compose, and ship agents with zero runtime dependencies — Balsa,
+Sub: Build, compose, and ship agents with zero runtime dependencies — Balsats,
      the ultralight TypeScript agent framework.
 ```
 
@@ -279,7 +279,7 @@ Serve your tools over MCP — and bring MCP tools in.
 ```
 
 - **@balsats/mcp-server** — your tools served over MCP, HTTP or stdio.
-- **@balsats/mcp-client** — another server's tools become ordinary balsa tools.
+- **@balsats/mcp-client** — another server's tools become ordinary Balsats tools.
 - **Tools stay plain objects** — no registry — a tool's name is its key in the container.
 
 artifact = `server.ts` / `client.ts` 双 file tab（§7.3-5）。
@@ -296,7 +296,7 @@ Every run traced. OTLP when you want it.
 
 ```
 Agent runs, model steps, tool calls, workflow steps, memory recall and save — traced by default.
-Built-in console and memory exporters; @balsats/otlp maps Balsa spans to the GenAI semantic
+Built-in console and memory exporters; @balsats/otlp maps Balsats spans to the GenAI semantic
 conventions. A standalone agent with no tracer stays zero-overhead.
 ```
 
@@ -311,7 +311,7 @@ conventions. A standalone agent with no tracer stays zero-overhead.
 - 保留该 section 的结构位（IA 对齐），渲染为一条安静的横幅：kicker `In the open` + 一行 muted 文案：
 
 ```
-No logos, no quotes, no numbers yet — balsa is new. When there are real stories to tell,
+No logos, no quotes, no numbers yet — Balsats is new. When there are real stories to tell,
 they will live here.
 ```
 
@@ -350,20 +350,20 @@ One small framework, three shapes — and nothing new to stand up.
 - 呈现：语义 `<details><summary>` 列表；**答案内不嵌任何外链**；九题顺序即页面顺序；不增删题。
 - 标题【SPEC 起草·可润色】：`Frequently asked questions`。
 - 铁律（九题共用）：答案 1–3 句、自包含（LLM 抽取友好）；无 install 类命令；不点名竞品；不写数字（KB / 测试数 / 计数）；包名 `@balsats/*`；术语守 `CONTEXT.md`。
-- 第 2 题是 CTA 切换点之二（双版见 §6.2）。`FAQPage` JSON-LD 归 fog（§10 未决⑤）。
+- 第 2 题是 CTA 切换点之二（双版见 §6.2）。`FAQPage` JSON-LD 归 fog（§10 未决④）。
 
-**1. `What is balsa?`**（定义题不背发布状态）
+**1. `What is Balsats?`**（定义题不背发布状态）
 要点：ultralight TypeScript agent framework；心智表面 = agents / tools / memory / workflows / durable execution（+ capability packages）；轻量两义 = compose only what you use（逐子路径导出、core 零运行时依赖）+ no runtime burden（不要求 DB / 队列 / 长驻进程，嵌入宿主应用）。
 EN 初稿【SPEC 起草·可润色】：
 
 ```
-balsa is an ultralight TypeScript agent framework. Its surface is agents, tools, memory,
+Balsats is an ultralight TypeScript agent framework. Its surface is agents, tools, memory,
 workflows and durable execution, with capability packages you add as you need them. It is
 lightweight in two precise senses: you compose only what you use, and it asks for no runtime
 of its own — no database, no queue, no long-running process; it embeds in the app you already run.
 ```
 
-**2. `Is balsa on npm yet?`**（CTA 切换点之二）
+**2. `Is Balsats on npm yet?`**（CTA 切换点之二）
 要点（发布前）：尚未发布；首个公开版本 = 0.5.0 单发（全框架 + 能力包一次性上架）；在此之前走 GitHub 仓库（star / watch 拿发布通知）；**答案不含任何 install 命令**。
 EN 初稿（发布前）【SPEC 起草·可润色】：
 
@@ -387,7 +387,7 @@ Nothing here needs a database, a queue or a long-running process, and a CI byte 
 size a checked property rather than a promise.
 ```
 
-**4. `What models and providers can I use with balsa?`**
+**4. `What models and providers can I use with Balsats?`**
 要点：任何 AI SDK provider 生态的模型；模型实例直接从 provider 包传入（如 `@ai-sdk/openai`），无 adapter、无 registry、无 magic string；core 零依赖靠最小结构性模型契约；UI 流式互操作归 `@balsats/ai-sdk`（AI SDK UI message stream 互操作 + `useChat` 兼容 route）。
 EN 初稿【SPEC 起草·可润色】：
 
@@ -398,7 +398,7 @@ dependency-free by keeping a minimal structural model contract. For streaming in
 UI, @balsats/ai-sdk provides the message-stream interop and a useChat-compatible route.
 ```
 
-**5. `Does balsa run on edge and serverless?`**
+**5. `Does Balsats run on edge and serverless?`**
 要点：架构断言（不点名平台）：无 DB / 队列 / 长驻进程要求、core 零运行时依赖、嵌入宿主应用；serverless / edge 是一等形态而非降级（平台 cron 打 endpoint 调 `tick()` 是 schedules 的规范形态）；边界句：能力包各自携带运行时要求（SQLite adapter 面向 Node；core `engines` = Node ≥ 22.13）；Bun / Deno / Workers 不承诺的立场如实传达。
 EN 初稿【SPEC 起草·可润色】：
 
@@ -411,17 +411,17 @@ adapter targets Node — and the core's declared runtime is Node 22.13 or newer;
 Workers are not promised.
 ```
 
-**6. `Does balsa support MCP?`**
-要点：支持；`@balsats/mcp-server`（工具经 HTTP / stdio 对外）+ `@balsats/mcp-client`（他人 MCP server 的工具成为普通 balsa tools —— 普通对象、无注册表）；随首个发布交付。
+**6. `Does Balsats support MCP?`**
+要点：支持；`@balsats/mcp-server`（工具经 HTTP / stdio 对外）+ `@balsats/mcp-client`（他人 MCP server 的工具成为普通 Balsats tools —— 普通对象、无注册表）；随首个发布交付。
 EN 初稿【SPEC 起草·可润色】：
 
 ```
 Yes. @balsats/mcp-server serves your tools over MCP through HTTP or stdio, and
-@balsats/mcp-client brings another server's tools in as ordinary balsa tools — plain objects,
+@balsats/mcp-client brings another server's tools in as ordinary Balsats tools — plain objects,
 no registry. Both ship with the first release.
 ```
 
-**7. `Does balsa support RAG or evals?`**
+**7. `Does Balsats support RAG or evals?`**
 要点：均未内建，如实答「没有」；两者都在框架延后清单，按真实用例信号重开（RAG 触发 = 跨会话语义检索的真实诉求；evals 触发 = CI / 线上断言式评估的真实诉求），不承诺排期；今天 eval 类断言可挂 processor；observability 已内建（tracer + span，`@balsats/otlp` 导出 GenAI semconv）。
 EN 初稿【SPEC 起草·可润色】：
 
@@ -432,7 +432,7 @@ hang off processors, and observability is built in: a tracer with spans, exporta
 OTLP collector with GenAI semantic conventions.
 ```
 
-**8. `Is balsa production-ready?`**
+**8. `Is Balsats production-ready?`**
 要点：pre-1.0；站点描述的全部子系统已实现并核验，但 0.x 保留破坏性变更；1.0 不排期（自 1.0 起 storage port 走 additive-only）；给「锁定版本 + 跟 release」的务实建议——不劝退、不承诺。
 EN 初稿【SPEC 起草·可润色】：
 
@@ -472,7 +472,7 @@ CTA: ★ GitHub（主） + `coming soon` pill（纯状态徽标，非链接）
 结构（4 段，借参照站段位）：
 
 ```
-H1: About balsa
+H1: About Balsats
 sub: <公开 tagline 逐字复用 footer 品牌块那一行>
 ## Our story
 ## Who's behind it
@@ -482,26 +482,26 @@ sub: <公开 tagline 逐字复用 footer 品牌块那一行>
 **`## Our story`**【终稿·勿改】（三段的英文原文；段落折行按阅读排版，词句逐字）：
 
 ```
-balsa takes its name from the lightest structural wood there is: light, but load-bearing.
+Balsats takes its name from balsa, the lightest structural wood there is: light, but load-bearing.
 
 The project exists for one bet — that an agent framework should be a library inside your
 application, not a platform your application moves into. So every subsystem ships behind its
 own entry point, the core carries no runtime dependencies, and nothing here needs a database,
 a queue or a long-running process.
 
-balsa is the umbrella brand. The framework came first, the documentation site is next, and
+Balsats is the umbrella brand. The framework came first, the documentation site is next, and
 future subprojects live alongside them — under one package scope and one domain.
 ```
 
 **`## Who's behind it`**【终稿·勿改】：
 
 ```
-balsa is built in the open on GitHub and maintained by [@0xnicholas](https://github.com/0xnicholas).
+Balsats is built in the open on GitHub and maintained by [@0xnicholas](https://github.com/0xnicholas).
 There is no company behind it and no team page to read: the repository's issues are where
 questions, bug reports and disagreement land.
 
 Code and examples are licensed Apache-2.0 — that license covers code, not the name. Site copy
-and graphics are © 2026 balsa, all rights reserved.
+and graphics are © 2026 Balsats, all rights reserved.
 ```
 
 **收尾邀请带**【终稿·勿改】（替参照站的 careers CTA；带 GitHub 与 Issues 两个链接）：
@@ -529,7 +529,7 @@ Star or watch the repository to follow releases.
 - **不点名托管平台**（部署目标 TBD），统一泛指 `our hosting provider`。
 - 联系渠道**只承诺 GitHub Issues**（无 SECURITY.md、私有漏洞报送未开，不得承诺安全报送流程）。
 - 生效日期写法【本 SPEC 拍板】：静态字符串，格式 `Last updated: <Month D, YYYY>`，构建时写入**站点上线日**；不得用构建期动态日期（避免页面自称更新过）。
-- 许可分工（同 `/about`）：代码与示例 = Apache-2.0；站点文案与图形 = 版权保留（`© 2026 balsa, all rights reserved`）。
+- 许可分工（同 `/about`）：代码与示例 = Apache-2.0；站点文案与图形 = 版权保留（`© 2026 Balsats, all rights reserved`）。
 
 **`/privacy-policy`**【终稿·勿改】（`<生效日期>` 按上面的静态字符串落值；链接目标按现行仓库名）：
 
@@ -537,7 +537,7 @@ Star or watch the repository to follow releases.
 # Privacy policy
 Last updated: <生效日期>
 
-balsa's marketing site is a static site. It has no accounts, sets no cookies and runs no
+Balsats's marketing site is a static site. It has no accounts, sets no cookies and runs no
 tracking, and we do not collect or store personal information about you.
 
 Our hosting provider serves the site and may keep standard server logs — IP address, user
@@ -563,9 +563,9 @@ Last updated: <生效日期>
 This site is provided as-is, without warranties of any kind. It describes an open-source
 project that is pre-1.0: what you read here can change.
 
-Code and examples in the balsa project are licensed under Apache-2.0 — that license covers
-code, and does not grant rights to the balsa name or logo. Site copy and graphics are
-© 2026 balsa, all rights reserved.
+Code and examples in the Balsats project are licensed under Apache-2.0 — that license covers
+code, and does not grant rights to the Balsats name or logo. Site copy and graphics are
+© 2026 Balsats, all rights reserved.
 
 Links to third-party sites are here for convenience; those sites are governed by their own
 terms. Questions: open an issue in the
@@ -576,7 +576,7 @@ terms. Questions: open an issue in the
 
 - 新版本必须补：**收集什么**（即使匿名 / 无 cookie 也照写）+ **处理者**（统计服务 / 第三方）+ **保留期** + **opt-out 形态** + **联系渠道** + 更新生效日期；若引入第三方表单，加「第三方处理者」一节。
 - **Terms 只在出现托管服务或账号时才动**——纯统计不触发（email 订阅已排除）。
-- 该清单同时是部署 / analytics fog 的下游验收点（§10 未决④）。
+- 该清单同时是部署 / analytics fog 的下游验收点（§10 未决③）。
 
 ### 4.3 用例页 ×3
 
@@ -584,7 +584,7 @@ terms. Questions: open an issue in the
 
 ```
 H1（= 首页卡片标题）+ tagline（1–2 行）
-→ 场景卡 ×3（场景名 + 2–3 句「用 balsa 怎么搭」+ 用到的子系统/包名）
+→ 场景卡 ×3（场景名 + 2–3 句「用 Balsats 怎么搭」+ 用到的子系统/包名）
 → GitHub CTA 带（替 Contact sales 位；复用 §3.8 `FinalCta` 组件）
 → 全局 FAQ ×9（逐字复用 §3.7，不增删）
 → final CTA
@@ -632,7 +632,7 @@ tagline【终稿·勿改】：`Bring your tools in over MCP, gate risky actions 
 **场景卡 1 · `Bring your tools in, unchanged`**【终稿·勿改】
 
 ```
-MCP servers you already run stay where they are; their tools arrive as ordinary balsa tools —
+MCP servers you already run stay where they are; their tools arrive as ordinary Balsats tools —
 plain objects, no registry.
 → @balsats/mcp-client
 ```
@@ -669,7 +669,7 @@ composition root is optional and a bare new Agent() stays first-class.
 **场景卡 2 · `Into the observability you already run`**【终稿·勿改】
 
 ```
-balsa traces its own minimal spans; @balsats/otlp exports them with GenAI semantic conventions
+Balsats traces its own minimal spans; @balsats/otlp exports them with GenAI semantic conventions
 to your collector — one tracer handed down by the app.
 → @balsats/core/observability · @balsats/otlp
 ```
@@ -689,7 +689,7 @@ another's.
 **统一骨架**（四页一致）：
 
 ```
-title: <Keyword> for TypeScript — balsa      （【终稿】口径；各页字符串见下）
+title: <Keyword> for TypeScript — Balsats      （【终稿】口径；各页字符串见下）
 H1:    <词面 + 主张>                          （各页逐字锁定）
 → 2–4 段论证（小标题 + 1–3 句）
 → 一条 `Learn more` 文字链【标签逐字 `Learn more`】
@@ -714,11 +714,11 @@ H1:    <词面 + 主张>                          （各页逐字锁定）
 
 #### `/ai-agent-framework`
 
-`title: AI agent framework for TypeScript — balsa`【终稿】
+`title: AI agent framework for TypeScript — Balsats`【终稿】
 H1【终稿·勿改】：`AI agent framework — everything you need, nothing you have to run.`
 
 **A library, not infrastructure you operate**
-> balsa is a library you call from the app you already run. No database, queue, or long-running process is required: storage ports default to in-memory implementations, and adapters are a deliberate choice rather than a prerequisite.
+> Balsats is a library you call from the app you already run. No database, queue, or long-running process is required: storage ports default to in-memory implementations, and adapters are a deliberate choice rather than a prerequisite.
 
 **Compose only what you use**
 > Every subsystem ships behind its own subpath export — agents, tools, memory, workflows, observability, durable execution, signals, schedules — and the core carries zero runtime dependencies. Capability packages such as @balsats/mcp-server, @balsats/sqlite and @balsats/otlp are added one at a time, only when a job calls for them.
@@ -729,12 +729,12 @@ H1【终稿·勿改】：`AI agent framework — everything you need, nothing yo
 **页内 FAQ**
 
 **1. `What does "zero runtime dependencies" actually mean?`**
-> The core package ships with no third-party runtime dependencies; model instances arrive from AI SDK provider packages you already chose, and schemas stay in the library you already use. Your dependency tree gains balsa and nothing hidden behind it.
+> The core package ships with no third-party runtime dependencies; model instances arrive from AI SDK provider packages you already chose, and schemas stay in the library you already use. Your dependency tree gains Balsats and nothing hidden behind it.
 
 **2. `Do I have to run anything alongside my app?`**
 > No. There is no database, queue, or long-running process to operate; storage ports default to in-memory implementations and swap to adapters only when you want persistence.
 
-**3. `Can I adopt balsa one piece at a time?`**
+**3. `Can I adopt Balsats one piece at a time?`**
 > Yes. Each subsystem is its own subpath export and capability packages are installed individually, so a first agent can be a single import. What you don't import costs nothing — not in the dependency tree, not in concept space.
 
 **4. `How do multiple agents fit together?`**
@@ -745,7 +745,7 @@ H1【终稿·勿改】：`AI agent framework — everything you need, nothing yo
 
 #### `/ai-agents`
 
-`title: AI agents for TypeScript — balsa`【终稿】
+`title: AI agents for TypeScript — Balsats`【终稿】
 H1【终稿·勿改】：`AI agents — a handful of fields, a built-in loop, and no hidden state.`
 
 **An agent is a small object**
@@ -755,7 +755,7 @@ H1【终稿·勿改】：`AI agents — a handful of fields, a built-in loop, an
 > When the model answers with a tool call, the loop executes the tool and feeds the result back to the model; a failing tool returns an error result the model can recover from. stream() yields the run's chunks as they happen, and generate() is the same run collapsed to its terminal values — one code path, so the two always agree.
 
 **Tools are plain objects you already know how to write**
-> A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so balsa validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider.
+> A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so Balsats validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider.
 
 **Memory is identity you name per call**
 > Thread and resource are passed per call and the agent itself carries no conversation state, so one agent serves every conversation. Message history is on by default; working memory is an opt-in, resource-scoped record the model updates through a framework-attached tool.
@@ -772,14 +772,14 @@ H1【终稿·勿改】：`AI agents — a handful of fields, a built-in loop, an
 > Yes — thread and resource are named per call and the agent holds no conversation state. Memory storage goes through a port with an in-memory default.
 
 **4. `How is tool input validated?`**
-> Schemas are Standard Schema dual interfaces: balsa validates the model's arguments with them and sends the corresponding JSON Schema to the provider.
+> Schemas are Standard Schema dual interfaces: Balsats validates the model's arguments with them and sends the corresponding JSON Schema to the provider.
 
 **5. `How do I add guardrails, redaction, or rate limiting?`**
 > Processors: ordered hooks (processInput, processOutputStep, processError) are the framework's single cross-cutting extension point and run in declaration order.
 
 #### `/ai-workflows`
 
-`title: AI workflows for TypeScript — balsa`【终稿】
+`title: AI workflows for TypeScript — Balsats`【终稿】
 H1【终稿·勿改】：`AI workflows — typed steps, validated boundaries, and runs that survive a restart.`
 
 **Steps that promise what they take and what they give back**
@@ -813,40 +813,40 @@ H1【终稿·勿改】：`AI workflows — typed steps, validated boundaries, an
 
 #### `/ai-agent-observability`
 
-`title: AI agent observability for TypeScript — balsa`【终稿】
+`title: AI agent observability for TypeScript — Balsats`【终稿】
 H1【终稿·勿改】：`AI agent observability — see what actually ran, in the stack you already use.`
 
 **Spans for the things that actually ran**
-> Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is balsa's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace.
+> Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is Balsats's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace.
 
 **A tracer you hand down once**
 > Assemble a tracer at the composition root and every agent built through the app traces with no per-agent wiring. A standalone agent with no tracer stays fully first-class: zero overhead, no span objects.
 
 **Export to where your telemetry already lives**
-> Console and memory exporters are built in; @balsats/otlp maps balsa spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story.
+> Console and memory exporters are built in; @balsats/otlp maps Balsats spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story.
 
 **页内 FAQ**
 
-**1. `What gets traced in a balsa run?`**
+**1. `What gets traced in a Balsats run?`**
 > Agent runs, model steps, tool calls, workflow runs and steps, and memory recalls and saves each open a span, with parent-child structure that keeps a run readable.
 
 **2. `Can I send traces to my existing OpenTelemetry backend?`**
-> Yes — @balsats/otlp exports balsa spans with GenAI semantic conventions to any OTLP-compatible collector.
+> Yes — @balsats/otlp exports Balsats spans with GenAI semantic conventions to any OTLP-compatible collector.
 
 **3. `Where do traces go if I don't configure anything?`**
-> balsa ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter.
+> Balsats ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter.
 
 **4. `Does tracing cost anything when I don't want it?`**
 > No: a standalone new Agent() with no tracer opens no span objects, so an untraced run stays as small as it looks.
 
-**5. `Does balsa ship a dashboard or a hosted observability service?`**
-> No. balsa produces spans and exports them to the stack you operate; there is no balsa-side service in the loop.
+**5. `Does Balsats ship a dashboard or a hosted observability service?`**
+> No. Balsats produces spans and exports them to the stack you operate; there is no Balsats-side service in the loop.
 
 ---
 
 ## 5. 品牌与视觉
 
-**总原则**（#3 裁决 A「继承暖纸」）：landing 与 docs 站同族一体，**逐字继承** balsa-docs `docs/spec/brand-visual.md` §2.2 的 token 集；伞形品牌沿占位策略首发（文字 wordmark + 单字形 favicon + 单张静态 OG）；真相源 = docs 规范，SPEC 不另立 token 表。
+**总原则**（#3 裁决 A「继承暖纸」）：landing 与 docs 站同族一体，**逐字继承** balsats-docs `docs/spec/brand-visual.md` §2.2 的 token 集；伞形品牌沿占位策略首发（文字 wordmark + 单字形 favicon + 单张静态 OG）；真相源 = docs 规范，SPEC 不另立 token 表。
 
 ### 5.1 权威 token 集（值须与 docs §2.2 **逐字节一致**）
 
@@ -932,7 +932,7 @@ H1【终稿·勿改】：`AI agent observability — see what actually ran, in t
 | `/about` 收尾带 | GitHub · Issues | `links.github` / `links.issues` |
 | 法务页 | `open an issue in the repository` | `links.issues` |
 
-**「Copy quick start」语义（锁定）**：复制内容 = hero 代码段逐字（含空行；票面记 17 行的显式例外）；不是 install 命令、不是 README 全文；点击后按钮短暂显示 `✓ copied`。发布后的模式（如「Copy agent prompt」）维持在 fog（§10 未决②）。
+**「Copy quick start」语义（锁定）**：复制内容 = hero 代码段逐字（含空行；票面记 17 行的显式例外）；不是 install 命令、不是 README 全文；点击后按钮短暂显示 `✓ copied`。发布后的模式（如「Copy agent prompt」）维持在 fog（§10 未决①）。
 
 ### 6.2 三个切换点 × 双版文案
 
@@ -1079,7 +1079,7 @@ await agent.generate('Should I bring a rain jacket?', {
 ```ts
 import { createSqliteStorage } from '@balsats/sqlite';
 
-const storage = createSqliteStorage({ path: 'balsa.db' });   // one adapter, all four ports
+const storage = createSqliteStorage({ path: 'balsats.db' });   // one adapter, all four ports
 
 const app = createApp({
   storage: { memory: storage.memory, durableAgent: storage.agentRunSnapshots },
@@ -1171,7 +1171,7 @@ trace 4f3c9a… · gpt-4o-mini · 2 steps · 1.62s · 214 in / 62 out tokens
 ### 8.2 输出模式与「部署目标 TBD」的技术前提（硬约束）
 
 - `output: 'static'`，**不装任何 adapter**。官方原文：静态站不需要 adapter；adapter 产的是服务端脚本，装上它 `dist/` 就不再是可移植静态产物，部署目标事实上被锁死。
-- 交付物 = **可移植的 `dist/` 静态目录**。Cloudflare Pages / Vercel / Netlify 等候选都能直接吃——「把 dist/ 交给谁」留在地图 fog（§10 未决③）。
+- 交付物 = **可移植的 `dist/` 静态目录**。Cloudflare Pages / Vercel / Netlify 等候选都能直接吃——「把 dist/ 交给谁」留在地图 fog（§10 未决②）。
 - 任何为某功能引入 adapter / SSR 的改动 = 违反本 SPEC。
 
 ### 8.3 内容组织：build-time content collections 承载锁定文案
@@ -1195,7 +1195,7 @@ const keywordPages = defineCollection({ /* slug, title, h1, sections[{heading, b
 - **origin 单点**：`src/lib/site.ts` 的 `SITE.origin = 'https://balsats.com'`；`astro.config.mjs` 的 `site`、canonical、sitemap、robots.txt 的 sitemap 行全部由它派生（照 docs 站的单点模式）。
 - **sitemap**：`@astrojs/sitemap@3.7.4` 装并启用。
 - **robots.txt**：`public/robots.txt` 静态文件（`Allow: /` + 指向 `https://balsats.com/sitemap-index.xml`）。
-- **llms.txt**：`public/llms.txt` 静态文件（`public/` 原样进 `dist/`）；v1 = 页面清单（title + 绝对 URL）；具体形态仍属 fog（§10 未决⑤）。
+- **llms.txt**：`public/llms.txt` 静态文件（`public/` 原样进 `dist/`）；v1 = 页面清单（title + 绝对 URL）；具体形态仍属 fog（§10 未决④）。
 - **不装 RSS**（无 blog，本期不预留依赖）。
 - **i18n 预留但不启用**：
 
@@ -1285,7 +1285,7 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 - 数字/事实的**单一真相源** = 框架 README / 本 SPEC 的锁定块；构建会话不得从别处「补」事实。
 - 术语守本仓库 `CONTEXT.md`：**capability package**（不叫 plugin / integration）、**harness**（文档分类名，不是模块）、**memory**（不用 session / short-term / long-term）、**as-tool composition**（不用 supervisor / sub-agent）、用例页 / 场景卡 / 关键词页 / 全局 FAQ / 页内 FAQ 各按其定义使用。
 - 英文文案统一美式拼写与 em dash 风格（照锁定块，如 "Summarise this ticket." 是锁定代码注释，逐字保留）。
-- 包名一律 `@balsats/*`；产品名按锁定字面（词首大写 `Balsa` 出现在锁定文案处，wordmark/域名/scope 为小写）。
+- 包名一律 `@balsats/*`；产品名 = `Balsats`（词首大写，含 wordmark）；域名 / scope / 仓库名小写 `balsats`。
 
 ---
 
@@ -1293,13 +1293,12 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 
 ### 10.1 fog（地图遗留的未决项，构建会话不得自行拍板）
 
-1. **品牌字面**：全站字面是否随框架改名（`balsa` → `Balsats`）——见文首「写作时事实核验」第 2 条。若拍「改」，替换面 = 全站所有站面字面（wordmark、H1、hero sub、FAQ 题干与答案、/about 全篇、法务页、footer `©` 行、页面 title 后缀、OG/favicon 字面），并同步本仓库 `CONTEXT.md`；代码/包名/域名不受影响（已是 balsats）。**未拍前按本 SPEC 的 balsa 字面施工。**
-2. **0.5.0 后的 CTA 切换与上线节奏**：三处切换点 + 发布后文案（§6.2）；切换信号已触发（registry 可见），但形态（install 命令 / Copy agent prompt）未拍。
-3. **部署目标**：Cloudflare Pages / Vercel / 其他——只是「把 `dist/` 交给谁」；技术前提已锁（§8.2）。
-4. **analytics / 访问统计**：未定；落地即按 §4.2 触发清单改 Privacy（匿名无 cookie 统计同样要披露）；Terms 只在出现托管服务或账号时才动。email 订阅分支已由 #15 关闭。
-5. **SEO 细化**：逐页 OG 生成（C① 留雾）、FAQPage JSON-LD、`llms.txt` 的具体形态。
-6. **i18n 中文内容**：本期只有 `en`；将来 `src/pages/zh/**`。
-7. **与 docs 站的互链余量**：上线后 `Examples` / `Architecture` 是否改指 docs 站对应页（词页 `Learn more` 映射已定，见 §4.4）。
+1. **0.5.0 后的 CTA 切换与上线节奏**：三处切换点 + 发布后文案（§6.2）；切换信号已触发（registry 可见），但形态（install 命令 / Copy agent prompt）未拍。
+2. **部署目标**：Cloudflare Pages / Vercel / 其他——只是「把 `dist/` 交给谁」；技术前提已锁（§8.2）。
+3. **analytics / 访问统计**：未定；落地即按 §4.2 触发清单改 Privacy（匿名无 cookie 统计同样要披露）；Terms 只在出现托管服务或账号时才动。email 订阅分支已由 #15 关闭。
+4. **SEO 细化**：逐页 OG 生成（C① 留雾）、FAQPage JSON-LD、`llms.txt` 的具体形态。
+5. **i18n 中文内容**：本期只有 `en`；将来 `src/pages/zh/**`。
+6. **与 docs 站的互链余量**：上线后 `Examples` / `Architecture` 是否改指 docs 站对应页（词页 `Learn more` 映射已定，见 §4.4）。
 
 ### 10.2 owner 可改判的 SPEC 判定（已拍，集中登记）
 
@@ -1312,6 +1311,7 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 | ⑤ | §3.3 | observability lead 中 "traced by default" 与零开销句的润色对齐（票面原文保留，仅措辞） |
 | ⑥ | §4.2 | Privacy 末段 "or an email subscription" 分支是否删（#15 已关闭该分支；删除需 owner 确认） |
 | ⑦ | §3.6 / §3.8 | resources 细带引导词、final CTA 的 sub 文案 |
+| ⑧ | §2.2 / §4.1 / §9.3 | 品牌传播的形态判定（wordmark 与 `©` 行用「Balsats」；`/about` 首句 = "Balsats takes its name from balsa, the lightest structural wood there is: light, but load-bearing."；possessive 写作 "Balsats's"）——owner 可改判 |
 
 ---
 
@@ -1320,7 +1320,7 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 - **docs 站**：独立工程（`balsats-docs`，`https://docs.balsats.com`），内容量远超 landing；本站只做链接与外链常量。
 - **blog / 内容引擎、books**：需要持续供稿，后续阶段再议（因此不装 RSS、不设 `/blog`）。
 - **`/newsletter` 与任何 email 订阅面**（#15 裁定排除）；**站外社区 / 社交入口**（X / Discord / LinkedIn / YouTube 等一概不设；公开面只留 GitHub）。
-- **参照站有、balsa 结构上不适用的页面**（逐页裁定，不建）：`/pricing`、`/customers`、`/careers`、`/contact`、`/hackathon`、`/mcp-registry`、`/legal/dpa`、`/sales-agents`、`/marketing-agents`、`/company-brain`、`/financial-services`、`/healthcare`、`/studio`、`/factory`、`/agent-builder`、`/ai-agent-deployment`、`/ai-gateway`、`/platform-observability`、`/rag-pipeline`。
+- **参照站有、Balsats 结构上不适用的页面**（逐页裁定，不建）：`/pricing`、`/customers`、`/careers`、`/contact`、`/hackathon`、`/mcp-registry`、`/legal/dpa`、`/sales-agents`、`/marketing-agents`、`/company-brain`、`/financial-services`、`/healthcare`、`/studio`、`/factory`、`/agent-builder`、`/ai-agent-deployment`、`/ai-gateway`、`/platform-observability`、`/rag-pipeline`。
 - **伞形品牌实物**（真 logo / wordmark / 品牌字体）：归伞形品牌 effort；本站只留接入点（替换成本 = 改 token + 换资产）。
 - **竞品对比 / 替代方案页**：任何形式的点名对比不做。
 - **服务端能力**：任何需要 adapter / SSR / API route 的功能（含运行时 OG 生成、live collections、搜索服务）。
@@ -1362,11 +1362,10 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 
 ## 13. 构建会话交接
 
-**开工前必做（两条确认 + 一条复核）**：
+**开工前必做（一条确认 + 一条复核）**：
 
-1. 与 owner 确认 §6.4 的发布切换问题（0.5.0 已上 npm；预/后双版文案在 §6.2）。
-2. 与 owner 确认 §10 未决①的品牌字面问题（balsa vs Balsats）。
-3. 按 §8.7-A 的复核命令跑一次 Expressive Code 现状检查（期望：无可用官方 tab 组）。
+1. 与 owner 确认 §6.4 的发布切换问题（0.5.0 已上 npm；预/后双版文案在 §6.2，fog §10.1①）。
+2. 按 §8.7-A 的复核命令跑一次 Expressive Code 现状检查（期望：无可用官方 tab 组）。
 
 **资产位置**：
 
@@ -1377,4 +1376,4 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 
 **建议施工顺序**：脚手架（§8.1 钉版本 + §8.2 静态输出）→ `site.ts` / `links.ts` / token 层 → content collections 装入 §3/§4/§7 的锁定文案与代码 → 布局与组件（Header/Footer/FeatureTabs/CodeTabs/TraceWaterfall/FaqList/ScenarioCard/FinalCta）→ 11 页 + 404 → §8.8 质量门 → 亮暗逐页走查。
 
-**完成定义**：§8.8 全部通过；所有页面与文案按本 SPEC 逐字落地（`【终稿·勿改】` 一字不动）；§9 红线扫描零命中；两条开工前确认已闭环。
+**完成定义**：§8.8 全部通过；所有页面与文案按本 SPEC 逐字落地（`【终稿·勿改】` 一字不动）；§9 红线扫描零命中；开工前确认已闭环。
