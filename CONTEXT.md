@@ -16,10 +16,10 @@ Balsa's differentiating axis, with a precise two-part meaning: compose only what
 _Avoid_: small, mini（泛化的"小"）
 
 **core package**:
-`@balsa/core`, the zero-runtime-dependency package; every subsystem is a subpath export.
+`@balsats/core`, the zero-runtime-dependency package; every subsystem is a subpath export.
 
 **capability package**:
-An optional add-on package `@balsa/<capability>` (e.g. `@balsa/mcp-server`).
+An optional add-on package `@balsats/<capability>` (e.g. `@balsats/mcp-server`).
 _Avoid_: plugin, integration
 
 **composition root**:
