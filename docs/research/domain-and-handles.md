@@ -6,6 +6,8 @@
 > **一手来源**:各 TLD **registry RDAP**(端点由 IANA 的 `rdap/dns.json` bootstrap 直取,不经过聚合站)、公共 DNS over HTTPS(dns.google 与 cloudflare-dns.com **两个独立递归**)、GitHub REST API(认证调用)、npm registry 公开端点(三端点交叉标定,见 §3.3)、X 公开页面、`hstspreload.org` API。
 > **本文只呈现事实与候选,不替老板拍板**;需要人拍的点集中在 §4.1 的分叉与 §8 的行动清单。
 > **修订(2026-10-01,双轴评审回改)**:① §7 的域名复现命令改为**按 IANA bootstrap 逐 TLD 取端点**(旧版统一打 Google Registry 端点,查 `.run`/`.codes` 会问到**错的 registry**——而问错 registry 同样回 404,会把结论读反);② §3.1 的「四绿」列改为**三面**并显式给出四绿集;③ §4.2 增第 3 条与 §4.4——把与 balsa-framework **ADR-0013** 的冲突显式记账、给 `balsa.ai`/`balsa.org` 单列处置;④ §1.2 / §2.2 的绝对化措辞收紧(最短、全线);⑤ 用词取消费商侧的术语表写法「docs 站」→「**文档站**」(balsa-docs `CONTEXT.md` 的定义),「escape-hatch 根」这个自造词一律换成自解释的「同名根」。
+> **附记(2026-10-02)**:原报告交付后 owner 拍定 apex = **`balsats.com`**(覆盖 §4.1 的推荐序)。该根**不在**本报告 §0 的候选表内,
+> 复核结果、与原口径的差异记账、逐条复现命令与行动清单增补,全部追加在 **§9**。
 
 ---
 
@@ -289,4 +291,72 @@ curl -s 'https://hstspreload.org/api/v2/status?domain=dev' | jq -c .   # → pre
 
 ---
 
-_产出方:[#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsa-website/issues/9)(wayfinder 研究票);消费方:本仓库的[地图 #1](https://github.com/0xnicholas/balsa-website/issues/1) 与 balsa-docs 的 [#29](https://github.com/0xnicholas/balsa-docs/issues/29) / [#30](https://github.com/0xnicholas/balsa-docs/issues/30)。_
+## 9. 附记:裁决 `balsats.com` 与根名复核(2026-10-02 追加)
+
+> **本节是报告交付后追加的**,原报告止于 §8。裁决由 owner 于 **2026-10-02** 拍定;本节只做两件事——把裁决记账、按**同一判定法**复核这个根
+> (它不在原票面候选里,§2 / §3 的候选表**未覆盖**)。证据窗口 **2026-10-02 01:14 UTC**,本机直连,**只读**(未注册、未下单、未建账号/scope)。
+
+### 9.1 裁决
+
+- **apex = `balsats.com`(单一 apex)**:营销站 = `https://balsats.com`,文档站 = `https://docs.balsats.com`(形态仍是 `docs.<apex>`,与 delivery §3.1 的形态要求一致)。
+- **覆盖 §4.1 的推荐序**:① `balsajs.dev` / ② `getbalsa.dev` / ③ `balsa.run` 均不采用。**理由归 owner,本节不替其补理由**;只记两笔账——该根**不在**原票面候选集内(§0),且它与 §4.2 第 2 条「`.dev` + `.com` 成对拿」的取向不同(正站直接用 `.com`)。
+- 落地票:营销站 / 域侧 = [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16);文档站仓库侧 = [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)(机制沿用 [balsa-docs #29](https://github.com/0xnicholas/balsa-docs/issues/29))。
+
+### 9.2 复核总表(2026-10-02 01:14 UTC)
+
+| 面 | 取值 | 判定 | 对照(构造名 / 已知样本) |
+| --- | --- | --- | --- |
+| 域名 `balsats.com` | registry RDAP(**Verisign**)`404`;dns.google 与 cloudflare-dns.com 均 **`Status 3` = NXDOMAIN** | ✓ **可注册** | 构造名 `zzqqxxnonexistent9876.com` 同判(404 / Status 3) |
+| GitHub `balsats` | REST `/users/balsats` → **404** | ✓ **空** | 构造名同判 404 |
+| npm scope `@balsats` | `/-/org/balsats/user` → `{"error":"Scope not found"}` | ✓ **空** | `@balsa`(已占)→ `200 {}`;`@balsajs` → Scope not found(§3.3 的标定端点) |
+| X `@balsats` | `https://x.com/balsats` → **200**「Thom's Soyeur (@BalsatS)」 | ✗ **已被占** | 构造名 → **404** User Profile Not Found |
+
+**四面三绿一红**:域名 / GitHub / npm scope 全绿**且同名**,**X 已被一个与本项目无关的真人账号占据**。
+
+同根的其他 TLD(顺带):`balsats.dev` RDAP **404** + NXDOMAIN ×2、`balsats.net` RDAP **404**、`balsats.io` NXDOMAIN ×2——`.io` 不在 IANA RDAP bootstrap,只有 DNS 证据(§2.3 的口径)。
+
+### 9.3 与原报告口径的差异(必须记账)
+
+1. **「同名根」(§4.2 第 1 条)在 X 上不成立**:四个公开面共用一个根的前提这次做不到。可选处置(**不替 owner 拍**):① X 用变体名(`@balsats_dev` 等),对外材料只挂主站;② 不建 X;③ 放弃「同名」,四个面各自取名。代价一致:**社交面上的根名不完整**。
+2. **`.dev` + `.com` 成对取向变更**(§4.2 第 2 条):本次以 `.com` 作正站;`.dev` 仍空着,是否顺带拿下做 301 / 防抢注**未拍**。
+3. **§4.1 ① 的 HSTS 加分项随裁决消失**:该加分项来自「`.dev` 整条 TLD 在 preload 表内」,`.com` 不在表内——站点若要 HTTPS-only 得由站点自身强制(与取向不冲突,但不再是 TLD 白送)。
+4. **与 ADR-0013 的冲突(§4.2 第 3 条)未解除**:X 面已无同名可选,「新建同名 org」这条路在 X 上也建不起来;GitHub 归属仍按该 ADR 的现状(个人账号)走。
+5. **时点证据不是预留**(§2 的口径不变):`balsats.com` 本批实测未注册,但**未下单**——证据窗口之外随时可能被抢注。
+
+### 9.4 复现(本节证据的逐条命令)
+
+```bash
+# ① 域名:registry RDAP(端点按 TLD 从 IANA bootstrap 取值;.com → rdap.verisign.com)
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Accept: application/rdap+json' \
+  https://rdap.verisign.com/com/v1/domain/balsats.com           # → 404 = registry 里没有该对象
+
+# ② 域名:两个独立递归交叉验证(Status 3 = NXDOMAIN)
+for res in https://dns.google/resolve https://cloudflare-dns.com/dns-query; do
+  curl -s "$res?name=balsats.com&type=NS" -H 'Accept: application/dns-json' | jq -c '{Status}'
+done
+
+# ③ GitHub(404 = 空)
+gh api users/balsats --jq '.type' 2>/dev/null || echo "GitHub AVAILABLE"
+
+# ④ npm scope(§3.3 的标定端点;对照 @balsa 已占 → 200 {})
+curl -s https://registry.npmjs.org/-/org/balsats/user | jq -c .   # → {"error":"Scope not found"} = 空
+
+# ⑤ X(200 = 已被占;构造名回 404)
+curl -s -o /dev/null -w '%{http_code}\n' -A 'Mozilla/5.0' https://x.com/balsats
+```
+
+### 9.5 §8 行动清单的增补与替换
+
+| §8 行 | 状态(2026-10-02) |
+| --- | --- |
+| 1(拍板统一根) | ✅ 已拍 = `balsats.com`;GitHub `balsats` 与 npm `@balsats` 同名可申领;**X 已被占**(§9.3 第 1 条) |
+| 2(下单) | ⏳ [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16)——结算页验价、注意 premium 档(§4.2 原口径不变) |
+| 3(建同名 X / npm org) | ◐ npm `@balsats` 空、GitHub `balsats` 空可建;**X 不可得**,取舍见 §9.3 第 1 条 |
+| 4(apex 进 zone + `docs.<apex>` 记录) | ⏳ [balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16),目标主机名 = `docs.balsats.com`;**CAA 不得阻断签发**(原口径不变) |
+| 5(balsa-docs 上域 PR) | ◐ [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44):`site` 常量 + fixture + 四份规范同批切到 `docs.balsats.com`(机制沿用 #29) |
+| 6(balsa-framework / ADR-0013) | 不变;补一条:该 ADR 的「同名 org」前提在 X 面上本就无解(§9.3 第 4 条) |
+| 3b(裸 `balsa` 询价) | 不变,与本次裁决无关 |
+
+---
+
+_产出方:[#9 域名与 handle 可用性调研](https://github.com/0xnicholas/balsa-website/issues/9)(wayfinder 研究票);消费方:本仓库的[地图 #1](https://github.com/0xnicholas/balsa-website/issues/1) 与 balsa-docs 的 [#29](https://github.com/0xnicholas/balsa-docs/issues/29) / [#30](https://github.com/0xnicholas/balsa-docs/issues/30)。附记 §9(2026-10-02)追加的消费方:[balsa-website #16](https://github.com/0xnicholas/balsa-website/issues/16) 与 [balsa-docs #44](https://github.com/0xnicholas/balsa-docs/issues/44)。_
