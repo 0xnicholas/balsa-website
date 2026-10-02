@@ -1,6 +1,6 @@
 # prototype/code-samples — THROWAWAY
 
-**Question (balsa-website #6)**: 首页代码示例的**选材**（hero 一段 + feature tabs 五段 + observability 一段）
+**Question (balsats-website #6)**: 首页代码示例的**选材**（hero 一段 + feature tabs 五段 + observability 一段）
 与**展示形式**（mastra 用 tabbed code blocks + 语法高亮）。
 
 This is a **landing-page slice** — nav → hero (#4 的 D 复刻 Mastra) → feature tabs ×5 → observability —
