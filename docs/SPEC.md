@@ -13,7 +13,7 @@
 1. **0.5.0 已发布**。核验：`npm view @balsats/core version` → `0.5.0`（2026-10-02；框架 README / ROADMAP 已翻转「已发布」口径，commit `6a1dbc7`）。而 §6 的 CTA 切换信号正是「registry 可见」——**该信号已触发**，但网站侧切换方案（install 命令 / Copy agent prompt 模式）仍未拍。构建前先拍切换与否；双版文案已备在 §6.2。
 2. **品牌字面 = `Balsats`（owner 已拍「传播」，2026-10-02，ticket [#17](https://github.com/0xnicholas/balsats-website/issues/17)）**。框架侧同日完成品牌改名与仓库改名（ADR-0013 修订 + 改名清扫 `6683ebb`；`balsats-docs` / `balsats-website` 同步改名）。全站站面字面统一 **`Balsats`**（wordmark / H1 / hero sub / FAQ 题干与答案 / `/about` / 法务页 / footer `©` 行 / 页面 title 后缀 / OG 文本）；本 SPEC 与 `CONTEXT.md` 已按此扫毕。npm 0.5.0 tarball 内的 README / description 仍是发布前口径、不可回改（新旧并存窗口 = 既有事实，不构成站面回退）。
 3. **旧名/旧域一律按现行名读**：票面中的 `github.com/0xnicholas/balsa-framework` → `.../balsats-framework`；`docs.balsajs.dev` → `docs.balsats.com`。链接表（§2.4）已按现行名写好。
-4. **基础设施约束（owner 定，2026-10-02）**：**本期不使用 Cloudflare**（域名 / DNS / 部署；owner 原话「先不要使用」）——部署候选收窄（§8.2 / §10.1②），域名票 [#16](https://github.com/0xnicholas/balsats-website/issues/16) 已按非 CF 路径改写。
+4. **基础设施约束（owner 定，2026-10-02）**：**本期不使用 Cloudflare**（owner 原话「先不要使用」）；**部署目标 = 腾讯云**（同日 owner 定）——托管形态与节点选择见 §10.1②；域名票 [#16](https://github.com/0xnicholas/balsats-website/issues/16) 已按此路径改写。
 
 ### 标记约定
 
@@ -28,7 +28,7 @@
 
 **站点是什么**：Balsats——ultralight TypeScript AI agent 框架（core 零运行时依赖）——的营销站。英文优先；IA 以 mastra.ai 为内部参照（站上永不点名）；主 CTA = GitHub + `coming soon`；社会证明只留占位；不点名竞品；数据口径 = 架构事实 + 绝对值。
 
-**交付物**：11 个页面（首页 + `/about` + 2 法务页 + 3 用例页 + 4 关键词页）+ Astro 默认 404。技术形态固定为：Astro 静态站、`output: 'static'`、**不装任何 adapter**、产物 = 可移植的 `dist/` 静态目录（部署目标因此可以继续 TBD）。
+**交付物**：11 个页面（首页 + `/about` + 2 法务页 + 3 用例页 + 4 关键词页）+ Astro 默认 404。技术形态固定为：Astro 静态站、`output: 'static'`、**不装任何 adapter**、产物 = 可移植的 `dist/` 静态目录（部署目标 = 腾讯云，2026-10-02 owner 定；具体托管形态与节点选择待定，见 §10.1②）。
 
 **本 SPEC 的边界**：只出 spec，不建站。构建会话按本文件施工；本文件没写的东西 → 见 §10 fog，不许自行发明（尤其不许补文案、补数字、补链接）。
 
@@ -1172,7 +1172,7 @@ trace 4f3c9a… · gpt-4o-mini · 2 steps · 1.62s · 214 in / 62 out tokens
 ### 8.2 输出模式与「部署目标 TBD」的技术前提（硬约束）
 
 - `output: 'static'`，**不装任何 adapter**。官方原文：静态站不需要 adapter；adapter 产的是服务端脚本，装上它 `dist/` 就不再是可移植静态产物，部署目标事实上被锁死。
-- 交付物 = **可移植的 `dist/` 静态目录**。**本期不使用 Cloudflare**（2026-10-02 owner 定；候选 = Vercel / Netlify / GitHub Pages / 其他）——「把 dist/ 交给谁」留在地图 fog（§10 未决②）。
+- 交付物 = **可移植的 `dist/` 静态目录**。**部署目标 = 腾讯云**（2026-10-02 owner 定；不含 Cloudflare）——腾讯云上的具体托管形态（对象存储静态站 / EdgeOne 等，候选待核实选型）与节点选择留在地图 fog（§10 未决②）。
 - 任何为某功能引入 adapter / SSR 的改动 = 违反本 SPEC。
 
 ### 8.3 内容组织：build-time content collections 承载锁定文案
@@ -1295,7 +1295,7 @@ scripts/                    check-contrast · check-tokens · check-copy · chec
 ### 10.1 fog（地图遗留的未决项，构建会话不得自行拍板）
 
 1. **0.5.0 后的 CTA 切换与上线节奏**：三处切换点 + 发布后文案（§6.2）；切换信号已触发（registry 可见），但形态（install 命令 / Copy agent prompt）未拍。
-2. **部署目标**：**不使用 Cloudflare**（2026-10-02 owner 定；见文首「基础设施约束」）；余 = Vercel / Netlify / GitHub Pages / 其他——只是「把 `dist/` 交给谁」；技术前提已锁（§8.2）。
+2. **部署目标 = 腾讯云**（2026-10-02 owner 定；不含 Cloudflare）：余下的 = 腾讯云上的具体托管形态（对象存储静态站 / EdgeOne 等，候选待核实选型）与**节点选择**——**大陆节点需 ICP 备案**（上线后 footer 还需按法定要求展示备案号，届时触发 SPEC 修订）、香港 / 海外节点免备案；技术前提已锁（§8.2）。
 3. **analytics / 访问统计**：未定；落地即按 §4.2 触发清单改 Privacy（匿名无 cookie 统计同样要披露）；Terms 只在出现托管服务或账号时才动。email 订阅分支已由 #15 关闭。
 4. **SEO 细化**：逐页 OG 生成（C① 留雾）、FAQPage JSON-LD、`llms.txt` 的具体形态。
 5. **i18n 中文内容**：本期只有 `en`；将来 `src/pages/zh/**`。
