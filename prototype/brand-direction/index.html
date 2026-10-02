@@ -1,0 +1,612 @@
+<!doctype html>
+<!-- PROTOTYPE (throwaway) · answers balsa-website #3 品牌方向 · do not ship.
+     Three landing brand-direction variants on one page, switchable via ?variant=a|b|c
+     (floating bar or ←/→ keys). In-page button toggles light/dark per variant.
+     A = 继承 balsa-docs token（暖纸/琥珀） · B = 差异化「深木」 · C = mastra 参照系单色工程.
+     Content copy is real (CONTEXT.md / framework README); structure per closed #2 (hero →
+     feature tabs → final CTA); social proof intentionally omitted. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PROTOTYPE · balsa landing brand direction</title>
+<style>
+  /* ---------- shared chassis (prototype only) ---------- */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--fg);
+    min-height: 100vh;
+    transition: background .25s ease, color .25s ease;
+  }
+  .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+  a { color: inherit; }
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- tokens: A 继承 balsa-docs §2.2 (values copied verbatim) ---------- */
+  body[data-variant="a"][data-theme="light"] {
+    --bg: hsl(36, 40%, 99%);        /* #fdfdfb */
+    --fg: hsl(30, 14%, 12%);
+    --muted: hsl(35, 7%, 38%);
+    --line: hsl(35, 15%, 80%);
+    --card: hsl(35, 20%, 93%);
+    --accent: hsl(36, 88%, 33%);    /* #9e630a */
+    --accent-hi: hsl(36, 84%, 23%);
+    --accent-lo: hsl(38, 85%, 90%);
+    --code-bg: hsl(35, 24%, 96%);
+    --code-head: hsl(35, 26%, 92%);
+    --btn-fg-on-accent: hsl(36, 40%, 99%);
+    --shadow: none;
+  }
+  body[data-variant="a"][data-theme="dark"] {
+    --bg: hsl(30, 12%, 10%);        /* #1d1a16 */
+    --fg: hsl(35, 15%, 97%);
+    --muted: hsl(35, 7%, 58%);
+    --line: hsl(35, 8%, 24%);
+    --card: hsl(35, 10%, 16%);
+    --accent: hsl(36, 82%, 55%);
+    --accent-hi: hsl(38, 72%, 78%); /* #efd29f */
+    --accent-lo: hsl(36, 45%, 20%);
+    --code-bg: hsl(30, 12%, 13%);
+    --code-head: hsl(30, 12%, 16%);
+    --btn-fg-on-accent: hsl(30, 12%, 10%);
+    --shadow: none;
+  }
+
+  /* ---------- tokens: B 深木 (differentiated: dark wood default; light = docs warm paper) ---------- */
+  body[data-variant="b"][data-theme="dark"] {
+    --bg: hsl(26, 16%, 7%);
+    --band: hsl(28, 14%, 10%);
+    --fg: hsl(35, 18%, 96%);
+    --muted: hsl(33, 9%, 62%);
+    --line: hsl(30, 11%, 22%);
+    --card: hsl(28, 13%, 11%);
+    --accent: hsl(36, 92%, 58%);
+    --accent-hi: hsl(38, 80%, 80%);
+    --accent-lo: hsl(36, 62%, 16%);
+    --code-bg: hsl(26, 15%, 9%);
+    --code-head: hsl(26, 14%, 12%);
+    --btn-fg-on-accent: hsl(26, 16%, 7%);
+    --glow: 0 0 0 1px hsl(36 62% 16% / .9), 0 8px 40px hsl(36 88% 55% / .12);
+    --shadow: 0 1px 0 hsl(30 11% 22% / .6);
+  }
+  body[data-variant="b"][data-theme="light"] {
+    --bg: hsl(36, 40%, 99%);
+    --band: hsl(35, 30%, 97%);
+    --fg: hsl(30, 14%, 12%);
+    --muted: hsl(35, 7%, 38%);
+    --line: hsl(35, 15%, 80%);
+    --card: hsl(35, 20%, 93%);
+    --accent: hsl(36, 88%, 33%);
+    --accent-hi: hsl(36, 84%, 23%);
+    --accent-lo: hsl(38, 85%, 90%);
+    --code-bg: hsl(35, 24%, 96%);
+    --code-head: hsl(35, 26%, 92%);
+    --btn-fg-on-accent: hsl(36, 40%, 99%);
+    --glow: none;
+    --shadow: none;
+  }
+
+  /* ---------- tokens: C 单色工程 (mastra-referent: neutral monochrome, amber single point) ---------- */
+  body[data-variant="c"][data-theme="dark"] {
+    --bg: hsl(240, 6%, 4%);         /* #08090a */
+    --band: hsl(240, 6%, 7%);
+    --fg: hsl(0, 0%, 96%);
+    --muted: hsl(0, 0%, 55%);
+    --line: hsl(0, 0%, 17%);
+    --card: hsl(240, 5%, 10%);
+    --accent: hsl(36, 88%, 55%);    /* single amber point */
+    --accent-hi: hsl(38, 75%, 76%);
+    --accent-lo: hsl(36, 30%, 14%);
+    --code-bg: hsl(240, 6%, 6%);
+    --code-head: hsl(240, 6%, 9%);
+    --btn-fg-on-accent: hsl(240, 6%, 4%);
+    --shadow: none;
+  }
+  body[data-variant="c"][data-theme="light"] {
+    --bg: hsl(0, 0%, 98.5%);
+    --band: hsl(0, 0%, 96%);
+    --fg: hsl(0, 0%, 12%);
+    --muted: hsl(0, 0%, 45%);
+    --line: hsl(0, 0%, 88%);
+    --card: hsl(0, 0%, 96%);
+    --accent: hsl(36, 88%, 33%);
+    --accent-hi: hsl(36, 84%, 23%);
+    --accent-lo: hsl(38, 80%, 92%);
+    --code-bg: hsl(0, 0%, 96.5%);
+    --code-head: hsl(0, 0%, 94%);
+    --btn-fg-on-accent: hsl(0, 0%, 99%);
+    --shadow: none;
+  }
+
+  /* variant visibility */
+  .v { display: none; }
+  body[data-variant="a"] #v-a { display: block; }
+  body[data-variant="b"] #v-b { display: block; }
+  body[data-variant="c"] #v-c { display: block; }
+
+  /* code highlighting (hand-rolled, prototype fidelity) */
+  .code { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px; line-height: 1.65; }
+  .k { color: hsl(200, 60%, 62%); }         /* keyword */
+  .s { color: hsl(140, 45%, 62%); }         /* string  */
+  .f { color: hsl(30, 75%, 68%); }          /* fn/call */
+  .c { color: var(--muted); font-style: italic; } /* comment */
+  .t { color: hsl(280, 45%, 74%); }         /* type    */
+  .n { color: hsl(20, 75%, 66%); }          /* number/prop */
+
+  /* buttons */
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 8px;
+         font-size: 14px; font-weight: 600; text-decoration: none; border: 1px solid transparent; cursor: pointer; }
+  .btn-primary { background: var(--accent); color: var(--btn-fg-on-accent, #fff); }
+  .btn-ghost { border-color: var(--line); color: var(--fg); background: transparent; }
+  .btn-ghost:hover, .btn-primary:hover { opacity: .88; }
+
+  /* token strip (state surfaced for judgment) */
+  .tokens { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 14px 0 26px; }
+  .tokens .lbl { font-size: 11px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); }
+  .chip i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; border: 1px solid var(--line); }
+  .chip.here { color: var(--accent); font-weight: 600; }
+
+  /* ---------- floating switcher (prototype chrome — obviously not part of the design) ---------- */
+  #switcher { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 99;
+    display: flex; align-items: center; gap: 4px; background: #fff; color: #111;
+    border-radius: 999px; padding: 6px 10px; box-shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(0,0,0,.08); }
+  #switcher button { all: unset; cursor: pointer; padding: 4px 10px; border-radius: 999px; font-size: 15px; line-height: 1; }
+  #switcher button:hover { background: #eee; }
+  #switcher .tag { font-size: 9px; font-weight: 700; letter-spacing: .12em; background: #d92d20; color: #fff;
+    border-radius: 4px; padding: 2px 5px; margin-left: 4px; }
+  #switcher .name { font-size: 13px; font-weight: 600; min-width: 150px; text-align: center; }
+  #switcher .hint { font-size: 10px; color: #888; padding-right: 6px; }
+
+  /* ================================================================
+     VARIANT A — 继承暖纸 · docs sibling · prose-forward, quiet, bordered
+     ================================================================ */
+  #v-a header { border-bottom: 1px solid var(--line); }
+  #v-a .nav { display: flex; align-items: center; gap: 28px; padding: 18px 0; }
+  #v-a .wordmark { font-size: 20px; font-weight: 700; letter-spacing: -.01em; margin-right: auto; }
+  #v-a .wordmark span { color: var(--accent); }
+  #v-a nav a { font-size: 14px; color: var(--muted); text-decoration: none; margin-left: 20px; }
+  #v-a nav a:hover { color: var(--accent); }
+  #v-a .theme-btn { all: unset; cursor: pointer; font-size: 13px; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 6px; padding: 4px 10px; margin-left: 20px; }
+  #v-a .hero { padding: 72px 0 48px; max-width: 720px; }
+  #v-a .hero .kicker { font-size: 13px; font-weight: 600; color: var(--accent); margin-bottom: 14px; }
+  #v-a .hero h1 { font-size: 44px; line-height: 1.12; letter-spacing: -.02em; font-weight: 700; }
+  #v-a .hero h1 em { font-style: normal; color: var(--accent); }
+  #v-a .hero p.lead { font-size: 18px; line-height: 1.6; color: var(--muted); margin: 20px 0 28px; max-width: 60ch; }
+  #v-a .hero .ctas { display: flex; gap: 12px; align-items: center; }
+  #v-a .hero .meta { margin-top: 22px; font-size: 13px; color: var(--muted); }
+  #v-a .hero .meta b { color: var(--fg); font-weight: 600; }
+  #v-a .codeblock { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin: 14px 0 0; background: var(--code-bg); }
+  #v-a .codeblock .head { display: flex; justify-content: space-between; padding: 8px 14px; font-size: 11.5px;
+    color: var(--muted); background: var(--code-head); border-bottom: 1px solid var(--line); }
+  #v-a .codeblock pre { padding: 16px 18px; overflow-x: auto; }
+  #v-a .tabs-sec { padding: 40px 0 8px; }
+  #v-a .tabs-sec h2 { font-size: 22px; margin-bottom: 4px; }
+  #v-a .tabs-sec .sub { font-size: 14px; color: var(--muted); margin-bottom: 18px; }
+  #v-a .tabbar { display: flex; gap: 6px; flex-wrap: wrap; border-bottom: 1px solid var(--line); }
+  #v-a .tabbar button { all: unset; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--muted);
+    padding: 10px 16px; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  #v-a .tabbar button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+  #v-a .tabpanel { display: none; border: 1px solid var(--line); border-top: none; border-radius: 0 0 10px 10px;
+    background: var(--card); padding: 22px 24px; font-size: 15px; line-height: 1.65; }
+  #v-a .tabpanel.active { display: block; }
+  #v-a .tabpanel .pkg { font-size: 12px; color: var(--accent); margin-bottom: 8px; }
+  #v-a .cta-band { margin: 56px 0 0; border: 1px solid var(--line); border-radius: 12px; background: var(--accent-lo);
+    padding: 34px 36px; display: flex; align-items: center; gap: 24px; }
+  #v-a .cta-band h3 { font-size: 20px; }
+  #v-a .cta-band p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+  #v-a .cta-band .btn { margin-left: auto; }
+  #v-a .foot { padding: 26px 0 8px; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); margin-top: 48px; }
+
+  /* ================================================================
+     VARIANT B — 深木 · dark wood launch · split hero, terminal, glow
+     ================================================================ */
+  #v-b header { border-bottom: 1px solid var(--line); background: var(--bg); }
+  #v-b .nav { display: flex; align-items: center; gap: 10px; padding: 16px 0; }
+  #v-b .wordmark { font-size: 20px; font-weight: 800; letter-spacing: -.01em; margin-right: auto; }
+  #v-b .wordmark .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--accent);
+    box-shadow: 0 0 12px var(--accent); margin-left: 6px; }
+  #v-b nav a { font-size: 14px; color: var(--muted); text-decoration: none; margin-left: 18px; }
+  #v-b nav a:hover { color: var(--accent-hi); }
+  #v-b .theme-btn { all: unset; cursor: pointer; font-size: 13px; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 999px; padding: 4px 12px; margin-left: 18px; }
+  #v-b .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 44px; align-items: center; padding: 68px 0 56px; }
+  #v-b .hero .kicker { display: inline-flex; font-size: 12px; font-weight: 600; letter-spacing: .04em; color: var(--accent-hi);
+    border: 1px solid var(--accent-lo); background: var(--accent-lo); border-radius: 999px; padding: 4px 12px; margin-bottom: 18px; }
+  #v-b .hero h1 { font-size: 46px; line-height: 1.08; letter-spacing: -.025em; font-weight: 800; }
+  #v-b .hero h1 em { font-style: normal; background: linear-gradient(92deg, var(--accent) 10%, var(--accent-hi) 90%);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #v-b .hero p.lead { font-size: 17px; line-height: 1.6; color: var(--muted); margin: 18px 0 26px; max-width: 46ch; }
+  #v-b .hero .ctas { display: flex; gap: 12px; }
+  #v-b .btn-primary { box-shadow: var(--glow); }
+  #v-b .hero .meta { margin-top: 20px; font-size: 12.5px; color: var(--muted); letter-spacing: .02em; }
+  #v-b .terminal { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--code-bg); box-shadow: var(--glow); }
+  #v-b .terminal .bar { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: var(--code-head); border-bottom: 1px solid var(--line); }
+  #v-b .terminal .bar i { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
+  #v-b .terminal .bar i:first-child { background: hsl(6, 70%, 52%); }
+  #v-b .terminal .bar i:nth-child(2) { background: hsl(40, 80%, 55%); }
+  #v-b .terminal .bar i:nth-child(3) { background: hsl(140, 55%, 48%); }
+  #v-b .terminal .bar .file { margin-left: 10px; font-size: 11.5px; color: var(--muted); }
+  #v-b .terminal pre { padding: 16px 18px; overflow-x: auto; }
+  #v-b .cards { padding: 12px 0 8px; }
+  #v-b .cards h2 { font-size: 22px; margin-bottom: 18px; }
+  #v-b .cards h2 span { color: var(--accent); }
+  #v-b .cardgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  #v-b .fcard { border: 1px solid var(--line); border-radius: 12px; padding: 18px; background: var(--card); box-shadow: var(--shadow); }
+  #v-b .fcard:hover { border-color: var(--accent); }
+  #v-b .fcard .k { font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 700; letter-spacing: .1em;
+    color: var(--accent); text-transform: uppercase; }
+  #v-b .fcard h3 { font-size: 15.5px; margin: 8px 0 6px; }
+  #v-b .fcard p { font-size: 12.8px; line-height: 1.55; color: var(--muted); }
+  #v-b .cta-band { margin: 64px 0 0; border-radius: 16px; padding: 52px 40px; text-align: center; position: relative; overflow: hidden;
+    background:
+      radial-gradient(600px 200px at 50% -40%, hsl(36 88% 55% / .16), transparent 70%),
+      var(--band); border: 1px solid var(--line); }
+  #v-b .cta-band h3 { font-size: 28px; letter-spacing: -.01em; }
+  #v-b .cta-band p { color: var(--muted); margin: 10px 0 24px; font-size: 15px; }
+  #v-b .foot { padding: 26px 0 8px; font-size: 12.5px; color: var(--muted); display: flex; gap: 18px; margin-top: 48px;
+    border-top: 1px solid var(--line); }
+  @media (max-width: 860px) { #v-b .hero { grid-template-columns: 1fr; } }
+
+  /* ================================================================
+     VARIANT C — 单色工程 · mastra referent · centered, dense, mono
+     ================================================================ */
+  #v-c { font-feature-settings: "ss01"; }
+  #v-c header { border-bottom: 1px solid var(--line); }
+  #v-c .nav { display: flex; align-items: center; padding: 14px 0; }
+  #v-c .wordmark { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 15px; font-weight: 700;
+    letter-spacing: .22em; margin-right: auto; }
+  #v-c nav a { font-family: ui-monospace, Menlo, monospace; font-size: 12px; letter-spacing: .06em; color: var(--muted);
+    text-decoration: none; margin-left: 18px; text-transform: uppercase; }
+  #v-c nav a:hover { color: var(--fg); }
+  #v-c .theme-btn { all: unset; cursor: pointer; font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: .06em; color: var(--muted); border: 1px solid var(--line); padding: 3px 8px; margin-left: 18px; }
+  #v-c .hero { text-align: center; padding: 84px 0 40px; }
+  #v-c .hero .micro { font-family: ui-monospace, Menlo, monospace; font-size: 11.5px; letter-spacing: .28em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 20px; }
+  #v-c .hero h1 { font-size: 42px; line-height: 1.1; letter-spacing: -.02em; font-weight: 650; max-width: 21ch; margin: 0 auto; }
+  #v-c .hero p.lead { font-size: 15.5px; line-height: 1.6; color: var(--muted); max-width: 52ch; margin: 18px auto 30px; }
+  #v-c .hero .ctas { display: flex; gap: 10px; justify-content: center; }
+  #v-c .btn { border-radius: 6px; font-weight: 550; font-size: 13.5px; }
+  #v-c .btn-primary { background: var(--accent); color: var(--btn-fg-on-accent); }
+  #v-c .hero .meta { margin-top: 26px; font-family: ui-monospace, Menlo, monospace; font-size: 11.5px;
+    letter-spacing: .04em; color: var(--muted); }
+  #v-c .codeblock { max-width: 640px; margin: 34px auto 0; border: 1px solid var(--line); border-radius: 8px;
+    overflow: hidden; background: var(--code-bg); text-align: left; }
+  #v-c .codeblock .head { display: flex; justify-content: space-between; padding: 7px 12px; font-size: 10.5px;
+    font-family: ui-monospace, Menlo, monospace; letter-spacing: .08em; color: var(--muted);
+    background: var(--code-head); border-bottom: 1px solid var(--line); text-transform: uppercase; }
+  #v-c .codeblock pre { padding: 14px 16px; overflow-x: auto; font-size: 12px; }
+  #v-c .featrow { margin: 64px 0 0; border-top: 1px solid var(--line); }
+  #v-c .featrow .row { display: grid; grid-template-columns: repeat(5, 1fr); }
+  #v-c .feat { padding: 22px 18px 26px 0; border-right: 1px solid var(--line); padding-left: 18px; }
+  #v-c .feat:first-child { padding-left: 0; }
+  #v-c .feat:last-child { border-right: none; }
+  #v-c .feat .k { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; letter-spacing: .18em;
+    color: var(--muted); text-transform: uppercase; }
+  #v-c .feat h3 { font-size: 14.5px; font-weight: 650; margin: 8px 0 6px; }
+  #v-c .feat p { font-size: 12.3px; line-height: 1.55; color: var(--muted); }
+  #v-c .cta-band { text-align: center; padding: 72px 0 60px; }
+  #v-c .cta-band h3 { font-size: 22px; font-weight: 650; }
+  #v-c .cta-band p { font-size: 13px; color: var(--muted); margin: 8px 0 22px; }
+  #v-c .foot { padding: 20px 0 8px; font-family: ui-monospace, Menlo, monospace; font-size: 11px;
+    letter-spacing: .04em; color: var(--muted); border-top: 1px solid var(--line); display: flex; gap: 16px; }
+  @media (max-width: 860px) { #v-c .featrow .row { grid-template-columns: 1fr 1fr; } #v-c .feat { border-right: none; border-bottom: 1px solid var(--line); } }
+</style>
+</head>
+<body data-variant="a" data-theme="light">
+
+<!-- ==================== VARIANT A · 继承暖纸 (inherits balsa-docs §2.2 tokens) ==================== -->
+<section class="v" id="v-a">
+  <header>
+    <div class="wrap nav">
+      <div class="wordmark">Balsa<span>.</span></div>
+      <nav>
+        <a href="#">Docs</a><a href="#">Examples</a><a href="#">GitHub</a>
+        <button class="theme-btn" data-action="theme">◐ theme</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="kicker">Balsa · npm 0.5.0</div>
+      <h1>The ultralight TypeScript <em>agent framework</em></h1>
+      <p class="lead">Compose only what you use — run anywhere, no runtime baggage. Every subsystem is a
+        separate subpath export; the core ships zero runtime dependencies.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">★ GitHub</a>
+        <a class="btn btn-ghost" href="#">npm i — coming soon</a>
+      </div>
+      <div class="meta"><b>0 runtime dependencies</b> · embeds in your host app · MIT</div>
+    </div>
+
+    <div class="codeblock">
+      <div class="head"><span>quick-start.ts</span><span>zero-install core</span></div>
+      <pre class="code"><span class="k">import</span> { openai } <span class="k">from</span> <span class="s">'@ai-sdk/openai'</span>;
+<span class="k">import</span> { <span class="t">Agent</span> } <span class="k">from</span> <span class="s">'@balsa/core/agent'</span>;
+
+<span class="k">const</span> agent = <span class="k">new</span> <span class="f">Agent</span>({
+  name: <span class="s">'assistant'</span>,
+  instructions: <span class="s">'You are concise.'</span>,
+  model: openai.<span class="f">chat</span>(<span class="s">'gpt-4o-mini'</span>),
+  tools: { weather },  <span class="c">// plain-object tools</span>
+});
+
+<span class="k">const</span> result = agent.<span class="f">stream</span>(<span class="s">'Weather in Paris?'</span>);
+<span class="k">for await</span> (<span class="k">const</span> chunk <span class="k">of</span> result) process.stdout.<span class="f">write</span>(chunk.text ?? <span class="s">''</span>);</pre>
+    </div>
+
+    <div class="tabs-sec">
+      <h2>Compose only what you use</h2>
+      <div class="sub">Five capability surfaces, each an opt-in package — nothing loads you don't ask for.</div>
+      <div class="tabbar" role="tablist">
+        <button role="tab" aria-selected="true" data-tab="a-agents">Agents</button>
+        <button role="tab" aria-selected="false" data-tab="a-workflows">Workflows</button>
+        <button role="tab" aria-selected="false" data-tab="a-harness">Harness</button>
+        <button role="tab" aria-selected="false" data-tab="a-memory">Memory</button>
+        <button role="tab" aria-selected="false" data-tab="a-mcp">MCP</button>
+      </div>
+      <div class="tabpanel active" id="a-agents"><div class="pkg mono">@balsa/core/agent · @balsa/ai-sdk</div>
+        Plain-object tools with Standard Schema validation. One run, two consumption styles on the same object:
+        <code>for await</code> streams Balsa's own chunk protocol; terminal values are awaited on it. Any AI SDK
+        provider drops straight in. Wrap an agent as a tool on another agent — delegation is an ordinary tool call.</div>
+      <div class="tabpanel" id="a-workflows"><div class="pkg mono">@balsa/core/workflow</div>
+        Durable steps with JSON snapshots at step boundaries. A workflow suspends and resumes from another
+        process — the snapshot is the contract.</div>
+      <div class="tabpanel" id="a-harness"><div class="pkg mono">@balsa/core · @balsa/croner</div>
+        The documentation name for durable agents, signals, and schedules. Approval-listed tool calls suspend
+        the run as a human approval gate; <code>resume(&#123; approved &#125;)</code> continues it.</div>
+      <div class="tabpanel" id="a-memory"><div class="pkg mono">@balsa/core/memory · @balsa/sqlite</div>
+        Thread and resource identity plus message history, with opt-in resource-scoped working memory.
+        SQLite adapter ships as a capability package.</div>
+      <div class="tabpanel" id="a-mcp"><div class="pkg mono">@balsa/mcp-server · @balsa/mcp-client</div>
+        Serve an agent as an MCP server; call MCP tools from an agent. Both directions, two packages.</div>
+    </div>
+
+    <div class="cta-band">
+      <div>
+        <h3>Star balsa on GitHub</h3>
+        <p>0.5.0 is coming soon — M1 through M5, one release.</p>
+      </div>
+      <a class="btn btn-primary" href="#">★ GitHub</a>
+    </div>
+
+    <div class="tokens" data-tokens>
+      <span class="lbl">tokens in play</span>
+      <!-- chips injected by JS -->
+    </div>
+  </div>
+
+  <div class="wrap"><div class="foot">MIT · docs (placeholder link) · GitHub · social proof — reserved</div></div>
+</section>
+
+<!-- ==================== VARIANT B · 深木 ==================== -->
+<section class="v" id="v-b">
+  <header>
+    <div class="wrap nav">
+      <div class="wordmark">Balsa<span class="dot"></span></div>
+      <nav>
+        <a href="#">Docs</a><a href="#">Examples</a><a href="#">GitHub</a>
+        <button class="theme-btn" data-action="theme">◐ theme</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hero">
+      <div>
+        <div class="kicker">ultralight by construction</div>
+        <h1>Run agents with <em>no runtime baggage</em></h1>
+        <p class="lead">Balsa is a TypeScript agent framework where every subsystem is a separate subpath export
+          and the core has zero runtime dependencies. Compose only what you use.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="#">★ GitHub</a>
+          <a class="btn btn-ghost" href="#">npm i — coming soon</a>
+        </div>
+        <div class="meta mono">0 runtime deps · no required DB / queue / daemon · MIT</div>
+      </div>
+      <div class="terminal">
+        <div class="bar"><i></i><i></i><i></i><span class="file mono">quick-start.ts</span></div>
+        <pre class="code"><span class="k">import</span> { <span class="t">Agent</span> } <span class="k">from</span> <span class="s">'@balsa/core/agent'</span>;
+<span class="k">import</span> { openai } <span class="k">from</span> <span class="s">'@ai-sdk/openai'</span>;
+
+<span class="k">const</span> agent = <span class="k">new</span> <span class="f">Agent</span>({
+  name: <span class="s">'assistant'</span>,
+  instructions: <span class="s">'You are concise.'</span>,
+  model: openai.<span class="f">chat</span>(<span class="s">'gpt-4o-mini'</span>),
+  tools: { weather },
+});
+
+<span class="k">const</span> result = agent.<span class="f">stream</span>(<span class="s">'Weather in Paris?'</span>);
+<span class="k">for await</span> (<span class="k">const</span> chunk <span class="k">of</span> result)
+  process.stdout.<span class="f">write</span>(chunk.text ?? <span class="s">''</span>);</pre>
+      </div>
+    </div>
+
+    <div class="cards">
+      <h2>Compose <span>only what you use</span></h2>
+      <div class="cardgrid">
+        <div class="fcard"><div class="k">01 · agents</div><h3>Agents</h3><p>Plain-object tools, Standard Schema validation, stream or await on one object.</p></div>
+        <div class="fcard"><div class="k">02 · workflows</div><h3>Workflows</h3><p>Durable steps with JSON snapshots; resume in another process.</p></div>
+        <div class="fcard"><div class="k">03 · harness</div><h3>Harness</h3><p>Durable agents, signals, schedules — approval gates that suspend the run.</p></div>
+        <div class="fcard"><div class="k">04 · memory</div><h3>Memory</h3><p>Thread &amp; resource identity; opt-in working memory. SQLite adapter ships.</p></div>
+        <div class="fcard"><div class="k">05 · mcp</div><h3>MCP</h3><p>Serve agents as MCP servers; call MCP tools from agents.</p></div>
+      </div>
+    </div>
+
+    <div class="cta-band">
+      <h3>Ultralight is shipping soon</h3>
+      <p>0.5.0 — M1 through M5, one release. Watch the repo.</p>
+      <a class="btn btn-primary" href="#">★ Star on GitHub</a>
+    </div>
+
+    <div class="tokens" data-tokens>
+      <span class="lbl">tokens in play</span>
+    </div>
+  </div>
+
+  <div class="wrap"><div class="foot"><span>MIT</span><span>docs (placeholder)</span><span>social proof — reserved</span></div></div>
+</section>
+
+<!-- ==================== VARIANT C · 单色工程 ==================== -->
+<section class="v" id="v-c">
+  <header>
+    <div class="wrap nav">
+      <div class="wordmark">BALSA</div>
+      <nav>
+        <a href="#">DOCS</a><a href="#">EXAMPLES</a><a href="#">GITHUB</a>
+        <button class="theme-btn" data-action="theme">THEME</button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="micro">ultralight typescript agent framework</div>
+      <h1>Compose only what you use</h1>
+      <p class="lead">Agents, workflows, memory — each a separate subpath export, composed at your choice.
+        Core with zero runtime dependencies; no required database, queue, or daemon.</p>
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">GitHub ↗</a>
+        <a class="btn btn-ghost" href="#">0.5.0 · coming soon</a>
+      </div>
+      <div class="meta">0 RUNTIME DEPS / RUN ANYWHERE / MIT</div>
+      <div class="codeblock">
+        <div class="head"><span>quick-start.ts</span><span>12 lines</span></div>
+        <pre class="code"><span class="k">import</span> { <span class="t">Agent</span> } <span class="k">from</span> <span class="s">'@balsa/core/agent'</span>;
+
+<span class="k">const</span> agent = <span class="k">new</span> <span class="f">Agent</span>({ name: <span class="s">'assistant'</span>, model, tools: { weather } });
+<span class="k">const</span> result = agent.<span class="f">stream</span>(<span class="s">'Weather in Paris?'</span>);
+<span class="k">for await</span> (<span class="k">const</span> chunk <span class="k">of</span> result) process.stdout.<span class="f">write</span>(chunk.text ?? <span class="s">''</span>);</pre>
+      </div>
+    </div>
+
+    <div class="featrow">
+      <div class="row">
+        <div class="feat"><div class="k">agents</div><h3>Agents</h3><p>Plain-object tools, Standard Schema, stream or await on one object.</p></div>
+        <div class="feat"><div class="k">workflows</div><h3>Workflows</h3><p>JSON snapshots at step boundaries; resumable in another process.</p></div>
+        <div class="feat"><div class="k">harness</div><h3>Harness</h3><p>Durable agents, signals, schedules; approval gates suspend the run.</p></div>
+        <div class="feat"><div class="k">memory</div><h3>Memory</h3><p>Thread &amp; resource identity; opt-in working memory.</p></div>
+        <div class="feat"><div class="k">mcp</div><h3>MCP</h3><p>Serve and consume MCP — two capability packages.</p></div>
+      </div>
+    </div>
+
+    <div class="cta-band">
+      <h3>balsa 0.5.0 — coming soon</h3>
+      <p>One release: M1 through M5.</p>
+      <a class="btn btn-primary" href="#">GitHub ↗</a>
+    </div>
+
+    <div class="tokens" data-tokens>
+      <span class="lbl">tokens in play</span>
+    </div>
+  </div>
+
+  <div class="wrap"><div class="foot"><span>MIT</span><span>DOCS — PLACEHOLDER</span><span>SOCIAL PROOF — RESERVED</span></div></div>
+</section>
+
+<!-- ============ floating prototype switcher (never ships) ============ -->
+<div id="switcher">
+  <button id="prev" aria-label="previous variant">←</button>
+  <span class="name" id="vname">A</span>
+  <button id="next" aria-label="next variant">→</button>
+  <span class="hint">←/→</span>
+  <span class="tag">PROTOTYPE</span>
+</div>
+
+<script>
+  // throwaway prototype wiring: variant cycling + per-variant theme + token chips
+  const VARIANTS = [
+    { key: 'a', name: 'A · 继承暖纸', theme: 'light', note: 'inherits balsa-docs §2.2' },
+    { key: 'b', name: 'B · 深木',     theme: 'dark',  note: 'differentiated dark wood' },
+    { key: 'c', name: 'C · 单色工程', theme: 'dark',  note: 'mastra-referent monochrome' },
+  ];
+  const themeMemo = Object.fromEntries(VARIANTS.map(v => [v.key, v.theme]));
+  let idx = 0;
+
+  const body = document.body;
+
+  function hexOf(cssVar, el) {
+    const v = getComputedStyle(el || body).getPropertyValue(cssVar).trim();
+    if (v.startsWith('#')) return v;
+    // hsl(...) -> hex via canvas-free conversion
+    const m = v.match(/hsl\(\s*([\d.]+)[,\s]+([\d.]+)%[,\s]+([\d.]+)%\s*\)/);
+    if (!m) return v;
+    const [h, s, l] = [+m[1], +m[2] / 100, +m[3] / 100];
+    const k = n => (n + h / 30) % 12;
+    const a = s * Math.min(l, 1 - l);
+    const f = n => l - a * Math.max(-1, Math.min(k(n) - 3, Math.min(9 - k(n), 1)));
+    const to = x => Math.round(255 * x).toString(16).padStart(2, '0');
+    return '#' + to(f(0)) + to(f(8)) + to(f(4));
+  }
+
+  function renderTokens() {
+    const sec = document.querySelector('.v:not([style*="display:none"])') || document.getElementById('v-' + VARIANTS[idx].key);
+    const active = document.getElementById('v-' + VARIANTS[idx].key);
+    const box = active.querySelector('[data-tokens]');
+    if (!box) return;
+    const defs = [
+      ['--bg', 'page'], ['--fg', 'text'], ['--accent', 'accent', true], ['--accent-hi', 'accent-hi'], ['--card', 'card'], ['--line', 'line'],
+    ];
+    box.querySelectorAll('.chip').forEach(c => c.remove());
+    requestAnimationFrame(() => {
+      for (const [v, label, here] of defs) {
+        const chip = document.createElement('span');
+        chip.className = 'chip' + (here ? ' here' : '');
+        chip.innerHTML = '<i style="background: var(' + v + ')"></i>' + label + ' <span class="mono">' + hexOf(v) + '</span>';
+        box.appendChild(chip);
+      }
+      const themeChip = document.createElement('span');
+      themeChip.className = 'chip';
+      themeChip.textContent = 'theme: ' + themeMemo[VARIANTS[idx].key];
+      box.appendChild(themeChip);
+    });
+  }
+
+  function apply() {
+    const v = VARIANTS[idx];
+    body.dataset.variant = v.key;
+    body.dataset.theme = themeMemo[v.key];
+    document.getElementById('vname').textContent = v.name;
+    try { history.replaceState(null, '', '?variant=' + v.key); } catch (e) { /* file:// — fine */ }
+    renderTokens();
+  }
+
+  document.getElementById('prev').onclick = () => { idx = (idx + VARIANTS.length - 1) % VARIANTS.length; apply(); };
+  document.getElementById('next').onclick = () => { idx = (idx + 1) % VARIANTS.length; apply(); };
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if (e.key === 'ArrowLeft') document.getElementById('prev').click();
+    if (e.key === 'ArrowRight') document.getElementById('next').click();
+  });
+
+  // per-variant theme toggle (A also swaps; B/C light alts included for judgment)
+  document.querySelectorAll('[data-action="theme"]').forEach(btn => {
+    btn.onclick = () => {
+      const key = VARIANTS[idx].key;
+      themeMemo[key] = themeMemo[key] === 'dark' ? 'light' : 'dark';
+      apply();
+    };
+  });
+
+  // tabs in variant A
+  document.querySelectorAll('#v-a .tabbar button').forEach(tab => {
+    tab.onclick = () => {
+      document.querySelectorAll('#v-a .tabbar button').forEach(b => b.setAttribute('aria-selected', String(b === tab)));
+      document.querySelectorAll('#v-a .tabpanel').forEach(p => p.classList.toggle('active', p.id === tab.dataset.tab));
+    };
+  });
+
+  // boot: honor ?variant= if present
+  const q = new URLSearchParams(location.search).get('variant');
+  const found = VARIANTS.findIndex(v => v.key === q);
+  if (found >= 0) idx = found;
+  apply();
+</script>
+</body>
+</html>
