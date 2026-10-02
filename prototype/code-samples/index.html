@@ -163,7 +163,7 @@
   .variantnote b { color: var(--fg); }
 </style>
 </head>
-<body data-variant="a" data-hero="h1" data-trace="mock" data-theme="light">
+<body data-variant="a" data-hero="h1" data-trace="real" data-theme="light">
 
 <div class="nav">
   <span class="wordmark">balsa<i>.</i></span>
@@ -259,7 +259,8 @@ const weather = createTool({
   execute: ({ city }) => ({ city, celsius: 18 }),
 });
 
-const agent = new Agent({ name: 'assistant', model: openai.chat('gpt-4o-mini'), tools: { weather } });
+const agent = new Agent({ name: 'assistant',
+  model: openai.chat('gpt-4o-mini'), tools: { weather } });
 
 const run = agent.stream('What is the weather in Paris?');
 for await (const chunk of run) {

@@ -48,7 +48,16 @@ subpath composition visible at import level · no RAG / evals · no competitor n
 | MCP | `server.ts` (fetch/stdio) + `client.ts` (remote tools as plain tools) |
 | Observability | `createApp` + tracer with console + OTLP exporters |
 
-## Verdict (fills on close)
+## Verdict (2026-10-02, closes #6)
 
-Pending HITL discussion — winner form, hero candidate, trace provenance, and the final snippets land
-here and in the #6 resolution comment.
+**形式 A（文件 tabs，复刻 mastra）· hero h1（agent + tool + stream）· trace = 真实 run 截取（修剪后）·
+5 段 tab 代码 + observability 段按草稿定稿。**
+
+- 形式 B / C / D 弃用存档（原型可复查）；「Copy quick start」= hero 段逐字复制。
+- hero 段 17 行 = 上游「snippet ≤10 行」约定的**显式例外**（hero 窗内独立容器，2026-10-02 定）。
+- trace 修剪口径：真跑导出（`examples/minimal-agent`），trace id 截短、时长取整；只改标签不改结构。
+- 第二 file tab 保留：Workflows→`resume.ts`、Harness→`schedule.ts`（croner）、Memory→`sqlite.ts`、MCP→`client.ts`。
+
+`index.html` 默认已指向胜出组合（`?variant=a&hero=h1&trace=real`）；其余变体作为 primary source 留档。
+
+Not production code. The floating bar never ships. Do not fold into the real site.
