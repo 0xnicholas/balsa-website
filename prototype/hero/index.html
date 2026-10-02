@@ -318,7 +318,7 @@ It's 18°C in Paris. ☀︎
         the ultralight TypeScript agent framework.</p>
       <div class="ctas">
         <a class="btn primary" href="#">★ GitHub</a>
-        <a class="btn ghost" href="#">Docs <b>coming soon</b></a>
+        <button class="btn ghost" type="button" data-action="copy-quickstart">⧉ Copy quick start</button>
       </div>
       <div class="copyrow" data-copy>
         <span class="lbl">headline alternates</span>
@@ -438,6 +438,17 @@ It's 18°C in Paris. ☀︎
   document.querySelector('[data-action="theme"]').onclick = () => {
     theme = theme === 'dark' ? 'light' : 'dark'; apply();
   };
+
+  // D: Copy quick start (winner's secondary CTA — copies the README quick start; content final in #6)
+  document.querySelectorAll('[data-action="copy-quickstart"]').forEach(btn => {
+    btn.onclick = async () => {
+      const code = `import { openai } from '@ai-sdk/openai';\nimport { Agent } from '@balsa/core/agent';\nimport { createTool } from '@balsa/core/tools';\nimport { z } from 'zod';\n\nconst weather = createTool({\n  description: 'Looks up the current weather for a city.',\n  inputSchema: z.object({ city: z.string() }),\n  execute: ({ city }) => ({ city, celsius: 18 }),\n});\n\nconst agent = new Agent({\n  name: 'assistant',\n  instructions: 'You are concise. Use the weather tool for weather questions.',\n  model: openai.chat('gpt-4o-mini'),\n  tools: { weather },\n});\n\nconst result = agent.stream('What is the weather in Paris right now?');\nfor await (const chunk of result) {\n  if (chunk.type === 'text-delta') process.stdout.write(chunk.textDelta);\n}\nconsole.log(await result.finishReason, await result.usage);`;
+      try { await navigator.clipboard.writeText(code); } catch (e) { /* file:// no perms — visual flip still shows */ }
+      const old = btn.innerHTML;
+      btn.innerHTML = '<b>copied ✓</b>';
+      setTimeout(() => { btn.innerHTML = old; }, 1500);
+    };
+  });
 
   const q = new URLSearchParams(location.search).get('variant');
   if (VARIANTS.some(v => v.key === q)) idx = VARIANTS.findIndex(v => v.key === q);
