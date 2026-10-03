@@ -1,5 +1,5 @@
 {
 	"order": 2,
-	"question": "Is Balsats on npm yet?",
+	"question": "Is Oribos on npm yet?",
 	"answer": "Not yet. The first public release will be 0.5.0, with the framework and its capability packages shipping together. Until then, the repository on GitHub is where to follow along — star or watch it for release updates."
 }

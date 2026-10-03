@@ -1,13 +1,13 @@
 @import 'tailwindcss';
 
-/* Brand token layer (SPEC §5.1) — the values are the balsats-docs authoritative set
+/* Brand token layer (SPEC §5.1) — the values are the oribos-docs authoritative set
    (brand-visual.md §2.2) verbatim; a change here is a docs-spec change, not a tweak.
    Light is the default and dark follows the OS only (SPEC §5.4): no manual switch, no
    theme cookie, no localStorage, no `.dark` class. Unlayered on purpose — the token
    declarations outrank Tailwind's layered ones.
 
    `scripts/check-tokens.mjs` reads this file: the §5.1 table of docs/SPEC.md is compared
-   value by value, and in a checkout that has balsats-docs beside it, the same table is
+   value by value, and in a checkout that has oribos-docs beside it, the same table is
    compared against the docs site's own `src/styles/global.css`. */
 :root {
 	--sl-color-white: hsl(30, 14%, 12%);

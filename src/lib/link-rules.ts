@@ -18,13 +18,27 @@ export type LinkIndex = {
 	pageHtml: (route: string) => string | undefined;
 	/** External hrefs the site may carry (SPEC §2.4 — the one links constant). */
 	allowedExternal: readonly string[];
-	/** Names retired by the renames (`balsa-framework`, `balsajs.dev`, …), SPEC §8.8 ⑤. */
+	/** Names retired by the renames (`balsa-framework`, `balsats.com`, …), SPEC §8.8 ⑤. Specific
+	 * spellings come first so a finding prints the closest reason; the bare `balsats` net last. */
 	retiredNames: readonly { pattern: RegExp; reason: string }[];
 };
 
 export const retiredNames = [
-	{ pattern: /balsa-framework/, reason: 'the repository is `0xnicholas/balsats-framework` (SPEC §1)' },
-	{ pattern: /balsajs\.dev/, reason: 'the docs domain is `docs.balsats.com` (SPEC §1)' },
+	{ pattern: /balsa-framework/, reason: 'the repository became `0xnicholas/oribos-framework` (SPEC §1)' },
+	{ pattern: /balsa-website/, reason: 'this repository became `0xnicholas/oribos-website` (SPEC §1)' },
+	{
+		pattern: /balsats-framework/,
+		reason: 'the repository was renamed `balsats-framework` → `oribos-framework` (SPEC §1)',
+	},
+	{
+		pattern: /balsats-website/,
+		reason: 'this repository was renamed `balsats-website` → `oribos-website` (SPEC §1)',
+	},
+	{ pattern: /balsats-docs/, reason: 'the documentation repository was renamed `balsats-docs` → `oribos-docs` (SPEC §1)' },
+	{ pattern: /balsajs\.dev/, reason: 'the docs domain is `docs.oribos.dev` (SPEC §1)' },
+	{ pattern: /balsats\.com/, reason: 'the domain is `oribos.dev` (SPEC §1)' },
+	{ pattern: /@balsats\//, reason: 'the npm scope is `@oribos/*` (SPEC §1)' },
+	{ pattern: /balsats/i, reason: 'the project was renamed `Balsats` → `Oribos` (framework ADR-0013 末次修订)' },
 ] as const;
 
 const anchorAttributePattern = /\b(?:id|name)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;

@@ -37,15 +37,15 @@ test('the FAQ is #faq with the heading, nine <details> in the §3.7 order and a 
 
 	const swapped = [...faqItems];
 	[swapped[0], swapped[1]] = [swapped[1]!, swapped[0]!];
-	assert.match(faqIssues(page(section(swapped))).join('\n'), /question 1 reads `Is Balsats on npm yet\?`/);
+	assert.match(faqIssues(page(section(swapped))).join('\n'), /question 1 reads `Is Oribos on npm yet\?`/);
 
 	const summaryLater = page(section().replace('<details><summary', '<details><p>…</p><summary'));
 	assert.match(faqIssues(summaryLater).join('\n'), /<summary> is not the first child/);
 });
 
 test('the questions and answers are the §3.7 copy, verbatim and once each', () => {
-	const editedQuestion = page(section().replace('Does Balsats support MCP?', 'Does Balsats speak MCP?'));
-	assert.match(faqIssues(editedQuestion).join('\n'), /question 6 reads `Does Balsats speak MCP\?`/);
+	const editedQuestion = page(section().replace('Does Oribos support MCP?', 'Does Oribos speak MCP?'));
+	assert.match(faqIssues(editedQuestion).join('\n'), /question 6 reads `Does Oribos speak MCP\?`/);
 
 	const editedAnswer = page(section().replace('No — neither is built in.', 'No.'));
 	assert.match(faqIssues(editedAnswer).join('\n'), /answer to question 7 is not the §3\.7 text verbatim/);
@@ -63,7 +63,7 @@ test('an answer carries no link — answers are self-contained', () => {
 
 test('the nine iron rules hold: no install command, competitor, counting figure or foreign scope', () => {
 	const install = page(
-		section().replace('Both ship with the first release.', 'Both ship with the first release — run npm install @balsats/mcp-server.'),
+		section().replace('Both ship with the first release.', 'Both ship with the first release — run npm install @oribos/mcp-server.'),
 	);
 	assert.match(faqIssues(install).join('\n'), /\[install-command\]/);
 
@@ -73,8 +73,8 @@ test('the nine iron rules hold: no install command, competitor, counting figure 
 	const counting = page(section().replace('Both ship with the first release.', 'Both ship with the first release; five fields are enough.'));
 	assert.match(faqIssues(counting).join('\n'), /\[counting-figure\]/);
 
-	const scope = page(section().replace('@balsats/mcp-server', '@balsa/mcp-server'));
-	assert.match(faqIssues(scope).join('\n'), /packages are `@balsats\/\*`/);
+	const scope = page(section().replace('@oribos/mcp-server', '@balsa/mcp-server'));
+	assert.match(faqIssues(scope).join('\n'), /packages are `@oribos\/\*`/);
 });
 
 test('RAG and evals appear in question 7 alone — the honest answer (SPEC §9.2)', () => {

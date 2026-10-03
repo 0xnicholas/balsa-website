@@ -1,11 +1,11 @@
 {
-	"title": "AI agent observability for TypeScript — Balsats",
+	"title": "AI agent observability for TypeScript — Oribos",
 	"description": "AI agent observability for TypeScript: spans for runs, model steps, tool calls and memory — exported to your collector over OTLP.",
 	"h1": "AI agent observability — see what actually ran, in the stack you already use.",
 	"sections": [
 		{
 			"heading": "Spans for the things that actually ran",
-			"body": "Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is Balsats's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace."
+			"body": "Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is Oribos's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace."
 		},
 		{
 			"heading": "A tracer you hand down once",
@@ -13,30 +13,30 @@
 		},
 		{
 			"heading": "Export to where your telemetry already lives",
-			"body": "Console and memory exporters are built in; @balsats/otlp maps Balsats spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story."
+			"body": "Console and memory exporters are built in; @oribos/otlp maps Oribos spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story."
 		}
 	],
 	"learnMore": "ai-agent-observability",
 	"faq": [
 		{
-			"question": "What gets traced in a Balsats run?",
+			"question": "What gets traced in a Oribos run?",
 			"answer": "Agent runs, model steps, tool calls, workflow runs and steps, and memory recalls and saves each open a span, with parent-child structure that keeps a run readable."
 		},
 		{
 			"question": "Can I send traces to my existing OpenTelemetry backend?",
-			"answer": "Yes — @balsats/otlp exports Balsats spans with GenAI semantic conventions to any OTLP-compatible collector."
+			"answer": "Yes — @oribos/otlp exports Oribos spans with GenAI semantic conventions to any OTLP-compatible collector."
 		},
 		{
 			"question": "Where do traces go if I don't configure anything?",
-			"answer": "Balsats ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter."
+			"answer": "Oribos ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter."
 		},
 		{
 			"question": "Does tracing cost anything when I don't want it?",
 			"answer": "No: a standalone new Agent() with no tracer opens no span objects, so an untraced run stays as small as it looks."
 		},
 		{
-			"question": "Does Balsats ship a dashboard or a hosted observability service?",
-			"answer": "No. Balsats produces spans and exports them to the stack you operate; there is no Balsats-side service in the loop."
+			"question": "Does Oribos ship a dashboard or a hosted observability service?",
+			"answer": "No. Oribos produces spans and exports them to the stack you operate; there is no Oribos-side service in the loop."
 		}
 	],
 	"backAnchor": "/#observability"

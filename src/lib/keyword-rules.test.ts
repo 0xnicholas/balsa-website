@@ -38,7 +38,7 @@ const page = (entry: KeywordPageSpec = spec): KeywordPage => ({
 		<meta property="og:title" content="${titleOf(entry.route)}" />
 		<meta property="og:description" content="${entry.description}" />
 	</head><body>
-	<header><a href="/">Balsats</a></header>
+	<header><a href="/">Oribos</a></header>
 	<main>
 		<section data-keyword-hero class="px-6 py-16">
 			<div class="mx-auto max-w-3xl">
@@ -139,9 +139,9 @@ test('the in-page FAQ is the §4.4 set, verbatim and in order — and not the gl
 	assert.match(keywordPageIssues(four, spec).join('\n'), /the in-page FAQ carries 4 questions, expected 5/);
 
 	const renamed = page();
-	renamed.html = renamed.html.replace(spec.faq[0]!.question, 'What is Balsats?');
+	renamed.html = renamed.html.replace(spec.faq[0]!.question, 'What is Oribos?');
 	const found = keywordPageIssues(renamed, spec).join('\n');
-	assert.match(found, /in-page question 1 reads `What is Balsats\?`/);
+	assert.match(found, /in-page question 1 reads `What is Oribos\?`/);
 	assert.match(found, /repeats the global FAQ/);
 
 	const reworded = page();
@@ -216,7 +216,7 @@ test('the head carries the §2.6 meta description and the og pair', () => {
 	assert.match(headIssues(ogDescribed, { description: spec.description, title: titleOf(spec.route) }).join('\n'), /og:description is not the §2\.6 line/);
 
 	const ogTitled = page();
-	ogTitled.html = ogTitled.html.replace(`content="${titleOf(spec.route)}"`, 'content="AI agent framework — Balsats"');
+	ogTitled.html = ogTitled.html.replace(`content="${titleOf(spec.route)}"`, 'content="AI agent framework — Oribos"');
 	assert.match(headIssues(ogTitled, { description: spec.description, title: titleOf(spec.route) }).join('\n'), /og:title/);
 });
 

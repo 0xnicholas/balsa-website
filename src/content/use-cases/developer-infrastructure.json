@@ -10,17 +10,17 @@
 			{
 				"name": "Primitives, not a platform",
 				"text": "Teams import only the subpaths they need and add capability packages one at a time; the composition root is optional and a bare new Agent() stays first-class.",
-				"packages": ["@balsats/core/*", "capability packages added one at a time"]
+				"packages": ["@oribos/core/*", "capability packages added one at a time"]
 			},
 			{
 				"name": "Into the observability you already run",
-				"text": "Balsats traces its own minimal spans; @balsats/otlp exports them with GenAI semantic conventions to your collector — one tracer handed down by the app.",
-				"packages": ["@balsats/core/observability", "@balsats/otlp"]
+				"text": "Oribos traces its own minimal spans; @oribos/otlp exports them with GenAI semantic conventions to your collector — one tracer handed down by the app.",
+				"packages": ["@oribos/core/observability", "@oribos/otlp"]
 			},
 			{
 				"name": "Publish agents as shared infrastructure",
 				"text": "Serve an MCP endpoint other teams and systems call — and compose one team's agent as a tool on another's.",
-				"packages": ["@balsats/mcp-server", "as-tool composition"]
+				"packages": ["@oribos/mcp-server", "as-tool composition"]
 			}
 		]
 	}

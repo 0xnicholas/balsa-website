@@ -9,15 +9,15 @@ import {
 	sitemapIssues,
 } from './origin-rules.ts';
 
-const origin = 'https://balsats.com';
+const origin = 'https://oribos.dev';
 const page = (path: string, head: string) => ({ path, html: `<head>${head}</head><body></body>` });
 const canonical = (href: string) => `<link rel="canonical" href="${href}">`;
 const og = (content: string) => `<meta property="og:url" content="${content}">`;
 
 test('the declared origin is a bare scheme + host', () => {
 	assert.deepEqual(originIssues(origin), []);
-	assert.equal(originIssues('https://balsats.com/').length, 1);
-	assert.equal(originIssues('balsats.com').length, 1);
+	assert.equal(originIssues('https://oribos.dev/').length, 1);
+	assert.equal(originIssues('oribos.dev').length, 1);
 });
 
 test('every page points at itself, exactly once', () => {
@@ -42,13 +42,13 @@ test('og:url is the page canonical', () => {
 });
 
 test('robots.txt allows crawling and names the sitemap index on the one origin', () => {
-	const good = 'User-agent: *\nAllow: /\n\nSitemap: https://balsats.com/sitemap-index.xml\n';
+	const good = 'User-agent: *\nAllow: /\n\nSitemap: https://oribos.dev/sitemap-index.xml\n';
 	assert.deepEqual(robotsIssues({ robots: good, origin }), []);
 	assert.match(robotsIssues({ robots: null, origin })[0]!, /robots\.txt is missing/);
 	assert.match(robotsIssues({ robots: 'User-agent: *\nAllow: /\n', origin })[0]!, /no `Sitemap:` line/);
 	assert.ok(
-		robotsIssues({ robots: 'Sitemap: https://docs.balsats.com/sitemap-index.xml\n', origin }).some((issue) =>
-			/points at https:\/\/docs\.balsats\.com/.test(issue),
+		robotsIssues({ robots: 'Sitemap: https://docs.oribos.dev/sitemap-index.xml\n', origin }).some((issue) =>
+			/points at https:\/\/docs\.oribos\.dev/.test(issue),
 		),
 	);
 });

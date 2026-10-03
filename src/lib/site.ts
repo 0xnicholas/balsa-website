@@ -4,4 +4,4 @@
  * derive from that, so the surfaces a crawler sees cannot disagree. The source scan in
  * `scripts/check-origin.mjs` fails if the literal reappears in a page, layout or component.
  */
-export const SITE = { origin: 'https://balsats.com' } as const;
+export const SITE = { origin: 'https://oribos.dev' } as const;

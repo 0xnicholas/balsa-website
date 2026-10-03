@@ -5,7 +5,7 @@
  *
  *   1. `src/styles/global.css` — the layer the site loads — against the §5.1 table in
  *      `docs/SPEC.md`, the corpus this build is constructed from, value by value;
- *   2. that §5.1 table against the balsats-docs checkout beside this one — the docs site owns
+ *   2. that §5.1 table against the oribos-docs checkout beside this one — the docs site owns
  *      the palette, so a docs change shows up here before it lands. §8.8 ③ makes the
  *      comparison the gate itself, so a missing checkout is a failure, never a silent skip;
  *   3. every colour outside the two token blocks — including the `@theme inline` aliases —
@@ -16,7 +16,7 @@
  *
  * Usage:
  *   node --experimental-strip-types scripts/check-tokens.mjs [--root <dir>] [--css <file>]
- *     [--spec <file>] [--docs <balsats-docs dir>]
+ *     [--spec <file>] [--docs <oribos-docs dir>]
  */
 import { existsSync } from 'node:fs';
 import path from 'node:path';
@@ -74,9 +74,9 @@ if (literals.length === 0) {
 
 // The house rule is "docs owns the palette" (SPEC §5.1), and §8.8 ③ makes the cross-check the
 // gate itself: without a checkout the comparison has not run, so absence is red. `--docs` (or
-// BALSATS_DOCS_DIR) points at a checkout somewhere else.
-const docsOption = options.docs ?? process.env.BALSATS_DOCS_DIR;
-const docsDir = path.resolve(docsOption ?? path.join(repoRoot, '..', 'balsats-docs'));
+// ORIBOS_DOCS_DIR) points at a checkout somewhere else.
+const docsOption = options.docs ?? process.env.ORIBOS_DOCS_DIR;
+const docsDir = path.resolve(docsOption ?? path.join(repoRoot, '..', 'oribos-docs'));
 const docsCssFile = path.join(docsDir, 'src/styles/global.css');
 
 if (existsSync(docsCssFile)) {
@@ -86,19 +86,19 @@ if (existsSync(docsCssFile)) {
 
 	const drift = tokenDrift(specTable.tokens, docsTable.tokens, {
 		actualLabel: 'docs/SPEC.md §5.1',
-		expectedLabel: `balsats-docs ${path.relative(docsDir, docsCssFile)}`,
+		expectedLabel: `oribos-docs ${path.relative(docsDir, docsCssFile)}`,
 	});
 	for (const issue of drift) console.error(`✗ ${issue}`);
 	if (drift.length === 0 && docsTable.errors.length === 0) {
-		console.log('✓ the §5.1 table still matches the balsats-docs token stylesheet (docs owns the palette)');
+		console.log('✓ the §5.1 table still matches the oribos-docs token stylesheet (docs owns the palette)');
 	}
 	issues.push(...docsTable.errors, ...drift);
 } else if (docsOption !== undefined) {
 	console.error(`✗ --docs ${docsDir} has no src/styles/global.css to compare against`);
 	process.exit(1);
 } else {
-	console.error(`✗ no balsats-docs checkout at ${docsDir} — the §8.8 ③ cross-check against the docs authority cannot be skipped`);
-	console.error('  clone balsats-docs beside this repo, or point at one with --docs <dir> / BALSATS_DOCS_DIR');
+	console.error(`✗ no oribos-docs checkout at ${docsDir} — the §8.8 ③ cross-check against the docs authority cannot be skipped`);
+	console.error('  clone oribos-docs beside this repo, or point at one with --docs <dir> / ORIBOS_DOCS_DIR');
 	process.exit(1);
 }
 
@@ -127,7 +127,7 @@ if (metaColorIssues.length === 0) {
 }
 
 failGate([...issues, ...literals, ...metaColorIssues], {
-	summary: 'token-layer problem(s) (SPEC §5.1 — the palette is owned by balsats-docs; do not tune it here).',
+	summary: 'token-layer problem(s) (SPEC §5.1 — the palette is owned by oribos-docs; do not tune it here).',
 	hint: 'Re-run with `--docs <checkout>` to compare against the docs site explicitly.',
 });
 console.log('\nToken layer: no drift.');

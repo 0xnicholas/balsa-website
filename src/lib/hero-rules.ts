@@ -14,7 +14,7 @@ export type HeroPage = { path: string; html: string };
 /** SPEC §3.1 【终稿·勿改】: the H1 and the sub. */
 export const heroH1 = 'Build ultralight AI agents.';
 export const heroSub =
-	'Build, compose, and ship agents with zero runtime dependencies — Balsats, the ultralight TypeScript agent framework.';
+	'Build, compose, and ship agents with zero runtime dependencies — Oribos, the ultralight TypeScript agent framework.';
 /** SPEC §3.1/§6.1: the two CTAs and the copy's success state. */
 export const ctaGithub = 'GitHub';
 export const heroSecondary = 'Copy quick start';
@@ -25,8 +25,8 @@ export const heroBadge = 'trace';
 
 /** SPEC §7.2 【终稿·勿改】 — the block verbatim, blank lines included; never compressed. */
 export const heroSnippet = `import { openai } from '@ai-sdk/openai';
-import { Agent } from '@balsats/core/agent';
-import { createTool } from '@balsats/core/tools';
+import { Agent } from '@oribos/core/agent';
+import { createTool } from '@oribos/core/tools';
 import { z } from 'zod';
 
 const weather = createTool({

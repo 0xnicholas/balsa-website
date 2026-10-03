@@ -82,7 +82,7 @@ export function llmsIssues(
 		seen.add(url);
 	}
 
-	if (!heading) issues.push('public/llms.txt has no `# Balsats` heading (SPEC §8.4)');
+	if (!heading) issues.push('public/llms.txt has no `# Oribos` heading (SPEC §8.4)');
 	for (const page of pages) {
 		const url = new URL(page.route, origin).href;
 		if (!seen.has(url)) issues.push(`public/llms.txt is missing ${url} (SPEC §2.1)`);

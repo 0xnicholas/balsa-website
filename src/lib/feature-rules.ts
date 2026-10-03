@@ -54,7 +54,7 @@ export const features: readonly FeatureSpec[] = [
 		files: [
 			{
 				file: 'agent.ts',
-				code: `import { Agent } from '@balsats/core/agent';
+				code: `import { Agent } from '@oribos/core/agent';
 
 const redactPii = {
   processInput: ({ messages }) => ({ messages: scrub(messages) }),
@@ -83,7 +83,7 @@ const run = agent.stream('Summarise this ticket.');`,
 		files: [
 			{
 				file: 'workflow.ts',
-				code: `import { createWorkflow } from '@balsats/core/workflows';
+				code: `import { createWorkflow } from '@oribos/core/workflows';
 
 const workflow = createWorkflow({ id: 'expense-approval', inputSchema: report, outputSchema: receipt })
   .foreach(checkItem, { concurrency: 2 })
@@ -113,12 +113,12 @@ const outcome = await workflow.createRun({ runId: 'run-1' }).resume({
 				lead: 'Schedules',
 				text: 'tick() fires what is due — storage is JSON, the occurrence function is injected.',
 			},
-			{ lead: '@balsats/croner', text: 'cron expressions as that injected next() fragment.' },
+			{ lead: '@oribos/croner', text: 'cron expressions as that injected next() fragment.' },
 		],
 		files: [
 			{
 				file: 'gate.ts',
-				code: `import { createDurableAgent } from '@balsats/core/durable-agent';
+				code: `import { createDurableAgent } from '@oribos/core/durable-agent';
 
 const durable = app.durableAgent({ agent, approval: { tools: ['issueRefund'] } });
 const out = durable.stream('Please refund order A-4471.');
@@ -129,7 +129,7 @@ if ((await out.finishReason) === 'suspended') {
 			},
 			{
 				file: 'schedule.ts',
-				code: `import { cron } from '@balsats/croner';
+				code: `import { cron } from '@oribos/croner';
 
 await schedules.save({
   id: 'morning-sweep',
@@ -153,12 +153,12 @@ await schedules.save({
 				text: 'the recent window is recalled into the prompt; recall() reads the rest.',
 			},
 			{ lead: 'Working memory', text: 'an opt-in, resource-scoped record injected as a system message.' },
-			{ lead: 'Storage ports', text: 'in-memory defaults; @balsats/sqlite covers all of them.' },
+			{ lead: 'Storage ports', text: 'in-memory defaults; @oribos/sqlite covers all of them.' },
 		],
 		files: [
 			{
 				file: 'memory.ts',
-				code: `import { Memory, createInMemoryStore } from '@balsats/core/memory';
+				code: `import { Memory, createInMemoryStore } from '@oribos/core/memory';
 
 const memory = new Memory({ storage: createInMemoryStore() });
 const agent = new Agent({ name, instructions, model, memory });
@@ -169,9 +169,9 @@ await agent.generate('Should I bring a rain jacket?', {
 			},
 			{
 				file: 'sqlite.ts',
-				code: `import { createSqliteStorage } from '@balsats/sqlite';
+				code: `import { createSqliteStorage } from '@oribos/sqlite';
 
-const storage = createSqliteStorage({ path: 'balsats.db' });   // one adapter, all four ports
+const storage = createSqliteStorage({ path: 'oribos.db' });   // one adapter, all four ports
 
 const app = createApp({
   storage: { memory: storage.memory, durableAgent: storage.agentRunSnapshots },
@@ -184,14 +184,14 @@ const app = createApp({
 		tab: 'MCP',
 		claim: 'Serve your tools over MCP — and bring MCP tools in.',
 		bullets: [
-			{ lead: '@balsats/mcp-server', text: 'your tools served over MCP, HTTP or stdio.' },
-			{ lead: '@balsats/mcp-client', text: "another server's tools become ordinary Balsats tools." },
+			{ lead: '@oribos/mcp-server', text: 'your tools served over MCP, HTTP or stdio.' },
+			{ lead: '@oribos/mcp-client', text: "another server's tools become ordinary Oribos tools." },
 			{ lead: 'Tools stay plain objects', text: "no registry — a tool's name is its key in the container." },
 		],
 		files: [
 			{
 				file: 'server.ts',
-				code: `import { createMcpServer } from '@balsats/mcp-server';
+				code: `import { createMcpServer } from '@oribos/mcp-server';
 
 const server = createMcpServer({ name: 'weather', version: '0.5.0', tools: { weather } });
 
@@ -199,7 +199,7 @@ export default server.fetch;   // the same tools over MCP — HTTP or stdio`,
 			},
 			{
 				file: 'client.ts',
-				code: `import { createMcpClient } from '@balsats/mcp-client';
+				code: `import { createMcpClient } from '@oribos/mcp-client';
 
 const client = await createMcpClient({ transport: { type: 'http', url } });
 

@@ -8,7 +8,7 @@
  * Two contracts the spec pins and this module enforces:
  *
  *  1. **The §5.1 table is complete and byte-identical.** A missing slot is an error, not a
- *     silent fallback; a value that drifts from the balsats-docs authority is drift, not a
+ *     silent fallback; a value that drifts from the oribos-docs authority is drift, not a
  *     tweak. The derived roles (`--sl-color-text-accent` / `-text-invert` / `-bg-accent`) are
  *     the exception to "do not hand-write": landing has no Starlight, so §5.1 materializes the
  *     upstream mapping — as a reference to the accent triplet, never as a value of its own.
@@ -231,7 +231,7 @@ export function parseSpecTable(markdown: string): { tokens: Record<Theme, TokenS
 }
 
 /**
- * The balsats-docs token layer, when the checkout is beside this one: `:root` is Starlight's
+ * The oribos-docs token layer, when the checkout is beside this one: `:root` is Starlight's
  * dark default and `:root[data-theme='light']` is the light block (the same shape the docs
  * repo's own `scripts/check-contrast.mjs` parses).
  */

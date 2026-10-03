@@ -10,17 +10,17 @@
 			{
 				"name": "Answer, streamed into your UI",
 				"text": "agent.stream() on the server, the AI SDK message-stream route on the client, thread / resource memory so each user picks up where they left off.",
-				"packages": ["@balsats/core/agent", "@balsats/core/memory", "@balsats/ai-sdk"]
+				"packages": ["@oribos/core/agent", "@oribos/core/memory", "@oribos/ai-sdk"]
 			},
 			{
 				"name": "Act, through your own APIs",
 				"text": "Your endpoints become tools — plain objects with schemas — and multi-step flows compose as workflows where every boundary is validated.",
-				"packages": ["@balsats/core/tools", "@balsats/core/workflows"]
+				"packages": ["@oribos/core/tools", "@oribos/core/workflows"]
 			},
 			{
 				"name": "Hand off, with the run on hold",
 				"text": "Approval-listed tool calls never execute: the run suspends, and resume({ approved }) continues it — even from another process.",
-				"packages": ["@balsats/core/durable-agent", "@balsats/sqlite"]
+				"packages": ["@oribos/core/durable-agent", "@oribos/sqlite"]
 			}
 		]
 	}

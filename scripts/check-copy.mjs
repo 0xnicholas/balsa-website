@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * The red-line scan over the built site (SPEC §8.8 ④, §9.2): install-class commands,
- * competitor names, counting-style figures, `MIT`, the retired `@balsa/*` scope, the retired
+ * competitor names, counting-style figures, `MIT`, the retired `@balsa/*` / `@balsats/*` scopes, the retired
  * repository / domain names (issue #18 Testing #4), and the RAG / evals line keyword pages
  * must not cross. The rules and their reasons live in
  * `src/lib/copy-rules.ts`; this script walks `dist/` and reports.

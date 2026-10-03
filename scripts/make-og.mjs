@@ -82,7 +82,7 @@ const html = `<!doctype html>
 </html>
 `;
 
-const scratch = mkdtempSync(path.join(tmpdir(), 'balsats-og-'));
+const scratch = mkdtempSync(path.join(tmpdir(), 'oribos-og-'));
 const page = path.join(scratch, 'card.html');
 writeFileSync(page, html);
 

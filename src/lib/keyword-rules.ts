@@ -1,6 +1,6 @@
 /**
  * The keyword pages (SPEC §4.4) over the built site: the skeleton — the §2.6 title
- * (`<Keyword> for TypeScript — Balsats`), the H1 (the keyword's face plus its claim), 2–4
+ * (`<Keyword> for TypeScript — Oribos`), the H1 (the keyword's face plus its claim), 2–4
  * argument sections (a subheading plus 1–3 sentences), exactly one `Learn more` text link,
  * the in-page FAQ (4–5 questions, zero overlap with the global nine, 1–3-sentence
  * self-contained answers, no links), the shared final CTA and the back-to-home anchor — and
@@ -72,11 +72,11 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 		sections: [
 			{
 				heading: 'A library, not infrastructure you operate',
-				body: 'Balsats is a library you call from the app you already run. No database, queue, or long-running process is required: storage ports default to in-memory implementations, and adapters are a deliberate choice rather than a prerequisite.',
+				body: 'Oribos is a library you call from the app you already run. No database, queue, or long-running process is required: storage ports default to in-memory implementations, and adapters are a deliberate choice rather than a prerequisite.',
 			},
 			{
 				heading: 'Compose only what you use',
-				body: 'Every subsystem ships behind its own subpath export — agents, tools, memory, workflows, observability, durable execution, signals, schedules — and the core carries zero runtime dependencies. Capability packages such as @balsats/mcp-server, @balsats/sqlite and @balsats/otlp are added one at a time, only when a job calls for them.',
+				body: 'Every subsystem ships behind its own subpath export — agents, tools, memory, workflows, observability, durable execution, signals, schedules — and the core carries zero runtime dependencies. Capability packages such as @oribos/mcp-server, @oribos/sqlite and @oribos/otlp are added one at a time, only when a job calls for them.',
 			},
 			{
 				heading: 'A small surface you can hold in your head',
@@ -87,7 +87,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 			{
 				question: 'What does "zero runtime dependencies" actually mean?',
 				answer:
-					'The core package ships with no third-party runtime dependencies; model instances arrive from AI SDK provider packages you already chose, and schemas stay in the library you already use. Your dependency tree gains Balsats and nothing hidden behind it.',
+					'The core package ships with no third-party runtime dependencies; model instances arrive from AI SDK provider packages you already chose, and schemas stay in the library you already use. Your dependency tree gains Oribos and nothing hidden behind it.',
 			},
 			{
 				question: 'Do I have to run anything alongside my app?',
@@ -95,7 +95,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 					'No. There is no database, queue, or long-running process to operate; storage ports default to in-memory implementations and swap to adapters only when you want persistence.',
 			},
 			{
-				question: 'Can I adopt Balsats one piece at a time?',
+				question: 'Can I adopt Oribos one piece at a time?',
 				answer:
 					"Yes. Each subsystem is its own subpath export and capability packages are installed individually, so a first agent can be a single import. What you don't import costs nothing — not in the dependency tree, not in concept space.",
 			},
@@ -129,7 +129,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 			},
 			{
 				heading: 'Tools are plain objects you already know how to write',
-				body: "A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so Balsats validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider.",
+				body: "A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so Oribos validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider.",
 			},
 			{
 				heading: 'Memory is identity you name per call',
@@ -155,7 +155,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 			{
 				question: 'How is tool input validated?',
 				answer:
-					"Schemas are Standard Schema dual interfaces: Balsats validates the model's arguments with them and sends the corresponding JSON Schema to the provider.",
+					"Schemas are Standard Schema dual interfaces: Oribos validates the model's arguments with them and sends the corresponding JSON Schema to the provider.",
 			},
 			{
 				question: 'How do I add guardrails, redaction, or rate limiting?',
@@ -198,7 +198,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 			{
 				question: 'Do workflows need a database or a queue?',
 				answer:
-					'No. The snapshot store defaults to an in-memory implementation and is swapped for an adapter — such as @balsats/sqlite — only when you want snapshots to outlive the process.',
+					'No. The snapshot store defaults to an in-memory implementation and is swapped for an adapter — such as @oribos/sqlite — only when you want snapshots to outlive the process.',
 			},
 			{
 				question: 'What happens if my process restarts mid-run?',
@@ -227,7 +227,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 		sections: [
 			{
 				heading: 'Spans for the things that actually ran',
-				body: "Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is Balsats's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace.",
+				body: "Every agent run, model step, tool call, workflow run and step, and memory recall or save opens a span. The span model is Oribos's own minimal one — the framework doesn't require an OpenTelemetry SDK in order to trace.",
 			},
 			{
 				heading: 'A tracer you hand down once',
@@ -235,24 +235,24 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 			},
 			{
 				heading: 'Export to where your telemetry already lives',
-				body: 'Console and memory exporters are built in; @balsats/otlp maps Balsats spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story.',
+				body: 'Console and memory exporters are built in; @oribos/otlp maps Oribos spans to GenAI semantic conventions and exports them to any OTLP-compatible collector. A resumed run opens a new span in the same trace, so one human interaction stays one story.',
 			},
 		],
 		faq: [
 			{
-				question: 'What gets traced in a Balsats run?',
+				question: 'What gets traced in a Oribos run?',
 				answer:
 					'Agent runs, model steps, tool calls, workflow runs and steps, and memory recalls and saves each open a span, with parent-child structure that keeps a run readable.',
 			},
 			{
 				question: 'Can I send traces to my existing OpenTelemetry backend?',
 				answer:
-					'Yes — @balsats/otlp exports Balsats spans with GenAI semantic conventions to any OTLP-compatible collector.',
+					'Yes — @oribos/otlp exports Oribos spans with GenAI semantic conventions to any OTLP-compatible collector.',
 			},
 			{
 				question: "Where do traces go if I don't configure anything?",
 				answer:
-					'Balsats ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter.',
+					'Oribos ships console and memory exporters, so spans can be watched during development without running a collector; nothing is exported unless you assemble a tracer with an exporter.',
 			},
 			{
 				question: "Does tracing cost anything when I don't want it?",
@@ -260,9 +260,9 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 					'No: a standalone new Agent() with no tracer opens no span objects, so an untraced run stays as small as it looks.',
 			},
 			{
-				question: 'Does Balsats ship a dashboard or a hosted observability service?',
+				question: 'Does Oribos ship a dashboard or a hosted observability service?',
 				answer:
-					'No. Balsats produces spans and exports them to the stack you operate; there is no Balsats-side service in the loop.',
+					'No. Oribos produces spans and exports them to the stack you operate; there is no Oribos-side service in the loop.',
 			},
 		],
 		backAnchor: '/#observability',
@@ -271,7 +271,7 @@ export const keywordPages: readonly KeywordPageSpec[] = [
 
 /** SPEC §9.2: the RAG / evals words — keyword pages carry neither at all (SPEC §4.4). */
 const ragEvals = ragEvalsRule.pattern;
-/** SPEC §3.7: packages are `@balsats/*` — any other `@scope/name` is a finding. */
+/** SPEC §3.7: packages are `@oribos/*` — any other `@scope/name` is a finding. */
 const packageScope = /\B@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*/gi;
 /** SPEC §4.4: the target is the slug keyword plus its TypeScript qualifier — no Platform-class words. */
 const platformWord = /\bplatform\b/i;
@@ -545,7 +545,7 @@ function backLinkIssues(page: KeywordPage, spec: KeywordPageSpec): string[] {
 	return [];
 }
 
-/** SPEC §9.2: the page's own prose holds the site-wide red lines and the `@balsats/*` scope. */
+/** SPEC §9.2: the page's own prose holds the site-wide red lines and the `@oribos/*` scope. */
 function proseIssues(page: KeywordPage): string[] {
 	const issues: string[] = [];
 	const ownCopy = textOf(ownRegionsOf(page.html).join('\n'));
@@ -557,8 +557,8 @@ function proseIssues(page: KeywordPage): string[] {
 	}
 
 	for (const match of ownCopy.matchAll(packageScope)) {
-		if (!match[0].toLowerCase().startsWith('@balsats/')) {
-			issues.push(`${page.path}: \`${match[0]}\` is not a \`@balsats/\` package — packages are \`@balsats/*\` (SPEC §4.4)`);
+		if (!match[0].toLowerCase().startsWith('@oribos/')) {
+			issues.push(`${page.path}: \`${match[0]}\` is not a \`@oribos/\` package — packages are \`@oribos/*\` (SPEC §4.4)`);
 		}
 	}
 

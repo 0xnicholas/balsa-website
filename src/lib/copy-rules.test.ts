@@ -6,14 +6,14 @@ const rules = (text: string, path = 'index.html') => copyIssues([{ path, text }]
 
 test('every install-class shape the spec lists is caught', () => {
 	for (const command of [
-		'npm install @balsats/core',
-		'npm i @balsats/core',
-		'pnpm add @balsats/core',
+		'npm install @oribos/core',
+		'npm i @oribos/core',
+		'pnpm add @oribos/core',
 		'pnpm install',
-		'bun add @balsats/core',
-		'yarn add @balsats/core',
-		'npx create-balsats',
-		'git clone https://github.com/0xnicholas/balsats-framework',
+		'bun add @oribos/core',
+		'yarn add @oribos/core',
+		'npx create-oribos',
+		'git clone https://github.com/0xnicholas/oribos-framework',
 	]) {
 		assert.ok(rules(`<p>${command}</p>`).length > 0, `expected a finding for \`${command}\``);
 	}
@@ -27,7 +27,7 @@ test('a package manager near `install` reads as a command; plain prose does not'
 
 test('import lines and package names are not install commands', () => {
 	assert.deepEqual(
-		rules("import { Agent } from '@balsats/core/agent';\nimport { openai } from '@ai-sdk/openai';"),
+		rules("import { Agent } from '@oribos/core/agent';\nimport { openai } from '@ai-sdk/openai';"),
 		[],
 	);
 });
@@ -53,16 +53,19 @@ test('`MIT` is caught as a word, and build-tool license banners are not the site
 	assert.deepEqual(rules('/*! tailwindcss v4.3.3 | MIT License | https://tailwindcss.com */', 'index.css'), []);
 });
 
-test('the retired scope is caught and the current one is not', () => {
+test('the retired scopes are caught and the current one is not', () => {
 	assert.ok(rules("import { Agent } from '@balsa/core';").length > 0);
-	assert.deepEqual(rules("import { Agent } from '@balsats/core/agent';"), []);
+	assert.ok(rules("import { Agent } from '@balsats/core';").length > 0);
+	assert.deepEqual(rules("import { Agent } from '@oribos/core/agent';"), []);
 });
 
 test('the retired repository and domain names are findings in prose, not only in hrefs', () => {
 	assert.ok(rules('<p>The source lived at github.com/0xnicholas/balsa-framework.</p>').length > 0);
+	assert.ok(rules('<p>The source lived at github.com/0xnicholas/balsats-framework.</p>').length > 0);
 	assert.ok(rules('<p>The docs lived at docs.balsajs.dev.</p>').length > 0);
-	// The current names pass — and bare `balsa` stays legal for the /about origin sentence.
-	assert.deepEqual(rules('<p>The source is github.com/0xnicholas/balsats-framework.</p>'), []);
+	assert.ok(rules('<p>The site lived at balsats.com.</p>').length > 0);
+	// The current names pass — and the bare word `balsa` (a wood, not a name we ship) is not a finding.
+	assert.deepEqual(rules('<p>The source is github.com/0xnicholas/oribos-framework.</p>'), []);
 	assert.deepEqual(rules('<p>Named after balsa, the wood.</p>'), []);
 });
 
@@ -70,7 +73,7 @@ test('RAG and evals are keyword-page findings only', () => {
 	assert.ok(rules('<p>RAG pipelines and evals.</p>', 'ai-agents/index.html').length > 0);
 	// The two mentions the spec allows — the honest FAQ answer and the processors use-case
 	// word — live on the home page, so the rule is scoped to the keyword routes.
-	assert.deepEqual(rules('<p>Does Balsats support RAG or evals?</p>', 'index.html'), []);
+	assert.deepEqual(rules('<p>Does Oribos support RAG or evals?</p>', 'index.html'), []);
 	assert.deepEqual(rules('<p>Eval-style assertions can hang off processors.</p>', 'index.html'), []);
 	assert.ok(isKeywordPage('ai-agent-framework/index.html'));
 	assert.ok(isKeywordPage('ai-agent-framework.html'));

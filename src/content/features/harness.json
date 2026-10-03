@@ -16,18 +16,18 @@
 			"text": "tick() fires what is due — storage is JSON, the occurrence function is injected."
 		},
 		{
-			"lead": "@balsats/croner",
+			"lead": "@oribos/croner",
 			"text": "cron expressions as that injected next() fragment."
 		}
 	],
 	"files": [
 		{
 			"file": "gate.ts",
-			"code": "import { createDurableAgent } from '@balsats/core/durable-agent';\n\nconst durable = app.durableAgent({ agent, approval: { tools: ['issueRefund'] } });\nconst out = durable.stream('Please refund order A-4471.');\n\nif ((await out.finishReason) === 'suspended') {\n  await durable.resume(out.runId, { approved: true });   // the held call now executes\n}"
+			"code": "import { createDurableAgent } from '@oribos/core/durable-agent';\n\nconst durable = app.durableAgent({ agent, approval: { tools: ['issueRefund'] } });\nconst out = durable.stream('Please refund order A-4471.');\n\nif ((await out.finishReason) === 'suspended') {\n  await durable.resume(out.runId, { approved: true });   // the held call now executes\n}"
 		},
 		{
 			"file": "schedule.ts",
-			"code": "import { cron } from '@balsats/croner';\n\nawait schedules.save({\n  id: 'morning-sweep',\n  ...cron('0 9 * * *', { timezone: 'UTC' }),   // the injected next() fragment\n  target: { agent: 'desk', input: 'write the daily digest' },\n});"
+			"code": "import { cron } from '@oribos/croner';\n\nawait schedules.save({\n  id: 'morning-sweep',\n  ...cron('0 9 * * *', { timezone: 'UTC' }),   // the injected next() fragment\n  target: { agent: 'desk', input: 'write the daily digest' },\n});"
 		}
 	]
 }

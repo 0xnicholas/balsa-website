@@ -1,5 +1,5 @@
 {
-	"title": "AI agents for TypeScript — Balsats",
+	"title": "AI agents for TypeScript — Oribos",
 	"description": "AI agents in TypeScript: a handful of fields, a built-in tool loop, streaming runs, and memory named per call — no hidden state.",
 	"h1": "AI agents — a handful of fields, a built-in loop, and no hidden state.",
 	"sections": [
@@ -13,7 +13,7 @@
 		},
 		{
 			"heading": "Tools are plain objects you already know how to write",
-			"body": "A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so Balsats validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider."
+			"body": "A tool is described by its fields and found by its key; schemas are Standard Schema dual interfaces, so Oribos validates the model's arguments with the schemas you already use and sends the corresponding JSON Schema to the provider."
 		},
 		{
 			"heading": "Memory is identity you name per call",
@@ -36,7 +36,7 @@
 		},
 		{
 			"question": "How is tool input validated?",
-			"answer": "Schemas are Standard Schema dual interfaces: Balsats validates the model's arguments with them and sends the corresponding JSON Schema to the provider."
+			"answer": "Schemas are Standard Schema dual interfaces: Oribos validates the model's arguments with them and sends the corresponding JSON Schema to the provider."
 		},
 		{
 			"question": "How do I add guardrails, redaction, or rate limiting?",

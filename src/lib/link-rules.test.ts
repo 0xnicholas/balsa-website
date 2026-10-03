@@ -5,7 +5,7 @@ import { linkIssues, retiredNames, routeOf, routeOfHtmlFile } from './link-rules
 const index = {
 	routeExists: (route: string) => ['/', '/about/'].includes(route),
 	pageHtml: (route: string) => (route === '/' ? '<section id="features"></section>' : '<h1>About</h1>'),
-	allowedExternal: ['https://github.com/0xnicholas/balsats-framework', 'https://balsats.com'],
+	allowedExternal: ['https://github.com/0xnicholas/oribos-framework', 'https://oribos.dev'],
 	retiredNames,
 };
 
@@ -41,14 +41,20 @@ test('an anchor with no target on the page it points at fails, home-page anchors
 });
 
 test('external links must be the links constants, under a current name', () => {
-	assert.deepEqual(issues('<a href="https://github.com/0xnicholas/balsats-framework">GitHub</a>'), []);
+	assert.deepEqual(issues('<a href="https://github.com/0xnicholas/oribos-framework">GitHub</a>'), []);
 	// A fragment on a constant is still that constant; another repository is not.
-	assert.deepEqual(issues('<a href="https://github.com/0xnicholas/balsats-framework#readme">readme</a>'), []);
+	assert.deepEqual(issues('<a href="https://github.com/0xnicholas/oribos-framework#readme">readme</a>'), []);
 	const unknown = issues('<a href="https://example.com/x">x</a>');
 	assert.equal(unknown.length, 1);
 	assert.match(unknown[0]!, /not one of the links constants/);
 
-	for (const retired of ['https://github.com/0xnicholas/balsa-framework', 'https://docs.balsajs.dev/docs']) {
+	for (const retired of [
+		'https://github.com/0xnicholas/balsa-framework',
+		'https://github.com/0xnicholas/balsats-framework',
+		'https://github.com/0xnicholas/balsats-website',
+		'https://docs.balsajs.dev/docs',
+		'https://balsats.com/',
+	]) {
 		const found = issues(`<a href="${retired}">x</a>`);
 		assert.ok(found.length > 0, `expected a finding for \`${retired}\``);
 	}
@@ -56,5 +62,5 @@ test('external links must be the links constants, under a current name', () => {
 
 test('relative links and non-http schemes are findings (the site links out to GitHub only)', () => {
 	assert.match(issues('<a href="about/">about</a>')[0]!, /relative link/);
-	assert.match(issues('<a href="mailto:hi@balsats.com">mail</a>')[0]!, /no other scheme/);
+	assert.match(issues('<a href="mailto:hi@oribos.dev">mail</a>')[0]!, /no other scheme/);
 });

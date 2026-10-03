@@ -22,7 +22,7 @@ import {
 const globalCss = readFileSync(new URL('../styles/global.css', import.meta.url), 'utf8');
 
 const spec = useCasePages[0]!;
-const title = `${spec.h1} — Balsats`;
+const title = `${spec.h1} — Oribos`;
 
 const art = `
 	<figure data-use-case-art aria-hidden="true">
@@ -52,9 +52,9 @@ const cardHtml = (card: ScenarioCardSpec) => `
 const page = (entry: UseCasePageSpec = spec, options: { art?: string } = {}): ScenarioPage => ({
 	path: `${entry.route.slice(1)}index.html`,
 	html: `<html lang="en"><head>
-		<title>${entry.h1} — Balsats</title>
+		<title>${entry.h1} — Oribos</title>
 		<meta name="description" content="${entry.description}" />
-		<meta property="og:title" content="${entry.h1} — Balsats" />
+		<meta property="og:title" content="${entry.h1} — Oribos" />
 		<meta property="og:description" content="${entry.description}" />
 	</head><body>
 	${options.art ?? art}
@@ -118,13 +118,13 @@ test('the three scenario cards carry the name, the text and the package line ver
 	assert.match(useCasePageIssues(reworded, spec).join('\n'), /card 1's text is not the §4\.3 copy verbatim/);
 
 	const repackaged = page();
-	repackaged.html = repackaged.html.replace('@balsats/ai-sdk</code>', '@balsats/vercel-ai</code>');
+	repackaged.html = repackaged.html.replace('@oribos/ai-sdk</code>', '@oribos/vercel-ai</code>');
 	assert.match(useCasePageIssues(repackaged, spec).join('\n'), /card 1's package line reads/);
 
 	const unpacked = page();
 	unpacked.html = unpacked.html.replace(
-		/<code class="[^"]*">@balsats\/core\/agent<\/code>/,
-		'@balsats/core/agent',
+		/<code class="[^"]*">@oribos\/core\/agent<\/code>/,
+		'@oribos/core/agent',
 	);
 	assert.match(useCasePageIssues(unpacked, spec).join('\n'), /card 1 does not render every package as its own <code>/);
 });
@@ -139,7 +139,7 @@ test('the shared art is one decorative banner, painted with the brand tokens', (
 	const square = page(spec, { art: art.replace('viewBox="0 0 1600 600"', 'viewBox="0 0 600 600"') });
 	assert.match(useCasePageIssues(square, spec).join('\n'), /not the 1600×600 banner/);
 
-	const captioned = page(spec, { art: art.replace('</svg>', '<text x="10" y="10">Balsats</text></svg>') });
+	const captioned = page(spec, { art: art.replace('</svg>', '<text x="10" y="10">Oribos</text></svg>') });
 	assert.match(useCasePageIssues(captioned, spec).join('\n'), /carries <text>/);
 
 	const literal = page(spec, { art: art.replace('var(--sl-color-accent)" stroke-width="4"', '#9e630a" stroke-width="4"') });
@@ -190,16 +190,16 @@ test('the head states the §2.6 description and the og pair', () => {
 	assert.match(headIssues(described, { description: spec.description, title }).join('\n'), /og:description is not the §2\.6 line verbatim/);
 
 	const ogTitled = page();
-	ogTitled.html = ogTitled.html.replace(`content="${title}"`, 'content="Agents — Balsats"');
-	assert.match(headIssues(ogTitled, { description: spec.description, title }).join('\n'), /og:title is `Agents — Balsats`/);
+	ogTitled.html = ogTitled.html.replace(`content="${title}"`, 'content="Agents — Oribos"');
+	assert.match(headIssues(ogTitled, { description: spec.description, title }).join('\n'), /og:title is `Agents — Oribos`/);
 });
 
 test('the head comparisons read attribute values decoded, as Astro emits them', () => {
 	const infra = useCasePages[2]!;
-	const infraTitle = `${infra.h1} — Balsats`;
+	const infraTitle = `${infra.h1} — Oribos`;
 	const built = page(infra);
 	built.html = built.html.replaceAll(infraTitle, infraTitle.replace('&', '&amp;'));
-	assert.ok(built.html.includes('content="Platform &amp; developer infra — Balsats"'));
+	assert.ok(built.html.includes('content="Platform &amp; developer infra — Oribos"'));
 	assert.deepEqual(useCasePageIssues(built, infra), []);
 	assert.deepEqual(headIssues(built, { description: infra.description, title: infraTitle }), []);
 });
@@ -220,8 +220,8 @@ test('the scenario prose holds the vocabulary, the red lines and the package sco
 	assert.match(useCasePageIssues(session, spec).join('\n'), /reads `session`.*never a session/);
 
 	const foreign = page();
-	foreign.html = foreign.html.replace('@balsats/ai-sdk</code>', '@ai-sdk/react</code>');
-	assert.match(useCasePageIssues(foreign, spec).join('\n'), /`@ai-sdk\/react` is not a `@balsats\/` package/);
+	foreign.html = foreign.html.replace('@oribos/ai-sdk</code>', '@ai-sdk/react</code>');
+	assert.match(useCasePageIssues(foreign, spec).join('\n'), /`@ai-sdk\/react` is not a `@oribos\/` package/);
 
 	const counted = page();
 	counted.html = counted.html.replace('plain objects with schemas', 'five fields with schemas');

@@ -7,22 +7,22 @@
  *  - the shell gate (`scripts/check-shell.mjs`) reports how many of the eleven the build has;
  *  - `public/llms.txt` is checked against it, entry by entry.
  *
- * Titles are the §2.6 values, `— Balsats` suffix included. The 404 is not in the list: it is an
+ * Titles are the §2.6 values, `— Oribos` suffix included. The 404 is not in the list: it is an
  * error page, not one of the eleven.
  */
 
 export type SitePage = { route: string; title: string };
 
 export const pages: readonly SitePage[] = [
-	{ route: '/', title: 'Balsats — ultralight TypeScript AI agent framework' },
-	{ route: '/about/', title: 'About — Balsats' },
-	{ route: '/privacy-policy/', title: 'Privacy policy — Balsats' },
-	{ route: '/terms-of-service/', title: 'Terms of service — Balsats' },
-	{ route: '/in-product-agents/', title: 'In-product agents — Balsats' },
-	{ route: '/operations-agents/', title: 'Operations agents — Balsats' },
-	{ route: '/developer-infrastructure/', title: 'Platform & developer infra — Balsats' },
-	{ route: '/ai-agent-framework/', title: 'AI agent framework for TypeScript — Balsats' },
-	{ route: '/ai-agents/', title: 'AI agents for TypeScript — Balsats' },
-	{ route: '/ai-workflows/', title: 'AI workflows for TypeScript — Balsats' },
-	{ route: '/ai-agent-observability/', title: 'AI agent observability for TypeScript — Balsats' },
+	{ route: '/', title: 'Oribos — ultralight TypeScript AI agent framework' },
+	{ route: '/about/', title: 'About — Oribos' },
+	{ route: '/privacy-policy/', title: 'Privacy policy — Oribos' },
+	{ route: '/terms-of-service/', title: 'Terms of service — Oribos' },
+	{ route: '/in-product-agents/', title: 'In-product agents — Oribos' },
+	{ route: '/operations-agents/', title: 'Operations agents — Oribos' },
+	{ route: '/developer-infrastructure/', title: 'Platform & developer infra — Oribos' },
+	{ route: '/ai-agent-framework/', title: 'AI agent framework for TypeScript — Oribos' },
+	{ route: '/ai-agents/', title: 'AI agents for TypeScript — Oribos' },
+	{ route: '/ai-workflows/', title: 'AI workflows for TypeScript — Oribos' },
+	{ route: '/ai-agent-observability/', title: 'AI agent observability for TypeScript — Oribos' },
 ];

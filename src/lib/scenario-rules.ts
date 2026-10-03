@@ -11,7 +11,7 @@
  *
  * The §9.3 vocabulary guards hold the pages' prose; the package line names subsystems, so it is
  * checked for shape (`→`, `·` separators, one chip per package) and scope (every `@scope/name`
- * is `@balsats/*`) rather than for prose vocabulary — §4.3's own note renders two of its labels
+ * is `@oribos/*`) rather than for prose vocabulary — §4.3's own note renders two of its labels
  * as English phrases.
  *
  * Like the hero, feature, band and FAQ rules, the strings here are the spec's copy —
@@ -57,17 +57,17 @@ export const useCasePages: readonly UseCasePageSpec[] = [
 			{
 				name: 'Answer, streamed into your UI',
 				text: 'agent.stream() on the server, the AI SDK message-stream route on the client, thread / resource memory so each user picks up where they left off.',
-				packages: ['@balsats/core/agent', '@balsats/core/memory', '@balsats/ai-sdk'],
+				packages: ['@oribos/core/agent', '@oribos/core/memory', '@oribos/ai-sdk'],
 			},
 			{
 				name: 'Act, through your own APIs',
 				text: 'Your endpoints become tools — plain objects with schemas — and multi-step flows compose as workflows where every boundary is validated.',
-				packages: ['@balsats/core/tools', '@balsats/core/workflows'],
+				packages: ['@oribos/core/tools', '@oribos/core/workflows'],
 			},
 			{
 				name: 'Hand off, with the run on hold',
 				text: 'Approval-listed tool calls never execute: the run suspends, and resume({ approved }) continues it — even from another process.',
-				packages: ['@balsats/core/durable-agent', '@balsats/sqlite'],
+				packages: ['@oribos/core/durable-agent', '@oribos/sqlite'],
 			},
 		],
 	},
@@ -80,18 +80,18 @@ export const useCasePages: readonly UseCasePageSpec[] = [
 		scenarios: [
 			{
 				name: 'Bring your tools in, unchanged',
-				text: 'MCP servers you already run stay where they are; their tools arrive as ordinary Balsats tools — plain objects, no registry.',
-				packages: ['@balsats/mcp-client'],
+				text: 'MCP servers you already run stay where they are; their tools arrive as ordinary Oribos tools — plain objects, no registry.',
+				packages: ['@oribos/mcp-client'],
 			},
 			{
 				name: 'A human on the risky step',
 				text: 'Approval-listed calls suspend instead of executing — approve to continue, reject and the model replans; the snapshot is JSON and survives the process.',
-				packages: ['@balsats/core/durable-agent', '@balsats/sqlite'],
+				packages: ['@oribos/core/durable-agent', '@oribos/sqlite'],
 			},
 			{
 				name: 'Wake it on a schedule, not a worker',
-				text: 'tick() fired by a platform cron is the first-class shape; @balsats/croner supplies the cron expressions, signals wake or inject into a thread.',
-				packages: ['@balsats/core/schedules', '@balsats/core/signals', '@balsats/croner'],
+				text: 'tick() fired by a platform cron is the first-class shape; @oribos/croner supplies the cron expressions, signals wake or inject into a thread.',
+				packages: ['@oribos/core/schedules', '@oribos/core/signals', '@oribos/croner'],
 			},
 		],
 	},
@@ -105,17 +105,17 @@ export const useCasePages: readonly UseCasePageSpec[] = [
 			{
 				name: 'Primitives, not a platform',
 				text: 'Teams import only the subpaths they need and add capability packages one at a time; the composition root is optional and a bare new Agent() stays first-class.',
-				packages: ['@balsats/core/*', 'capability packages added one at a time'],
+				packages: ['@oribos/core/*', 'capability packages added one at a time'],
 			},
 			{
 				name: 'Into the observability you already run',
-				text: 'Balsats traces its own minimal spans; @balsats/otlp exports them with GenAI semantic conventions to your collector — one tracer handed down by the app.',
-				packages: ['@balsats/core/observability', '@balsats/otlp'],
+				text: 'Oribos traces its own minimal spans; @oribos/otlp exports them with GenAI semantic conventions to your collector — one tracer handed down by the app.',
+				packages: ['@oribos/core/observability', '@oribos/otlp'],
 			},
 			{
 				name: 'Publish agents as shared infrastructure',
 				text: "Serve an MCP endpoint other teams and systems call — and compose one team's agent as a tool on another's.",
-				packages: ['@balsats/mcp-server', 'as-tool composition'],
+				packages: ['@oribos/mcp-server', 'as-tool composition'],
 			},
 		],
 	},
@@ -321,7 +321,7 @@ function backLinkIssues(page: ScenarioPage): string[] {
 	return [];
 }
 
-/** SPEC §9.2/§9.3: the prose's vocabulary, red lines and the `@balsats/*` package scope. */
+/** SPEC §9.2/§9.3: the prose's vocabulary, red lines and the `@oribos/*` package scope. */
 function proseIssues(page: ScenarioPage): string[] {
 	const section = elementOf(page.html, 'section', 'data-scenarios');
 	if (section === null) return [];
@@ -340,8 +340,8 @@ function proseIssues(page: ScenarioPage): string[] {
 	}
 
 	for (const match of textOf(section).matchAll(/@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*/gi)) {
-		if (!match[0].startsWith('@balsats/')) {
-			issues.push(`${page.path}: \`${match[0]}\` is not a \`@balsats/\` package — the package line names Balsats subsystems only (SPEC §3.7/§4.3)`);
+		if (!match[0].startsWith('@oribos/')) {
+			issues.push(`${page.path}: \`${match[0]}\` is not a \`@oribos/\` package — the package line names Oribos subsystems only (SPEC §3.7/§4.3)`);
 		}
 	}
 

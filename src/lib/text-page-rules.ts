@@ -1,6 +1,6 @@
 /**
  * The text pages (SPEC §4.1/§4.2) over the built site: `/about` — the H1 plus the public
- * tagline, Our story ×3, Who's behind it (signed to the `@0xnicholas` handle, never a real
+ * tagline, Our story ×2, Who's behind it (signed to the `@0xnicholas` handle, never a real
  * name or an email), the closing invitation band with its GitHub · Issues pair, and the one
  * back-to-home link — and the two one-screen legal stubs, each carrying the same static
  * `Last updated` line and its locked paragraphs, promising nothing the project does not have
@@ -61,24 +61,23 @@ export const lastUpdatedPattern = /^Last updated: [A-Z][a-z]+ \d{1,2}, \d{4}$/;
 /** SPEC §4.1 + §2.6: the /about page's locked copy. */
 export const aboutSpec: AboutPageSpec = {
 	route: '/about/',
-	h1: 'About Balsats',
+	h1: 'About Oribos',
 	tagline: 'Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage.',
 	storyHeading: 'Our story',
 	story: [
-		'Balsats takes its name from balsa, the lightest structural wood there is: light, but load-bearing.',
 		'The project exists for one bet — that an agent framework should be a library inside your application, not a platform your application moves into. So every subsystem ships behind its own entry point, the core carries no runtime dependencies, and nothing here needs a database, a queue or a long-running process.',
-		'Balsats is the umbrella brand. The framework came first, the documentation site is next, and future subprojects live alongside them — under one package scope and one domain.',
+		'Oribos is the umbrella brand. The framework came first, the documentation site is next, and future subprojects live alongside them — under one package scope and one domain.',
 	],
 	behindHeading: "Who's behind it",
 	behind: [
-		`Balsats is built in the open on GitHub and maintained by ${maintainerLabel}. There is no company behind it and no team page to read: the repository's issues are where questions, bug reports and disagreement land.`,
-		'Code and examples are licensed Apache-2.0 — that license covers code, not the name. Site copy and graphics are © 2026 Balsats, all rights reserved.',
+		`Oribos is built in the open on GitHub and maintained by ${maintainerLabel}. There is no company behind it and no team page to read: the repository's issues are where questions, bug reports and disagreement land.`,
+		'Code and examples are licensed Apache-2.0 — that license covers code, not the name. Site copy and graphics are © 2026 Oribos, all rights reserved.',
 	],
 	closing: {
 		lead: 'Read the code, open an issue.',
 		sub: 'Star or watch the repository to follow releases.',
 	},
-	description: 'About Balsats — why the project exists, who maintains it, and how code and content are licensed.',
+	description: 'About Oribos — why the project exists, who maintains it, and how code and content are licensed.',
 };
 
 /** SPEC §4.2 + §2.6: the two legal stubs' locked copy, in §2.1 page order. */
@@ -87,24 +86,24 @@ export const legalPageSpecs: readonly LegalPageSpec[] = [
 		route: '/privacy-policy/',
 		h1: 'Privacy policy',
 		paragraphs: [
-			"Balsats's marketing site is a static site. It has no accounts, sets no cookies and runs no tracking, and we do not collect or store personal information about you.",
+			"Oribos's marketing site is a static site. It has no accounts, sets no cookies and runs no tracking, and we do not collect or store personal information about you.",
 			'Our hosting provider serves the site and may keep standard server logs — IP address, user agent, requested URL — for security and operations, under its own policies. We do not sell or share personal data, so there is nothing here to opt out of.',
 			"If you reach us through GitHub, what you send is handled by GitHub under GitHub's terms. Questions and requests: open an issue in the repository.",
 			'If analytics or an email subscription is added later, this page will say exactly what is collected and by whom before it goes live.',
 		],
 		description:
-			'Privacy policy for the Balsats marketing site: a static site with no accounts, no cookies and no tracking.',
+			'Privacy policy for the Oribos marketing site: a static site with no accounts, no cookies and no tracking.',
 	},
 	{
 		route: '/terms-of-service/',
 		h1: 'Terms of service',
 		paragraphs: [
 			'This site is provided as-is, without warranties of any kind. It describes an open-source project that is pre-1.0: what you read here can change.',
-			'Code and examples in the Balsats project are licensed under Apache-2.0 — that license covers code, and does not grant rights to the Balsats name or logo. Site copy and graphics are © 2026 Balsats, all rights reserved.',
+			'Code and examples in the Oribos project are licensed under Apache-2.0 — that license covers code, and does not grant rights to the Oribos name or logo. Site copy and graphics are © 2026 Oribos, all rights reserved.',
 			'Links to third-party sites are here for convenience; those sites are governed by their own terms. Questions: open an issue in the repository.',
 		],
 		description:
-			'Terms of service for the Balsats website and project: pre-1.0, provided as-is, code under Apache-2.0.',
+			'Terms of service for the Oribos website and project: pre-1.0, provided as-is, code under Apache-2.0.',
 	},
 ];
 
@@ -207,7 +206,7 @@ function aboutHeroIssues(page: TextPage, spec: AboutPageSpec): string[] {
 	return issues;
 }
 
-/** SPEC §4.1: Our story — the heading and its three paragraphs, verbatim and in order. */
+/** SPEC §4.1: Our story — the heading and its two paragraphs, verbatim and in order. */
 function aboutStoryIssues(page: TextPage, spec: AboutPageSpec): string[] {
 	const section = storyOf(page.html);
 	if (section === null) {

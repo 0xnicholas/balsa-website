@@ -8,12 +8,12 @@ import {
 	thirdPartySubresourceIssues,
 } from './telemetry.ts';
 
-const origin = 'https://balsats.com';
+const origin = 'https://oribos.dev';
 const pages = (html: string) => thirdPartySubresourceIssues([{ path: 'index.html', text: html }], { origin });
 
 test('every subresource is served from the site itself', () => {
 	assert.deepEqual(pages('<script src="/_astro/app.js"></script><link rel="stylesheet" href="/_astro/a.css">'), []);
-	assert.deepEqual(pages('<img src="/_astro/x.png"><link rel="preconnect" href="https://balsats.com">'), []);
+	assert.deepEqual(pages('<img src="/_astro/x.png"><link rel="preconnect" href="https://oribos.dev">'), []);
 	assert.deepEqual(pages('<img src="data:image/svg+xml,<svg/>">'), []);
 });
 
@@ -23,7 +23,7 @@ test('a foreign subresource is a finding, however it is spelled', () => {
 	assert.match(pages('<script src="//cdn.example.com/x.js"></script>')[0]!, /zero third-party subresources/);
 	// A canonical is a pointer, not a subresource; a link out is content, not a subresource.
 	assert.deepEqual(pages(`<link rel="canonical" href="${origin}/">`), []);
-	assert.deepEqual(pages('<a href="https://github.com/0xnicholas/balsats-framework">GitHub</a>'), []);
+	assert.deepEqual(pages('<a href="https://github.com/0xnicholas/oribos-framework">GitHub</a>'), []);
 });
 
 test('the site has no form anywhere', () => {

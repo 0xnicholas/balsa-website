@@ -150,7 +150,7 @@ test('the social-proof band is #social-proof: the §3.4 kicker, one muted line, 
 test('the resources strip is #resources: three verbatim links from the links constants', () => {
 	assert.match(resourcesIssues(page('<p>nothing</p>'))[0]!, /no resources strip/);
 
-	const readme = `https://github.com/0xnicholas/balsats-framework/blob/main/README.md`;
+	const readme = `https://github.com/0xnicholas/oribos-framework/blob/main/README.md`;
 	const wrongTarget = bands('', '', resourcesSection().replace(LINKS.examples, readme));
 	assert.match(resourcesIssues(wrongTarget).join('\n'), /`Examples` link points at/);
 

@@ -12,12 +12,12 @@ import {
 } from './shell-rules.ts';
 import { LINKS } from './links.ts';
 
-const origin = 'https://balsats.com';
+const origin = 'https://oribos.dev';
 
 /** The markup the shell must render, reduced to the strings the rules read. */
 const header = `
 <header id="site-header" class="sticky top-0">
-	<a href="/" class="wordmark">Balsats</a>
+	<a href="/" class="wordmark">Oribos</a>
 	<nav aria-label="Main">
 		<button type="button" aria-expanded="false" aria-controls="use-cases-menu">Use cases<svg aria-hidden="true"></svg></button>
 		<div id="use-cases-menu" hidden>
@@ -45,7 +45,7 @@ const header = `
 
 const footer = `
 <footer>
-	<a href="/">Balsats</a>
+	<a href="/">Oribos</a>
 	<p>Ultralight TypeScript agent framework.<br />Compose only what you use — run anywhere, no runtime baggage.</p>
 	<h2>Framework</h2>
 	<a href="/ai-agent-framework/">Agent framework</a>
@@ -63,7 +63,7 @@ const footer = `
 	<h2>Project</h2>
 	<a href="/about/">About</a>
 	<a href="${LINKS.github}">GitHub</a>
-	<span>© 2026 Balsats · Apache-2.0</span>
+	<span>© 2026 Oribos · Apache-2.0</span>
 	<a href="/privacy-policy/">Privacy</a>
 	<a href="/terms-of-service/">Terms</a>
 </footer>`;
@@ -72,7 +72,7 @@ const head = `
 <html lang="en">
 	<head>
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta property="og:site_name" content="Balsats" />
+		<meta property="og:site_name" content="Oribos" />
 		<meta property="og:image" content="${origin}/og.png" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
@@ -92,7 +92,7 @@ test('a shell page passes the header, footer and head rules', () => {
 });
 
 test('the header carries the wordmark, the use-case dropdown, Docs, GitHub and the pill', () => {
-	const withoutWordmark = head.replace('<a href="/" class="wordmark">Balsats</a>', '');
+	const withoutWordmark = head.replace('<a href="/" class="wordmark">Oribos</a>', '');
 	assert.match(issuesOf(withoutWordmark)[0]!, /wordmark/);
 
 	const withoutItem = head.replace(/<a href="\/operations-agents\/">[\s\S]*?<\/a>/g, '');
@@ -113,7 +113,7 @@ test('the footer keeps the four columns in order and the verbatim tagline and le
 	const withoutTagline = head.replace('Compose only what you use — run anywhere, no runtime baggage.', 'Compose only what we sell.');
 	assert.match(footerIssues(page(withoutTagline))[0]!, /tagline/);
 
-	const withoutLegal = head.replace('© 2026 Balsats · Apache-2.0', '© 2026 Balsats');
+	const withoutLegal = head.replace('© 2026 Oribos · Apache-2.0', '© 2026 Oribos');
 	assert.match(footerIssues(page(withoutLegal))[0]!, /Apache-2.0/);
 
 	const swapped = head.replace('<h2>Developers</h2>', '<h2>Project</h2>');
@@ -133,7 +133,7 @@ test('cut navigation and the newsletter/social surfaces do not come back', () =>
 	const newsletter = footerIssues(page(head.replace('</footer>', '<a href="/newsletter">Newsletter</a></footer>')));
 	assert.ok(newsletter.length > 0, 'the newsletter slot stays deleted');
 
-	const social = footerIssues(page(head.replace('</footer>', '<a href="https://x.com/balsats">X</a></footer>')));
+	const social = footerIssues(page(head.replace('</footer>', '<a href="https://x.com/oribos">X</a></footer>')));
 	assert.ok(social.length > 0, 'no social column');
 });
 
@@ -187,11 +187,11 @@ test('the 404 carries one sentence and a home link, and no way out to docs or Gi
 });
 
 test('the page title is the registry title, verbatim', () => {
-	const title = 'About — Balsats';
+	const title = 'About — Oribos';
 	const pageWithTitle = (value: string) => page(`<html><head><title>${value}</title></head><body></body></html>`);
 
 	assert.deepEqual(titleIssues(pageWithTitle(title), title), []);
-	assert.match(titleIssues(pageWithTitle('About'), title)[0]!, /expected \`About — Balsats\`/);
+	assert.match(titleIssues(pageWithTitle('About'), title)[0]!, /expected \`About — Oribos\`/);
 	assert.match(titleIssues(page('<html><head></head></html>'), title)[0]!, /no <title>/);
 });
 

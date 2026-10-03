@@ -1,5 +1,5 @@
 {
-	"title": "AI workflows for TypeScript — Balsats",
+	"title": "AI workflows for TypeScript — Oribos",
 	"description": "AI workflows in TypeScript: typed steps, validated boundaries, and JSON snapshots that resume a run in another process.",
 	"h1": "AI workflows — typed steps, validated boundaries, and runs that survive a restart.",
 	"sections": [
@@ -28,7 +28,7 @@
 		},
 		{
 			"question": "Do workflows need a database or a queue?",
-			"answer": "No. The snapshot store defaults to an in-memory implementation and is swapped for an adapter — such as @balsats/sqlite — only when you want snapshots to outlive the process."
+			"answer": "No. The snapshot store defaults to an in-memory implementation and is swapped for an adapter — such as @oribos/sqlite — only when you want snapshots to outlive the process."
 		},
 		{
 			"question": "What happens if my process restarts mid-run?",

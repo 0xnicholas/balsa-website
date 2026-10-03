@@ -1,35 +1,40 @@
-# Balsats Website
+# Oribos Website
 
-The marketing site for the Balsats project. This repo's deliverable is a handoff-ready spec for that site; the site itself is built from the spec.
+The marketing site for the Oribos project. This repo's deliverable is a handoff-ready spec for that site; the site itself is built from the spec.
 
 ## Language
 
 **营销站 (Marketing site)**:
-The landing page group for Balsats — home page and closely related content pages. Does not include docs or a blog; those are separate efforts.
+The landing page group for Oribos — home page and closely related content pages. Does not include docs or a blog; those are separate efforts.
 _Avoid_: docs site, website（泛指）
 
-**Balsats**:
-The ultralight TypeScript AI agent framework this site markets. Public tagline: "Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage."
+**Oribos**:
+The umbrella brand this site markets: its first subproject is the ultralight TypeScript AI agent framework (repo `oribos-framework`), the documentation site follows, and future subprojects live alongside them. Public tagline: "Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage."
+_Avoid_: `balsa` / `balsats`（旧名，见框架 ADR-0013 末次修订；`link-rules.ts` 见到即红）
+
+**站点根 (Site origin)**:
+营销站的单一部署根 = `https://oribos.dev`（文档站 = `https://docs.oribos.dev`，两站同根）；仓库里唯一的 host 字面量在 `src/lib/site.ts`，canonical / `og:url` / sitemap / robots 全由它派生。
+_Avoid_: 在页面 / 布局 / 组件 / 内容数据里另写域名（`scripts/check-origin.mjs` 见到即红）
 
 **Lightweight**:
-Balsats's differentiating axis, with a precise two-part meaning: compose only what you use (every subsystem a separate subpath export; zero runtime dependencies) and no runtime burden (no required DB, queue, or long-running process; embeds in the host app).
+Oribos's differentiating axis, with a precise two-part meaning: compose only what you use (every subsystem a separate subpath export; zero runtime dependencies) and no runtime burden (no required DB, queue, or long-running process; embeds in the host app).
 _Avoid_: small, mini（泛化的"小"）
 
 **core package**:
-`@balsats/core`, the zero-runtime-dependency package; every subsystem is a subpath export.
+`@oribos/core`, the zero-runtime-dependency package; every subsystem is a subpath export.
 
 **capability package**:
-An optional add-on package `@balsats/<capability>` (e.g. `@balsats/mcp-server`).
+An optional add-on package `@oribos/<capability>` (e.g. `@oribos/mcp-server`).
 _Avoid_: plugin, integration
 
 **composition root**:
 `createApp`, an optional thin assembly point.
 
 **processor**:
-Balsats's single cross-cutting extension point: ordered hooks `processInput` / `processOutputStep` / `processError`.
+Oribos's single cross-cutting extension point: ordered hooks `processInput` / `processOutputStep` / `processError`.
 
 **as-tool composition**:
-Balsats's multi-agent model: wrap an agent as a tool on another agent; delegation is an ordinary tool call.
+Oribos's multi-agent model: wrap an agent as a tool on another agent; delegation is an ordinary tool call.
 _Avoid_: supervisor, sub-agent
 
 **memory**:
@@ -47,14 +52,14 @@ A documentation category name, not a module: the trio of durable agents, signals
 
 **用例页 (Use-case page)**:
 首页 use-case 卡片的展开页,每卡一页(首发三页);讲单一应用场景的完整论证。
-_Avoid_: 案例页、customers 页(Balsats 无客户案例)
+_Avoid_: 案例页、customers 页(Oribos 无客户案例)
 
 **场景卡 (Scenario card)**:
-用例页正文的卡片单元,代替客户故事卡:场景名 + 2–3 句「用 Balsats 怎么搭」+ 用到的子系统/包名(首发每页三张);配图为宿主界面 mock。
-_Avoid_: 客户故事卡、案例卡(Balsats 无客户案例);能力清单(能力维度归 feature tabs)
+用例页正文的卡片单元,代替客户故事卡:场景名 + 2–3 句「用 Oribos 怎么搭」+ 用到的子系统/包名(首发每页三张);配图为宿主界面 mock。
+_Avoid_: 客户故事卡、案例卡(Oribos 无客户案例);能力清单(能力维度归 feature tabs)
 
 **关键词页 (Keyword page)**:
-按搜索词建立的说明页,首发四页(`/ai-agent-framework`、`/ai-agents`、`/ai-workflows`、`/ai-agent-observability`),服务搜索与 LLM 收录;内容只讲 Balsats 自身能力。
+按搜索词建立的说明页,首发四页(`/ai-agent-framework`、`/ai-agents`、`/ai-workflows`、`/ai-agent-observability`),服务搜索与 LLM 收录;内容只讲 Oribos 自身能力。
 _Avoid_: SEO 页(泛指)、行业页
 
 **全局 FAQ (Global FAQ)**:
@@ -70,9 +75,9 @@ _Avoid_: FAQ(未限定时指代不清)、SEO 问答
 _Avoid_: 内容页(泛指)、静态页(与整站静态形态混淆)
 
 **维护者署名 (Maintainer attribution)**:
-站点公开面上代表 Balsats 的个人标识:只到 GitHub handle(`@0xnicholas`),不出现真实姓名与邮箱;footer 的 `©` 行保持项目名义,不随署名改变。
-_Avoid_: 实名署名、作者邮箱、团队页(Balsats 无团队)
+站点公开面上代表 Oribos 的个人标识:只到 GitHub handle(`@0xnicholas`),不出现真实姓名与邮箱;footer 的 `©` 行保持项目名义,不随署名改变。
+_Avoid_: 实名署名、作者邮箱、团队页(Oribos 无团队)
 
 **许可分工 (License split)**:
-站点与项目的版权口径分工:代码与示例 = Apache-2.0;站点文案与图形 = 版权保留。写在法务页与 `/about`,避免 footer 的 `© Balsats · Apache-2.0` 并排被读成「站点内容也是 Apache-2.0」。
+站点与项目的版权口径分工:代码与示例 = Apache-2.0;站点文案与图形 = 版权保留。写在法务页与 `/about`,避免 footer 的 `© Oribos · Apache-2.0` 并排被读成「站点内容也是 Apache-2.0」。
 _Avoid_: 全站开源(代码与文案混谈)、内容许可(未定,不表态)

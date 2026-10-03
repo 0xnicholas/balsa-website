@@ -7,7 +7,7 @@
  * own inline-code chip), the shared final CTA with the §3.8 copy, and the `← All use cases`
  * back link. The pages keep their red lines — no code block, no social-proof band, no
  * breadcrumbs, no release status in the page's own copy, the CONTEXT.md vocabulary and the
- * `@balsats/*` scope — state the §2.6 meta description and og pair, paint text only in the
+ * `@oribos/*` scope — state the §2.6 meta description and og pair, paint text only in the
  * §5.5 audited roles, and clear AA on the chip pair in both themes. Registered pages the
  * build does not have yet are reported as pending, like the shell gate. The rules live in
  * `src/lib/scenario-rules.ts`; the FAQ itself answers to check-faq.mjs on these pages too.

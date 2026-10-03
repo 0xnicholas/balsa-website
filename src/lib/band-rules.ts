@@ -20,14 +20,14 @@ export type BandPage = { path: string; html: string };
 export const observabilityKicker = 'Observability';
 export const observabilityClaim = 'Every run traced. OTLP when you want it.';
 export const observabilityLead =
-	'Agent runs, model steps, tool calls, workflow steps, memory recall and save — traced by default. Built-in console and memory exporters; @balsats/otlp maps Balsats spans to the GenAI semantic conventions. A standalone agent with no tracer stays zero-overhead.';
+	'Agent runs, model steps, tool calls, workflow steps, memory recall and save — traced by default. Built-in console and memory exporters; @oribos/otlp maps Oribos spans to the GenAI semantic conventions. A standalone agent with no tracer stays zero-overhead.';
 export const observabilityCardClaim = 'One tracer, distributed by the composition root.';
 /** SPEC §3.3/§7.1/§7.4: the card's single file, its snippet, and the observability line cap. */
 export const observabilityFile = 'app.ts';
 export const maxBandLines = 10;
-export const observabilitySnippet = `import { createApp } from '@balsats/core';
-import { createTracer, consoleExporter } from '@balsats/core/observability';
-import { createOtlpExporter } from '@balsats/otlp';
+export const observabilitySnippet = `import { createApp } from '@oribos/core';
+import { createTracer, consoleExporter } from '@oribos/core/observability';
+import { createOtlpExporter } from '@oribos/otlp';
 
 const app = createApp({
   tracer: createTracer({ exporters: [consoleExporter(), createOtlpExporter({ url })] }),
@@ -38,7 +38,7 @@ const agent = app.agent({ name, instructions, model });   // one tracer, every a
 /** SPEC §3.4: the placeholder band's copy (owner-tunable, rendered as written). */
 export const socialProofKicker = 'In the open';
 export const socialProofLine =
-	'No logos, no quotes, no numbers yet — Balsats is new. When there are real stories to tell, they will live here.';
+	'No logos, no quotes, no numbers yet — Oribos is new. When there are real stories to tell, they will live here.';
 
 /** SPEC §3.6: the resources strip's kicker and its three links (labels verbatim). */
 export const resourcesKicker = 'Go deeper';

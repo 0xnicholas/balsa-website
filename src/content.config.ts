@@ -147,7 +147,7 @@ const faq = defineCollection({
 const keywordPages = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/keyword-pages' }),
 	schema: z.object({
-		/** The §2.6 title (【终稿】: `<Keyword> for TypeScript — Balsats`). */
+		/** The §2.6 title (【终稿】: `<Keyword> for TypeScript — Oribos`). */
 		title: z.string(),
 		/** The §2.6 meta description — og:description reuses it. */
 		description: z.string(),
@@ -192,8 +192,8 @@ const about = defineCollection({
 		/** SPEC §4.1: the H1; the sub is `publicTagline` from src/lib/brand.ts, read by the page. */
 		h1: z.string(),
 		storyHeading: z.string(),
-		/** SPEC §4.1 【终稿·勿改】: Our story's three paragraphs. */
-		story: z.array(z.string()).length(3),
+		/** SPEC §4.1 【终稿·勿改】: Our story's two paragraphs (the etymology line was dropped 2026-10-03). */
+		story: z.array(z.string()).length(2),
 		behindHeading: z.string(),
 		/** SPEC §4.1 【终稿·勿改】: Who's behind it — two paragraphs, the signature a link segment. */
 		behind: z.array(z.array(copySegment)).length(2),

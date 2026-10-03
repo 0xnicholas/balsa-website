@@ -27,12 +27,12 @@ export const faqHeading = 'Frequently asked questions';
 /** SPEC §3.7 — the nine questions in page order, verbatim; the answers are the section's drafts (【可润色】). */
 export const faqItems: readonly FaqSpecItem[] = [
 	{
-		question: 'What is Balsats?',
+		question: 'What is Oribos?',
 		answer:
-			'Balsats is an ultralight TypeScript agent framework. Its surface is agents, tools, memory, workflows and durable execution, with capability packages you add as you need them. It is lightweight in two precise senses: you compose only what you use, and it asks for no runtime of its own — no database, no queue, no long-running process; it embeds in the app you already run.',
+			'Oribos is an ultralight TypeScript agent framework. Its surface is agents, tools, memory, workflows and durable execution, with capability packages you add as you need them. It is lightweight in two precise senses: you compose only what you use, and it asks for no runtime of its own — no database, no queue, no long-running process; it embeds in the app you already run.',
 	},
 	{
-		question: 'Is Balsats on npm yet?',
+		question: 'Is Oribos on npm yet?',
 		answer:
 			'Not yet. The first public release will be 0.5.0, with the framework and its capability packages shipping together. Until then, the repository on GitHub is where to follow along — star or watch it for release updates.',
 	},
@@ -42,27 +42,27 @@ export const faqItems: readonly FaqSpecItem[] = [
 			"Because the useful parts of a framework should behave like a library, not a platform. Every subsystem ships behind its own subpath export and the core carries zero runtime dependencies, so what you don't import costs you nothing — not in the dependency tree, not in concept space. Nothing here needs a database, a queue or a long-running process, and a CI byte budget keeps size a checked property rather than a promise.",
 	},
 	{
-		question: 'What models and providers can I use with Balsats?',
+		question: 'What models and providers can I use with Oribos?',
 		answer:
-			'Any model from the AI SDK provider ecosystem: you pass a model instance straight from a provider package, with no adapter, no registry and no magic strings. The core stays dependency-free by keeping a minimal structural model contract. For streaming into an AI SDK UI, @balsats/ai-sdk provides the message-stream interop and a useChat-compatible route.',
+			'Any model from the AI SDK provider ecosystem: you pass a model instance straight from a provider package, with no adapter, no registry and no magic strings. The core stays dependency-free by keeping a minimal structural model contract. For streaming into an AI SDK UI, @oribos/ai-sdk provides the message-stream interop and a useChat-compatible route.',
 	},
 	{
-		question: 'Does Balsats run on edge and serverless?',
+		question: 'Does Oribos run on edge and serverless?',
 		answer:
 			"Yes — nothing in the architecture requires a database, a queue or a long-running process, and the core has zero runtime dependencies. Serverless and edge deployments are a first-class shape rather than a downgrade: a platform cron calling tick() on an endpoint is the canonical way to run schedules. Capability packages carry their own runtime requirements — the SQLite adapter targets Node — and the core's declared runtime is Node 22.13 or newer; Bun, Deno and Workers are not promised.",
 	},
 	{
-		question: 'Does Balsats support MCP?',
+		question: 'Does Oribos support MCP?',
 		answer:
-			"Yes. @balsats/mcp-server serves your tools over MCP through HTTP or stdio, and @balsats/mcp-client brings another server's tools in as ordinary Balsats tools — plain objects, no registry. Both ship with the first release.",
+			"Yes. @oribos/mcp-server serves your tools over MCP through HTTP or stdio, and @oribos/mcp-client brings another server's tools in as ordinary Oribos tools — plain objects, no registry. Both ship with the first release.",
 	},
 	{
-		question: 'Does Balsats support RAG or evals?',
+		question: 'Does Oribos support RAG or evals?',
 		answer:
 			"No — neither is built in. Both sit on the framework's deferred list and will be reopened against real use-case signals, with no schedule promised. Eval-style assertions can already hang off processors, and observability is built in: a tracer with spans, exportable to any OTLP collector with GenAI semantic conventions.",
 	},
 	{
-		question: 'Is Balsats production-ready?',
+		question: 'Is Oribos production-ready?',
 		answer:
 			'Pre-1.0: everything this site describes is implemented and verified, but 0.x releases reserve the right to make breaking changes, and 1.0 is not scheduled. Pin the version you build against and follow releases — storage ports become additive-only from 1.0.',
 	},
@@ -74,7 +74,7 @@ export const faqItems: readonly FaqSpecItem[] = [
 
 /** SPEC §9.2: the RAG / evals words — question 7's answer is the only place they may appear. */
 const ragEvals = ragEvalsRule.pattern;
-/** SPEC §3.7: packages are `@balsats/*` — any other `@scope/name` is a finding. */
+/** SPEC §3.7: packages are `@oribos/*` — any other `@scope/name` is a finding. */
 const packageScope = /\B@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*/gi;
 
 /** SPEC §5.5: the FAQ section reads on the page background — the audited roles only. */
@@ -153,8 +153,8 @@ export function faqIssues(page: FaqPage): string[] {
 			}
 		}
 		for (const match of text.matchAll(packageScope)) {
-			if (!match[0].toLowerCase().startsWith('@balsats/')) {
-				issues.push(`${page.path}: question ${index + 1} names \`${match[0]}\` — packages are \`@balsats/*\` (SPEC §3.7)`);
+			if (!match[0].toLowerCase().startsWith('@oribos/')) {
+				issues.push(`${page.path}: question ${index + 1} names \`${match[0]}\` — packages are \`@oribos/*\` (SPEC §3.7)`);
 			}
 		}
 		for (const { term, reason } of terminologyHits(text)) {

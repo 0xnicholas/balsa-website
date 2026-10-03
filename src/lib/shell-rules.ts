@@ -31,7 +31,7 @@ export type ShellPage = { path: string; html: string };
 export const tagline =
 	'Ultralight TypeScript agent framework. Compose only what you use — run anywhere, no runtime baggage.';
 /** SPEC §2.3 【终稿·勿改】: a static string, never a build-time year. */
-export const legalLine = '© 2026 Balsats · Apache-2.0';
+export const legalLine = '© 2026 Oribos · Apache-2.0';
 /** SPEC §2.2: passive status badge — not a link, no version, all lowercase. */
 export const comingSoon = 'coming soon';
 

@@ -1,7 +1,7 @@
 /**
  * The red-line scan (SPEC §8.8 ④, §9.2) over the *built* site: install-class commands, names
  * the site never mentions, counting-style figures, the retired `MIT` license word, the retired
- * `@balsa/*` scope, the retired repository / domain names, and the RAG / evals line keyword
+ * `@balsa/*` and `@balsats/*` scopes, the retired repository / domain names, and the RAG / evals line keyword
  * pages must not cross.
  *
  * The rules are stated once here and unit-tested; `scripts/check-copy.mjs` walks `dist/` and
@@ -80,8 +80,8 @@ export const copyRules: readonly CopyRule[] = [
 	},
 	{
 		id: 'retired-scope',
-		reason: 'the npm scope is `@balsats/*` — `@balsa/*` is retired (SPEC §9.2)',
-		pattern: /@balsa\//,
+		reason: 'the npm scope is `@oribos/*` — `@balsa/*` and `@balsats/*` are retired (SPEC §9.2)',
+		pattern: /@balsa(?:ts)?\//,
 	},
 	// Stated once in link-rules.ts (which holds hrefs to the same line); here they red-line
 	// prose and attributes too, per issue #18 Testing #4.

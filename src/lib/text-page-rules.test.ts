@@ -33,7 +33,7 @@ const aboutHtml = (spec: AboutPageSpec, { closingGitHub = LINKS.github, closingI
 		<section data-about-behind class="border-t border-gray-5 px-6 py-20">
 			<div class="mx-auto max-w-3xl">
 				<h2 class="text-2xl font-semibold tracking-tight text-white">${spec.behindHeading}</h2>
-				<p class="mt-4 leading-relaxed text-gray-2">Balsats is built in the open on GitHub and maintained by <a href="${LINKS.maintainer}" class="rounded-sm text-text-accent hover:underline">${maintainerLabel}</a>. There is no company behind it and no team page to read: the repository's issues are where questions, bug reports and disagreement land.</p>
+				<p class="mt-4 leading-relaxed text-gray-2">Oribos is built in the open on GitHub and maintained by <a href="${LINKS.maintainer}" class="rounded-sm text-text-accent hover:underline">${maintainerLabel}</a>. There is no company behind it and no team page to read: the repository's issues are where questions, bug reports and disagreement land.</p>
 				<p class="mt-4 leading-relaxed text-gray-2">${spec.behind[1]}</p>
 			</div>
 		</section>
@@ -56,10 +56,10 @@ const aboutHtml = (spec: AboutPageSpec, { closingGitHub = LINKS.github, closingI
 
 const aboutPage = (spec: AboutPageSpec = aboutSpec, options?: Parameters<typeof aboutHtml>[1]): TextPage => ({
 	path: 'about/index.html',
-	html: `<html lang="en"><head><title>About — Balsats</title></head><body>
-		<header><a href="/">Balsats</a></header>
+	html: `<html lang="en"><head><title>About — Oribos</title></head><body>
+		<header><a href="/">Oribos</a></header>
 		${aboutHtml(spec, options)}
-		<footer><a href="/">Balsats</a></footer>
+		<footer><a href="/">Oribos</a></footer>
 	</body></html>`,
 });
 
@@ -78,10 +78,10 @@ const legalHtml = (spec: LegalPageSpec, lastUpdated: string): string =>
 
 const legalPage = (spec: LegalPageSpec, lastUpdated = 'October 3, 2026'): TextPage => ({
 	path: `${spec.route.slice(1)}index.html`,
-	html: `<html lang="en"><head><title>${spec.h1} — Balsats</title></head><body>
-		<header><a href="/">Balsats</a></header>
+	html: `<html lang="en"><head><title>${spec.h1} — Oribos</title></head><body>
+		<header><a href="/">Oribos</a></header>
 		${legalHtml(spec, lastUpdated)}
-		<footer><a href="/">Balsats</a></footer>
+		<footer><a href="/">Oribos</a></footer>
 	</body></html>`,
 });
 
@@ -109,7 +109,7 @@ const mutateAbout = (find: string, replace: string): TextPage => {
 	return { ...page, html: page.html.replace(find, replace) };
 };
 
-test('/about: the H1 must read `About Balsats`', () => {
+test('/about: the H1 must read `About Oribos`', () => {
 	const issues = aboutPageIssues(mutateAbout(aboutSpec.h1, 'About us'));
 	assert.ok(issues.some((issue) => issue.includes('the H1 reads `About us`')));
 });
@@ -120,15 +120,15 @@ test('/about: the sub is the public tagline verbatim', () => {
 });
 
 test('/about: Our story is the locked copy, in order', () => {
-	const drift = aboutPageIssues(mutateAbout('light, but load-bearing.', 'light but load-bearing.'));
-	assert.ok(drift.some((issue) => issue.includes('Our story paragraph 1 is not the §4.1 copy verbatim')));
+	const drift = aboutPageIssues(mutateAbout('under one package scope and one domain.', 'under one package scope.'));
+	assert.ok(drift.some((issue) => issue.includes('Our story paragraph 2 is not the §4.1 copy verbatim')));
 
 	const page = aboutPage();
 	const swapped = {
 		...page,
 		html: page.html.replace(
 			`<p class="mt-4 leading-relaxed text-gray-2">${aboutSpec.story[0]}</p>`,
-			`<p class="mt-4 leading-relaxed text-gray-2">${aboutSpec.story[2]}</p>`,
+			`<p class="mt-4 leading-relaxed text-gray-2">${aboutSpec.story[1]}</p>`,
 		),
 	};
 	assert.ok(aboutPageIssues(swapped).some((issue) => issue.includes('paragraph 1 is not the §4.1 copy verbatim')));
@@ -186,7 +186,7 @@ test('/about: no ADR numbers, issue numbers, email or careers content', () => {
 	const ticket = aboutPageIssues(mutateAbout('The project exists for one bet', 'Per #30, the project exists for one bet'));
 	assert.ok(ticket.some((issue) => issue.includes('no ADR numbers or issue numbers')));
 
-	const email = aboutPageIssues(mutateAbout('maintained by', 'maintained by hello@balsats.com and'));
+	const email = aboutPageIssues(mutateAbout('maintained by', 'maintained by hello@oribos.dev and'));
 	assert.ok(email.some((issue) => issue.includes('no email')));
 
 	const careers = aboutPageIssues(mutateAbout('Read the code, open an issue.', 'Read the code, open an issue. See our careers page.'));
@@ -194,10 +194,10 @@ test('/about: no ADR numbers, issue numbers, email or careers content', () => {
 });
 
 test('/about: no mailto and no external link beyond the handle, GitHub and Issues', () => {
-	const mailto = aboutPageIssues(mutateAbout(`href="${LINKS.maintainer}"`, 'href="mailto:hello@balsats.com"'));
+	const mailto = aboutPageIssues(mutateAbout(`href="${LINKS.maintainer}"`, 'href="mailto:hello@oribos.dev"'));
 	assert.ok(mailto.some((issue) => issue.includes('no email surface')));
 
-	const docs = aboutPageIssues(mutateAbout(`<a href="${LINKS.github}" class="rounded-sm font-medium text-text-accent hover:underline">GitHub</a>`, `<a href="https://github.com/0xnicholas/balsats-website" class="rounded-sm font-medium text-text-accent hover:underline">GitHub</a>`));
+	const docs = aboutPageIssues(mutateAbout(`<a href="${LINKS.github}" class="rounded-sm font-medium text-text-accent hover:underline">GitHub</a>`, `<a href="https://github.com/0xnicholas/oribos-website" class="rounded-sm font-medium text-text-accent hover:underline">GitHub</a>`));
 	assert.ok(docs.some((issue) => issue.includes("/about's own links are the handle, GitHub and Issues")));
 });
 
@@ -250,7 +250,7 @@ test('legal: the contact channel is one `repository` link to GitHub Issues', () 
 	assert.ok(github.some((issue) => issue.includes('the contact link is not one `repository` link')));
 	assert.ok(github.some((issue) => issue.includes("the stub's only external link is the Issues contact")));
 
-	const mailto = legalPageIssues(mutateLegal(privacySpec, `href="${LINKS.issues}"`, 'href="mailto:hello@balsats.com"'), privacySpec);
+	const mailto = legalPageIssues(mutateLegal(privacySpec, `href="${LINKS.issues}"`, 'href="mailto:hello@oribos.dev"'), privacySpec);
 	assert.ok(mailto.some((issue) => issue.includes('no email surface')));
 });
 
