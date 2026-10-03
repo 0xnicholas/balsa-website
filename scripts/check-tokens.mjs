@@ -5,8 +5,9 @@
  *
  *   1. `src/styles/global.css` — the layer the site loads — against the §5.1 table in
  *      `docs/SPEC.md`, the corpus this build is constructed from, value by value;
- *   2. that §5.1 table against the balsats-docs checkout beside this one, when it is there:
- *      the docs site owns the palette, so a docs change shows up here before it lands;
+ *   2. that §5.1 table against the balsats-docs checkout beside this one — the docs site owns
+ *      the palette, so a docs change shows up here before it lands. §8.8 ③ makes the
+ *      comparison the gate itself, so a missing checkout is a failure, never a silent skip;
  *   3. every colour outside the two token blocks — including the `@theme inline` aliases —
  *      must be a `var(--sl-*)` reference, never a second copy of a value.
  *
@@ -71,8 +72,9 @@ if (literals.length === 0) {
 	console.log('✓ no colour literal outside the token blocks — Tailwind aliases are var(--sl-*) references');
 }
 
-// The house rule is "docs owns the palette" (SPEC §5.1). The checkout is optional — the §5.1
-// table above is the in-repo authority — but an explicitly requested one must be there.
+// The house rule is "docs owns the palette" (SPEC §5.1), and §8.8 ③ makes the cross-check the
+// gate itself: without a checkout the comparison has not run, so absence is red. `--docs` (or
+// BALSATS_DOCS_DIR) points at a checkout somewhere else.
 const docsOption = options.docs ?? process.env.BALSATS_DOCS_DIR;
 const docsDir = path.resolve(docsOption ?? path.join(repoRoot, '..', 'balsats-docs'));
 const docsCssFile = path.join(docsDir, 'src/styles/global.css');
@@ -95,7 +97,9 @@ if (existsSync(docsCssFile)) {
 	console.error(`✗ --docs ${docsDir} has no src/styles/global.css to compare against`);
 	process.exit(1);
 } else {
-	console.log('· balsats-docs checkout not found beside this repo — the live cross-check is skipped');
+	console.error(`✗ no balsats-docs checkout at ${docsDir} — the §8.8 ③ cross-check against the docs authority cannot be skipped`);
+	console.error('  clone balsats-docs beside this repo, or point at one with --docs <dir> / BALSATS_DOCS_DIR');
+	process.exit(1);
 }
 
 // theme-color is each theme's resolved --sl-color-black (SPEC §5.3); read it back from the

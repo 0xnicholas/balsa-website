@@ -1,15 +1,19 @@
 /**
  * The red-line scan (SPEC §8.8 ④, §9.2) over the *built* site: install-class commands, names
  * the site never mentions, counting-style figures, the retired `MIT` license word, the retired
- * `@balsa/*` scope, and the RAG / evals line keyword pages must not cross.
+ * `@balsa/*` scope, the retired repository / domain names, and the RAG / evals line keyword
+ * pages must not cross.
  *
  * The rules are stated once here and unit-tested; `scripts/check-copy.mjs` walks `dist/` and
  * prints the findings. The RAG / evals rule is page-scoped by design: the two mentions the
  * spec allows (the honest FAQ answer and the processors use-case word) live on the home page,
- * while a keyword page carries neither word at all (SPEC §4.4/§9.2).
+ * while a keyword page carries neither word at all (SPEC §4.4/§9.2). The retired-name rule is
+ * site-wide: issue #18 Testing #4 puts the old repository / domain on this gate in any text,
+ * where SPEC §8.8 ⑤ already bans them in hrefs; the names themselves live in link-rules.ts.
  */
 
 import { textOf } from './html.ts';
+import { retiredNames } from './link-rules.ts';
 
 /** A built artifact to scan: its dist-relative path and its text. */
 export type BuiltFile = { path: string; text: string };
@@ -79,6 +83,13 @@ export const copyRules: readonly CopyRule[] = [
 		reason: 'the npm scope is `@balsats/*` — `@balsa/*` is retired (SPEC §9.2)',
 		pattern: /@balsa\//,
 	},
+	// Stated once in link-rules.ts (which holds hrefs to the same line); here they red-line
+	// prose and attributes too, per issue #18 Testing #4.
+	...retiredNames.map((retired) => ({
+		id: 'retired-name',
+		reason: retired.reason,
+		pattern: retired.pattern,
+	})),
 	{
 		id: 'rag-evals',
 		reason: 'keyword pages do not carry RAG or evals at all (SPEC §4.4/§9.2)',
@@ -124,7 +135,14 @@ function withoutBlockComments(text: string): string {
  * RAG / evals rule is not one of them (it has its own `appliesTo`). Named here, next to the
  * rules it selects, so the FAQ and use-case-page gates hold the same set.
  */
-export const redLineIds = ['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope'] as const;
+export const redLineIds = [
+	'install-command',
+	'competitor-name',
+	'counting-figure',
+	'mit-license',
+	'retired-scope',
+	'retired-name',
+] as const;
 
 /** The red-line rules themselves, for section gates that hold their region to the §9.2 set. */
 export const redLineRules = copyRules.filter((rule) => (redLineIds as readonly string[]).includes(rule.id));

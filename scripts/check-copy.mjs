@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * The red-line scan over the built site (SPEC §8.8 ④, §9.2): install-class commands,
- * competitor names, counting-style figures, `MIT`, the retired `@balsa/*` scope, and the
- * RAG / evals line keyword pages must not cross. The rules and their reasons live in
+ * competitor names, counting-style figures, `MIT`, the retired `@balsa/*` scope, the retired
+ * repository / domain names (issue #18 Testing #4), and the RAG / evals line keyword pages
+ * must not cross. The rules and their reasons live in
  * `src/lib/copy-rules.ts`; this script walks `dist/` and reports.
  *
  * Usage:
@@ -25,7 +26,7 @@ const issues = copyIssues(files);
 
 reportIssues(
 	issues,
-	`${files.length} built file(s): no install command, competitor name, counting figure, \`MIT\`, retired scope or RAG/evals breach`,
+	`${files.length} built file(s): no install command, competitor name, counting figure, \`MIT\`, retired scope, retired name or RAG/evals breach`,
 );
 
 failGate(issues, {

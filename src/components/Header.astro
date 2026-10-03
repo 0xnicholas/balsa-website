@@ -11,6 +11,10 @@ import Menu from './icons/Menu.astro';
 const navLink = 'rounded-sm text-sm text-gray-2 transition-colors hover:text-white';
 const trigger = `flex items-center gap-1 ${navLink}`;
 const pill = 'rounded-full bg-accent-low px-3 py-1 text-xs font-medium text-accent-high';
+// The release-status badge is a §6.2 switch point: stated once so the publishing flip is one
+// edit here, not two. The shell gate keeps its own copy (src/lib/shell-rules.ts), so the page
+// and its gate cannot agree by construction.
+const pillLabel = 'coming soon';
 const itemLink = 'block rounded-md px-3 py-2 transition-colors hover:bg-gray-6';
 ---
 <header id="site-header" class="z-50">
@@ -38,7 +42,7 @@ const itemLink = 'block rounded-md px-3 py-2 transition-colors hover:bg-gray-6';
 			</div>
 			<a href={LINKS.docs} class={navLink}>Docs</a>
 			<a href={LINKS.github} class={navLink}>GitHub</a>
-			<span class={pill}>coming soon</span>
+			<span class={pill}>{pillLabel}</span>
 		</nav>
 
 		<button
@@ -74,7 +78,7 @@ const itemLink = 'block rounded-md px-3 py-2 transition-colors hover:bg-gray-6';
 			</ul>
 			<a href={LINKS.docs} class="rounded-sm py-2 text-sm text-gray-2 hover:text-white">Docs</a>
 			<a href={LINKS.github} class="rounded-sm py-2 text-sm text-gray-2 hover:text-white">GitHub</a>
-			<span class={`${pill} mt-2 self-start`}>coming soon</span>
+			<span class={`${pill} mt-2 self-start`}>{pillLabel}</span>
 		</nav>
 	</div>
 </header>

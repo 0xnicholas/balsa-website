@@ -58,6 +58,14 @@ test('the retired scope is caught and the current one is not', () => {
 	assert.deepEqual(rules("import { Agent } from '@balsats/core/agent';"), []);
 });
 
+test('the retired repository and domain names are findings in prose, not only in hrefs', () => {
+	assert.ok(rules('<p>The source lived at github.com/0xnicholas/balsa-framework.</p>').length > 0);
+	assert.ok(rules('<p>The docs lived at docs.balsajs.dev.</p>').length > 0);
+	// The current names pass — and bare `balsa` stays legal for the /about origin sentence.
+	assert.deepEqual(rules('<p>The source is github.com/0xnicholas/balsats-framework.</p>'), []);
+	assert.deepEqual(rules('<p>Named after balsa, the wood.</p>'), []);
+});
+
 test('RAG and evals are keyword-page findings only', () => {
 	assert.ok(rules('<p>RAG pipelines and evals.</p>', 'ai-agents/index.html').length > 0);
 	// The two mentions the spec allows — the honest FAQ answer and the processors use-case
@@ -74,8 +82,11 @@ test('one finding per rule per line, not one per occurrence', () => {
 	assert.equal(found.length, 1);
 });
 
-test('the §9.2 red-line set is the five site-wide rules, keyword-page scope excluded', () => {
-	assert.deepEqual([...redLineIds], ['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope']);
+test('the §9.2 red-line set is the six site-wide rules, keyword-page scope excluded', () => {
+	assert.deepEqual(
+		[...redLineIds],
+		['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope', 'retired-name'],
+	);
 	assert.ok(redLineRules.length > 0);
 	assert.ok(redLineRules.every((rule) => (redLineIds as readonly string[]).includes(rule.id)));
 	assert.ok(!redLineRules.some((rule) => rule.id === 'rag-evals'));
