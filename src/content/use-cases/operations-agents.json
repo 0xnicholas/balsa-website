@@ -3,5 +3,25 @@
 	"title": "Operations agents",
 	"claim": "Agents that handle the busywork around your team — with a human on the risky steps.",
 	"route": "/operations-agents/",
-	"mock": "thread"
+	"mock": "thread",
+	"page": {
+		"tagline": "Bring your tools in over MCP, gate risky actions on approval, wake the agent on a schedule.",
+		"scenarios": [
+			{
+				"name": "Bring your tools in, unchanged",
+				"text": "MCP servers you already run stay where they are; their tools arrive as ordinary Balsats tools — plain objects, no registry.",
+				"packages": ["@balsats/mcp-client"]
+			},
+			{
+				"name": "A human on the risky step",
+				"text": "Approval-listed calls suspend instead of executing — approve to continue, reject and the model replans; the snapshot is JSON and survives the process.",
+				"packages": ["@balsats/core/durable-agent", "@balsats/sqlite"]
+			},
+			{
+				"name": "Wake it on a schedule, not a worker",
+				"text": "tick() fired by a platform cron is the first-class shape; @balsats/croner supplies the cron expressions, signals wake or inject into a thread.",
+				"packages": ["@balsats/core/schedules", "@balsats/core/signals", "@balsats/croner"]
+			}
+		]
+	}
 }

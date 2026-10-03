@@ -193,6 +193,16 @@ test('the head states the §2.6 description and the og pair', () => {
 	assert.match(useCaseHeadIssues(ogTitled, spec, title).join('\n'), /og:title is `Agents — Balsats`/);
 });
 
+test('the head comparisons read attribute values decoded, as Astro emits them', () => {
+	const infra = useCasePages[2]!;
+	const infraTitle = `${infra.h1} — Balsats`;
+	const built = page(infra);
+	built.html = built.html.replaceAll(infraTitle, infraTitle.replace('&', '&amp;'));
+	assert.ok(built.html.includes('content="Platform &amp; developer infra — Balsats"'));
+	assert.deepEqual(useCasePageIssues(built, infra), []);
+	assert.deepEqual(useCaseHeadIssues(built, infra, infraTitle), []);
+});
+
 test('the page copy carries no release status outside the shared switch points', () => {
 	const promised = page();
 	promised.html = promised.html.replace(spec.tagline, 'Coming soon: agents inside your product.');

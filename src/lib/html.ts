@@ -5,10 +5,14 @@
  * band rules.
  */
 
-/** One attribute value from a tag string, or `null` when the tag does not carry it. */
+/**
+ * One attribute value from a tag string, or `null` when the tag does not carry it. The value
+ * comes back entity-decoded: markup encodes `&` as `&amp;`, and every caller compares against
+ * the copy's spelling — the same contract `textOf` keeps for element text.
+ */
 export function attributeValue(tag: string, name: string): string | null {
 	const match = tag.match(new RegExp(`\\b${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)')`, 'i'));
-	return match === null ? null : (match[1] ?? match[2] ?? '');
+	return match === null ? null : decodeEntities(match[1] ?? match[2] ?? '');
 }
 
 /** Whether a tag string carries an attribute at all — `hidden` is often a bare boolean. */
