@@ -90,6 +90,16 @@ function withoutBlockComments(text: string): string {
 	return text.replace(/\/\*[\s\S]*?\*\//g, ' ');
 }
 
+/**
+ * SPEC §9.2: the site-wide red lines every section gate clears — the keyword-page-scoped
+ * RAG / evals rule is not one of them (it has its own `appliesTo`). Named here, next to the
+ * rules it selects, so the FAQ and use-case-page gates hold the same set.
+ */
+export const redLineIds = ['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope'] as const;
+
+/** The red-line rules themselves, for section gates that hold their region to the §9.2 set. */
+export const redLineRules = copyRules.filter((rule) => (redLineIds as readonly string[]).includes(rule.id));
+
 /** The 1-based line a match sits on, for a finding a human can act on. */
 function lineAt(text: string, index: number): number {
 	return text.slice(0, index).split('\n').length;

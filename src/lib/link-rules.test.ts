@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { linkIssues, retiredNames, routeOf } from './link-rules.ts';
+import { linkIssues, retiredNames, routeOf, routeOfHtmlFile } from './link-rules.ts';
 
 const index = {
 	routeExists: (route: string) => ['/', '/about/'].includes(route),
@@ -16,6 +16,12 @@ test('routes normalize to one trailing-slash form', () => {
 	assert.equal(routeOf('/about'), '/about/');
 	assert.equal(routeOf('/about/'), '/about/');
 	assert.equal(routeOf('/about#team'), '/about/');
+});
+
+test('a built file maps to the route it serves, leading slash included', () => {
+	assert.equal(routeOfHtmlFile('index.html'), '/');
+	assert.equal(routeOfHtmlFile('about/index.html'), '/about/');
+	assert.equal(routeOfHtmlFile('in-product-agents/index.html'), '/in-product-agents/');
 });
 
 test('an in-site link that resolves and hits its anchor passes', () => {

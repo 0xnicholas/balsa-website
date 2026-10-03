@@ -1,0 +1,20 @@
+---
+// /in-product-agents (SPEC §4.3): the first use-case page — the shared header art, H1 +
+// tagline, the three scenario cards verbatim, the shared final CTA, the global FAQ ×9 and
+// the back link to the home cards. Head copy is the §2.6 row.
+import { getEntry } from 'astro:content';
+import UseCaseLayout from '../layouts/UseCaseLayout.astro';
+
+const entry = await getEntry('useCases', 'in-product-agents');
+const page = entry?.data.page;
+if (!entry || !page) {
+	throw new Error('/in-product-agents needs its §4.3 page copy in src/content/use-cases/');
+}
+---
+<UseCaseLayout
+	title="In-product agents — Balsats"
+	description="Embed an assistant in the app you already run — streaming, tool calls and human handoff, with no second service to operate."
+	h1={entry.data.title}
+	tagline={page.tagline}
+	scenarios={page.scenarios}
+/>

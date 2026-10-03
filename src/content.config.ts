@@ -10,7 +10,7 @@
  *   - `observability` — the observability band's copy and card claim (SPEC §3.3)
  *   - `socialProof`   — the social-proof placeholder band's copy (SPEC §3.4)
  *   - `useCaseIntro`  — the use-case cards' section intro (SPEC §3.5)
- *   - `useCases`      — the three use-case cards, later the use-case pages (SPEC §3.5/§4.3)
+ *   - `useCases`      — the three use-case cards plus each use-case page's copy (SPEC §3.5/§4.3)
  *   - `resources`     — the resources strip's kicker and its three links (SPEC §3.6)
  *   - `faq`           — the global FAQ ×9, shared by the home and use-case pages (SPEC §3.7)
  *   - `snippets`      — code samples by file name (SPEC §7), one JSON per file
@@ -97,6 +97,25 @@ const useCases = defineCollection({
 		route: z.string(),
 		/** Which host-interface mock the card carries (SPEC §3.5 brief ①–③). */
 		mock: z.enum(['chat', 'thread', 'console']),
+		/**
+		 * The use-case page's own copy (SPEC §4.3), landing with each page's build slice. The
+		 * H1 is the card's `title`; the page adds the tagline and the three scenario cards —
+		 * name, 2–3 sentences and the `→` package line (`·`-separated, inline code).
+		 */
+		page: z
+			.object({
+				tagline: z.string(),
+				scenarios: z
+					.array(
+						z.object({
+							name: z.string(),
+							text: z.string(),
+							packages: z.array(z.string()).min(1),
+						}),
+					)
+					.length(3),
+			})
+			.optional(),
 	}),
 });
 

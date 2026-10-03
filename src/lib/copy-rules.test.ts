@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { copyIssues, isKeywordPage } from './copy-rules.ts';
+import { copyIssues, isKeywordPage, redLineIds, redLineRules } from './copy-rules.ts';
 
 const rules = (text: string, path = 'index.html') => copyIssues([{ path, text }]);
 
@@ -72,4 +72,11 @@ test('RAG and evals are keyword-page findings only', () => {
 test('one finding per rule per line, not one per occurrence', () => {
 	const found = rules('<p>RAG, evals and more RAG.</p>', 'ai-agents/index.html');
 	assert.equal(found.length, 1);
+});
+
+test('the §9.2 red-line set is the five site-wide rules, keyword-page scope excluded', () => {
+	assert.deepEqual([...redLineIds], ['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope']);
+	assert.ok(redLineRules.length > 0);
+	assert.ok(redLineRules.every((rule) => (redLineIds as readonly string[]).includes(rule.id)));
+	assert.ok(!redLineRules.some((rule) => rule.id === 'rag-evals'));
 });

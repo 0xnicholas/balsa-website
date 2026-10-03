@@ -3,5 +3,25 @@
 	"title": "In-product agents",
 	"claim": "Add an assistant to the app you already run — no second service to operate.",
 	"route": "/in-product-agents/",
-	"mock": "chat"
+	"mock": "chat",
+	"page": {
+		"tagline": "Answer your users, act inside your product, hand off to a human.",
+		"scenarios": [
+			{
+				"name": "Answer, streamed into your UI",
+				"text": "agent.stream() on the server, the AI SDK message-stream route on the client, thread / resource memory so each user picks up where they left off.",
+				"packages": ["@balsats/core/agent", "@balsats/core/memory", "@balsats/ai-sdk"]
+			},
+			{
+				"name": "Act, through your own APIs",
+				"text": "Your endpoints become tools — plain objects with schemas — and multi-step flows compose as workflows where every boundary is validated.",
+				"packages": ["@balsats/core/tools", "@balsats/core/workflows"]
+			},
+			{
+				"name": "Hand off, with the run on hold",
+				"text": "Approval-listed tool calls never execute: the run suspends, and resume({ approved }) continues it — even from another process.",
+				"packages": ["@balsats/core/durable-agent", "@balsats/sqlite"]
+			}
+		]
+	}
 }

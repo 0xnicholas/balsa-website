@@ -41,7 +41,7 @@ export function routeOf(href: string): string {
 export function routeOfHtmlFile(file: string): string {
 	const withoutIndex =
 		file === 'index.html' ? '' : file.endsWith('/index.html') ? file.slice(0, -'index.html'.length) : file.replace(/\.html$/, '');
-	return routeOf(withoutIndex);
+	return routeOf(`/${withoutIndex}`);
 }
 
 function anchorsOf(html: string): Set<string> {

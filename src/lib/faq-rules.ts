@@ -14,7 +14,7 @@
  */
 
 import { sectionColourIssues } from './colour-rules.ts';
-import { copyRules, ruleMatches } from './copy-rules.ts';
+import { copyRules, redLineRules, ruleMatches } from './copy-rules.ts';
 import { attributeValue, elementOf, linksOf, textOf } from './html.ts';
 import { terminologyHits } from './terminology.ts';
 
@@ -72,9 +72,6 @@ export const faqItems: readonly FaqSpecItem[] = [
 	},
 ];
 
-/** SPEC §9.2: the site-wide red lines every FAQ item clears. */
-const redLineIds = ['install-command', 'competitor-name', 'counting-figure', 'mit-license', 'retired-scope'];
-const redLines = copyRules.filter((rule) => redLineIds.includes(rule.id));
 /** SPEC §9.2: the RAG / evals words — question 7's answer is the only place they may appear. */
 const ragEvals = copyRules.find((rule) => rule.id === 'rag-evals')!.pattern;
 /** SPEC §3.7: packages are `@balsats/*` — any other `@scope/name` is a finding. */
@@ -150,7 +147,7 @@ export function faqIssues(page: FaqPage): string[] {
 		}
 
 		const text = `${textOf(summary ?? '')} ${answer}`;
-		for (const rule of redLines) {
+		for (const rule of redLineRules) {
 			for (const match of ruleMatches(rule, text)) {
 				issues.push(`${page.path}: question ${index + 1} reads \`${match[0]}\` — ${rule.reason} [${rule.id}]`);
 			}

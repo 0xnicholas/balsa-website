@@ -1,0 +1,76 @@
+---
+// The use-case pages' skeleton (SPEC §4.3): the shared header art, H1 + tagline, the three
+// scenario cards — name, 2–3 sentences and the `→` package line, every package its own
+// inline-code chip, `·`-separated — then the shared final CTA, the global FAQ ×9 and the
+// `← All use cases` back link. One layout so the three pages cannot drift apart; no code
+// blocks, no social-proof band, no breadcrumbs. The FAQ and the final CTA come from the same
+// collections the home page reads, verbatim and unabridged.
+import { getCollection, getEntry } from 'astro:content';
+import FaqList from '../components/FaqList.astro';
+import FinalCta from '../components/FinalCta.astro';
+import UseCaseArt from '../components/UseCaseArt.astro';
+import MarketingLayout from './MarketingLayout.astro';
+
+export interface ScenarioCard {
+	name: string;
+	text: string;
+	packages: readonly string[];
+}
+
+export interface Props {
+	title: string;
+	description: string;
+	h1: string;
+	tagline: string;
+	scenarios: readonly ScenarioCard[];
+}
+
+const { title, description, h1, tagline, scenarios } = Astro.props;
+
+const finalCta = await getEntry('finalCta', 'default');
+const faq = (await getCollection('faq')).sort((a, b) => a.data.order - b.data.order);
+if (!finalCta || faq.length !== 9) {
+	throw new Error('the use-case pages need the shared final CTA and the global FAQ ×9 (SPEC §3.7/§3.8/§4.3)');
+}
+---
+<MarketingLayout title={title} description={description}>
+	<UseCaseArt />
+	<section data-use-case-hero class="px-6 py-16">
+		<div class="mx-auto flex max-w-3xl flex-col items-center text-center">
+			<h1 class="text-4xl font-semibold tracking-tight text-white sm:text-5xl">{h1}</h1>
+			<p data-use-case-tagline class="mt-5 max-w-2xl text-lg leading-relaxed text-gray-2">{tagline}</p>
+		</div>
+	</section>
+	<section data-scenarios class="border-t border-gray-5 px-6 py-20">
+		<div class="mx-auto max-w-5xl">
+			<ul class="grid gap-6 md:grid-cols-3">
+				{
+					scenarios.map((scenario) => (
+						<li data-scenario-card class="flex flex-col gap-3 rounded-xl border border-gray-5 p-5">
+							<h3 class="text-lg font-semibold tracking-tight text-white">{scenario.name}</h3>
+							<p class="text-sm leading-relaxed text-gray-2">{scenario.text}</p>
+							<p data-scenario-packages class="mt-auto pt-2 text-sm leading-relaxed text-gray-3">
+								{'→ '}
+								{scenario.packages.map((name, index) => (
+									<>
+										{index > 0 && ' · '}
+										<code class="whitespace-nowrap rounded-md border border-gray-5 bg-gray-7 px-1.5 py-0.5 font-mono text-xs text-gray-2 dark:bg-gray-6">
+											{name}
+										</code>
+									</>
+								))}
+							</p>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</section>
+	<FinalCta heading={finalCta.data.heading} sub={finalCta.data.sub} />
+	<FaqList items={faq.map((entry) => entry.data)} />
+	<section data-use-case-back class="border-t border-gray-5 px-6 py-12">
+		<div class="mx-auto max-w-5xl">
+			<a href="/#use-cases" class="rounded-sm text-sm font-medium text-text-accent hover:underline">← All use cases</a>
+		</div>
+	</section>
+</MarketingLayout>
