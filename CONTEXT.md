@@ -65,6 +65,10 @@ _Avoid_: 首页 FAQ(用例页同样出现)
 关键词页正文末的本地 FAQ,承接该页对应搜索词的长尾问句;与全局 FAQ 零重叠。
 _Avoid_: FAQ(未限定时指代不清)、SEO 问答
 
+**文本页 (Text page)**:
+纯文本三页(`/about` 与 `/privacy-policy`、`/terms-of-service` 两页法务 stub)的合称;正文逐字锁定,署名只到 GitHub handle,法务页 `Last updated` 为内容数据里的单一静态字符串。
+_Avoid_: 内容页(泛指)、静态页(与整站静态形态混淆)
+
 **维护者署名 (Maintainer attribution)**:
 站点公开面上代表 Balsats 的个人标识:只到 GitHub handle(`@0xnicholas`),不出现真实姓名与邮箱;footer 的 `©` 行保持项目名义,不随署名改变。
 _Avoid_: 实名署名、作者邮箱、团队页(Balsats 无团队)

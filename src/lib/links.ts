@@ -11,7 +11,13 @@ export const LINKS = {
 	docs: 'https://github.com/0xnicholas/balsats-framework', // → https://docs.balsats.com
 	examples: 'https://github.com/0xnicholas/balsats-framework/tree/main/examples',
 	architecture: 'https://github.com/0xnicholas/balsats-framework/tree/main/docs/architecture',
+	/** The /about signature link (SPEC §4.1): attribution stops at the GitHub handle. */
+	maintainer: 'https://github.com/0xnicholas',
 } as const;
+
+/** The link keys the about / legal pages' copy segments may carry (SPEC §4.1/§4.2). */
+export const textPageLinkKeys = ['maintainer', 'issues'] as const;
+export type TextPageLinkKey = (typeof textPageLinkKeys)[number];
 
 /**
  * The keyword pages' `Learn more` targets (SPEC §4.4) — the one constant's extension, keyed by

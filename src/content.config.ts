@@ -15,6 +15,11 @@
  *   - `faq`           — the global FAQ ×9, shared by the home and use-case pages (SPEC §3.7)
  *   - `keywordPages`  — the keyword pages' H1, sections, `Learn more` key, in-page FAQ and back
  *                       anchor (SPEC §4.4), one JSON per page
+ *   - `about`         — the /about page's sections (SPEC §4.1); the sub reuses the tagline
+ *                       from `src/lib/brand.ts`, so it is not repeated here
+ *   - `legalPages`    — the two legal stubs' H1 and paragraphs (SPEC §4.2), one JSON per page
+ *   - `legalMeta`     — the one static `Last updated` date both legal pages carry (ticket #30:
+ *                       the launch day edits exactly this string)
  *   - `snippets`      — code samples by file name (SPEC §7), one JSON per file
  *   - `traces`        — the hero's trace waterfall, a real run's static capture (SPEC §7.5)
  */
@@ -22,7 +27,7 @@
 import { glob } from 'astro/loaders';
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import { keywordPageSlugs, resourceLinkKeys } from './lib/links.ts';
+import { keywordPageSlugs, resourceLinkKeys, textPageLinkKeys } from './lib/links.ts';
 
 const hero = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/hero' }),
@@ -169,6 +174,57 @@ const snippets = defineCollection({
 	}),
 });
 
+/**
+ * A paragraph of the about / legal pages' copy: plain text runs and links whose hrefs come
+ * from the one constants file (SPEC §2.4) — the JSON names the key, never the URL.
+ */
+const copySegment = z.union([
+	z.object({ text: z.string() }),
+	z.object({ link: z.object({ label: z.string(), key: z.enum([...textPageLinkKeys]) }) }),
+]);
+
+const about = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/about' }),
+	schema: z.object({
+		/** The §2.6 title and meta description. */
+		title: z.string(),
+		description: z.string(),
+		/** SPEC §4.1: the H1; the sub is `publicTagline` from src/lib/brand.ts, read by the page. */
+		h1: z.string(),
+		storyHeading: z.string(),
+		/** SPEC §4.1 【终稿·勿改】: Our story's three paragraphs. */
+		story: z.array(z.string()).length(3),
+		behindHeading: z.string(),
+		/** SPEC §4.1 【终稿·勿改】: Who's behind it — two paragraphs, the signature a link segment. */
+		behind: z.array(z.array(copySegment)).length(2),
+		/** SPEC §4.1 【终稿·勿改】: the closing invitation band. */
+		closing: z.object({ lead: z.string(), sub: z.string() }),
+	}),
+});
+
+const legalPages = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/legal-pages' }),
+	schema: z.object({
+		/** The §2.6 title and meta description. */
+		title: z.string(),
+		description: z.string(),
+		h1: z.string(),
+		/** SPEC §4.2 【终稿·勿改】: the stub's paragraphs; the contact link is a link segment. */
+		paragraphs: z.array(z.array(copySegment)).min(1),
+	}),
+});
+
+const legalMeta = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/legal-meta' }),
+	schema: z.object({
+		/**
+		 * The one static `Last updated` date both legal pages carry (SPEC §4.2 / ticket #30) —
+		 * a string, never a build-time date; the launch day edits exactly this value.
+		 */
+		lastUpdated: z.string(),
+	}),
+});
+
 const traces = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/traces' }),
 	schema: z.object({
@@ -200,6 +256,9 @@ export const collections = {
 	resources,
 	faq,
 	keywordPages,
+	about,
+	legalPages,
+	legalMeta,
 	snippets,
 	traces,
 };
