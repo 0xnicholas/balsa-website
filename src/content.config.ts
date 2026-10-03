@@ -13,16 +13,16 @@
  *   - `useCases`      — the three use-case cards plus each use-case page's copy (SPEC §3.5/§4.3)
  *   - `resources`     — the resources strip's kicker and its three links (SPEC §3.6)
  *   - `faq`           — the global FAQ ×9, shared by the home and use-case pages (SPEC §3.7)
+ *   - `keywordPages`  — the keyword pages' H1, sections, `Learn more` key, in-page FAQ and back
+ *                       anchor (SPEC §4.4), one JSON per page
  *   - `snippets`      — code samples by file name (SPEC §7), one JSON per file
  *   - `traces`        — the hero's trace waterfall, a real run's static capture (SPEC §7.5)
- *
- * `keywordPages` lands with its slice (later) in the same shape.
  */
 
 import { glob } from 'astro/loaders';
 import { defineCollection } from 'astro:content';
 import { z } from 'astro/zod';
-import { resourceLinkKeys } from './lib/links.ts';
+import { keywordPageSlugs, resourceLinkKeys } from './lib/links.ts';
 
 const hero = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/hero' }),
@@ -139,6 +139,26 @@ const faq = defineCollection({
 	}),
 });
 
+const keywordPages = defineCollection({
+	loader: glob({ pattern: '*.json', base: './src/content/keyword-pages' }),
+	schema: z.object({
+		/** The §2.6 title (【终稿】: `<Keyword> for TypeScript — Balsats`). */
+		title: z.string(),
+		/** The §2.6 meta description — og:description reuses it. */
+		description: z.string(),
+		/** The §4.4 H1 (【终稿·勿改】): the keyword's face plus its claim. */
+		h1: z.string(),
+		/** §4.4: 2–4 argument paragraphs, each a subheading plus 1–3 sentences. */
+		sections: z.array(z.object({ heading: z.string(), body: z.string() })).min(2).max(4),
+		/** The `Learn more` target — a key of `learnMoreLinks` in links.ts (the §4.4 mapping). */
+		learnMore: z.enum([...keywordPageSlugs]),
+		/** §4.4: the in-page FAQ — 4–5 questions, zero overlap with the global nine. */
+		faq: z.array(z.object({ question: z.string(), answer: z.string() })).min(4).max(5),
+		/** The §4.4 anchor mapping: the home anchor the page links back to (`/#features` …). */
+		backAnchor: z.string(),
+	}),
+});
+
 const snippets = defineCollection({
 	loader: glob({ pattern: '*.json', base: './src/content/snippets' }),
 	schema: z.object({
@@ -179,6 +199,7 @@ export const collections = {
 	useCases,
 	resources,
 	faq,
+	keywordPages,
 	snippets,
 	traces,
 };

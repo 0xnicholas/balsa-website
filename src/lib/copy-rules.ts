@@ -9,6 +9,8 @@
  * while a keyword page carries neither word at all (SPEC §4.4/§9.2).
  */
 
+import { textOf } from './html.ts';
+
 /** A built artifact to scan: its dist-relative path and its text. */
 export type BuiltFile = { path: string; text: string };
 
@@ -84,6 +86,33 @@ export const copyRules: readonly CopyRule[] = [
 		appliesTo: isKeywordPage,
 	},
 ];
+
+/** The keyword-page rule, exported so the FAQ and keyword gates hold their regions to the same line. */
+export const ragEvalsRule = copyRules.find((rule) => rule.id === 'rag-evals')!;
+
+/**
+ * SPEC §6.2: nothing outside the three switch points names a release status — the scan the
+ * page-family gates run over their pages' own copy. `regions` are the page's own sections
+ * plus its meta description; the header pill, the final CTA and FAQ question 2 answer to
+ * their own gates.
+ */
+export function releaseStatusIssues(page: { path: string }, regions: readonly string[]): string[] {
+	const patterns: readonly { pattern: RegExp; reason: string }[] = [
+		{ pattern: /coming\s+soon/i, reason: 'release status lives in the header pill, the final CTA and FAQ question 2' },
+		{ pattern: /\bv?\d+\.\d+\.\d+\b/, reason: 'the page copy names no version' },
+		{ pattern: /\bpre-?release\b/i, reason: 'the page copy names no release state' },
+	];
+
+	const issues: string[] = [];
+	const text = textOf(regions.join('\n'));
+	for (const { pattern, reason } of patterns) {
+		const match = text.match(pattern);
+		if (match !== null) {
+			issues.push(`${page.path}: the page's own copy reads \`${match[0]}\` — no release status (${reason})`);
+		}
+	}
+	return issues;
+}
 
 /** Block comments only: `//` would eat the `https://` in a URL, and HTML is scanned as it is. */
 function withoutBlockComments(text: string): string {

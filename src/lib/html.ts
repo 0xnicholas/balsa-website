@@ -6,6 +6,17 @@
  */
 
 /**
+ * Whether the given markers appear in the HTML in the listed order — the walk behind the page
+ * families' skeleton-order checks. A missing marker reports true here: its absence is another
+ * check's finding, not an order violation.
+ */
+export function markersInOrder(html: string, markers: readonly string[]): boolean {
+	const at = markers.map((marker) => html.indexOf(marker));
+	if (at.some((index) => index === -1)) return true;
+	return at.every((index, position) => position === 0 || index >= at[position - 1]!);
+}
+
+/**
  * One attribute value from a tag string, or `null` when the tag does not carry it. The value
  * comes back entity-decoded: markup encodes `&` as `&amp;`, and every caller compares against
  * the copy's spelling — the same contract `textOf` keeps for element text.

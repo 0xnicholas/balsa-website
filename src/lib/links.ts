@@ -13,8 +13,47 @@ export const LINKS = {
 	architecture: 'https://github.com/0xnicholas/balsats-framework/tree/main/docs/architecture',
 } as const;
 
-/** Every href an external link may carry (SPEC §8.8 ⑤: no retired repo name, one constant). */
-export const allowedExternalLinks: readonly string[] = [...Object.values(LINKS), SITE.origin];
+/**
+ * The keyword pages' `Learn more` targets (SPEC §4.4) — the one constant's extension, keyed by
+ * page slug. Both values live here: `pre` renders until the docs switch point (#16, docs site
+ * accepted online), then `post` replaces it in place. The `pre` anchors are the live README's
+ * GitHub slugs (`### Agents — …` → `#agents--balsatscoreagent`), verified against the rendered
+ * README when this mapping landed; the slice that builds a page re-verifies its anchor against
+ * the live README before the link renders (SPEC §4.4).
+ */
+export const learnMoreLinks = {
+	'ai-agent-framework': {
+		pre: LINKS.docs,
+		post: 'https://docs.balsats.com/docs',
+	},
+	'ai-agents': {
+		pre: `${LINKS.docs}#agents--balsatscoreagent`,
+		post: 'https://docs.balsats.com/docs/concepts/agents',
+	},
+	'ai-workflows': {
+		pre: `${LINKS.docs}#workflows--balsatscoreworkflows`,
+		post: 'https://docs.balsats.com/docs/concepts/workflows',
+	},
+	'ai-agent-observability': {
+		pre: 'https://github.com/0xnicholas/balsats-framework/blob/main/docs/architecture/observability.md',
+		post: 'https://docs.balsats.com/docs/concepts/observability',
+	},
+} as const;
+
+export type KeywordPageSlug = keyof typeof learnMoreLinks;
+export const keywordPageSlugs = Object.keys(learnMoreLinks) as [KeywordPageSlug, ...KeywordPageSlug[]];
+
+/** The `Learn more` href that renders today — the pre-launch value until the docs switch flips it. */
+export const learnMoreHref = (slug: KeywordPageSlug): string => learnMoreLinks[slug].pre;
+
+/** Every href an external link may carry (SPEC §8.8 ⑤: no retired repo name, one constant). The
+ * `Learn more` post-launch values stay out until the docs switch — a built page linking
+ * docs.balsats.com today is a finding, not a constant. */
+export const allowedExternalLinks: readonly string[] = [
+	...Object.values(LINKS),
+	...Object.values(learnMoreLinks).map((entry) => entry.pre),
+	SITE.origin,
+];
 
 /** The three keys the resources strip draws from (SPEC §3.6); their values are the constants above. */
 export const resourceLinkKeys = ['docs', 'examples', 'architecture'] as const;

@@ -14,7 +14,7 @@
  */
 
 import { sectionColourIssues } from './colour-rules.ts';
-import { copyRules, redLineRules, ruleMatches } from './copy-rules.ts';
+import { ragEvalsRule, redLineRules, ruleMatches } from './copy-rules.ts';
 import { attributeValue, elementOf, linksOf, textOf } from './html.ts';
 import { terminologyHits } from './terminology.ts';
 
@@ -73,7 +73,7 @@ export const faqItems: readonly FaqSpecItem[] = [
 ];
 
 /** SPEC §9.2: the RAG / evals words — question 7's answer is the only place they may appear. */
-const ragEvals = copyRules.find((rule) => rule.id === 'rag-evals')!.pattern;
+const ragEvals = ragEvalsRule.pattern;
 /** SPEC §3.7: packages are `@balsats/*` — any other `@scope/name` is a finding. */
 const packageScope = /\B@[a-z0-9][a-z0-9._-]*\/[a-z0-9][a-z0-9._-]*/gi;
 

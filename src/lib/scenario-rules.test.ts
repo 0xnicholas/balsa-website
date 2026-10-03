@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
 import { parseLandingTokens } from './brand-tokens.ts';
+import { releaseStatusIssues } from './copy-rules.ts';
+import { headIssues } from './head-rules.ts';
 import {
 	backLinkHref,
 	backLinkText,
@@ -9,10 +11,9 @@ import {
 	scenarioContrastIssues,
 	sharedArtIssues,
 	useCaseColourIssues,
-	useCaseHeadIssues,
 	useCasePageIssues,
 	useCasePages,
-	useCaseReleaseIssues,
+	useCaseReleaseRegions,
 	type ScenarioCardSpec,
 	type ScenarioPage,
 	type UseCasePageSpec,
@@ -83,8 +84,8 @@ const page = (entry: UseCasePageSpec = spec, options: { art?: string } = {}): Sc
 test('a use-case page with the §4.3 skeleton passes every rule', () => {
 	const built = page();
 	assert.deepEqual(useCasePageIssues(built, spec), []);
-	assert.deepEqual(useCaseHeadIssues(built, spec, title), []);
-	assert.deepEqual(useCaseReleaseIssues(built), []);
+	assert.deepEqual(headIssues(built, { description: spec.description, title }), []);
+	assert.deepEqual(releaseStatusIssues(built, useCaseReleaseRegions(built)), []);
 	assert.deepEqual(useCaseColourIssues(built), []);
 	assert.deepEqual(sharedArtIssues([built]), []);
 	assert.ok(carriesUseCasePage(built.html));
@@ -185,12 +186,12 @@ test('the back link closes the page, naming the home cards', () => {
 test('the head states the §2.6 description and the og pair', () => {
 	const described = page();
 	described.html = described.html.replaceAll(spec.description, 'Agents in your product.');
-	assert.match(useCaseHeadIssues(described, spec, title).join('\n'), /meta description is not the §2\.6 line verbatim/);
-	assert.match(useCaseHeadIssues(described, spec, title).join('\n'), /og:description is not the §2\.6 line verbatim/);
+	assert.match(headIssues(described, { description: spec.description, title }).join('\n'), /meta description is not the §2\.6 line verbatim/);
+	assert.match(headIssues(described, { description: spec.description, title }).join('\n'), /og:description is not the §2\.6 line verbatim/);
 
 	const ogTitled = page();
 	ogTitled.html = ogTitled.html.replace(`content="${title}"`, 'content="Agents — Balsats"');
-	assert.match(useCaseHeadIssues(ogTitled, spec, title).join('\n'), /og:title is `Agents — Balsats`/);
+	assert.match(headIssues(ogTitled, { description: spec.description, title }).join('\n'), /og:title is `Agents — Balsats`/);
 });
 
 test('the head comparisons read attribute values decoded, as Astro emits them', () => {
@@ -200,17 +201,17 @@ test('the head comparisons read attribute values decoded, as Astro emits them', 
 	built.html = built.html.replaceAll(infraTitle, infraTitle.replace('&', '&amp;'));
 	assert.ok(built.html.includes('content="Platform &amp; developer infra — Balsats"'));
 	assert.deepEqual(useCasePageIssues(built, infra), []);
-	assert.deepEqual(useCaseHeadIssues(built, infra, infraTitle), []);
+	assert.deepEqual(headIssues(built, { description: infra.description, title: infraTitle }), []);
 });
 
 test('the page copy carries no release status outside the shared switch points', () => {
 	const promised = page();
 	promised.html = promised.html.replace(spec.tagline, 'Coming soon: agents inside your product.');
-	assert.match(useCaseReleaseIssues(promised).join('\n'), /`Coming soon`.*release status/);
+	assert.match(releaseStatusIssues(promised, useCaseReleaseRegions(promised)).join('\n'), /`Coming soon`.*release status/);
 
 	const versioned = page();
 	versioned.html = versioned.html.replace('picks up where they left off', 'ships in 0.5.0');
-	assert.match(useCaseReleaseIssues(versioned).join('\n'), /`0\.5\.0`.*release status/);
+	assert.match(releaseStatusIssues(versioned, useCaseReleaseRegions(versioned)).join('\n'), /`0\.5\.0`.*release status/);
 });
 
 test('the scenario prose holds the vocabulary, the red lines and the package scope', () => {

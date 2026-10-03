@@ -23,7 +23,7 @@
 import { AA, contrastRatio, parseHsl, type Theme, type TokenSet } from './brand-tokens.ts';
 import { sectionColourIssues } from './colour-rules.ts';
 import { redLineRules, ruleMatches } from './copy-rules.ts';
-import { attributeValue, attributesOf, elementOf, linksOf, tagsOf, textOf } from './html.ts';
+import { attributeValue, attributesOf, elementOf, linksOf, markersInOrder, tagsOf, textOf } from './html.ts';
 import { terminologyHits } from './terminology.ts';
 
 export type ScenarioPage = { path: string; html: string };
@@ -287,14 +287,8 @@ function cardIssues(page: ScenarioPage, spec: UseCasePageSpec): string[] {
 /** SPEC §4.3: the skeleton's reading order — art → hero → cards → CTA → FAQ → back link. */
 function orderIssues(page: ScenarioPage): string[] {
 	const markers = ['data-use-case-art', 'data-use-case-hero', 'data-scenarios', 'id="get-started"', 'data-faq', 'data-use-case-back'];
-	const at = markers.map((marker) => page.html.indexOf(marker));
-	if (at.some((index) => index === -1)) return [];
-	for (let index = 1; index < at.length; index += 1) {
-		if (at[index]! < at[index - 1]!) {
-			return [`${page.path}: the skeleton is out of order — art → H1 → scenario cards → GitHub CTA → FAQ → \`← All use cases\` (SPEC §4.3)`];
-		}
-	}
-	return [];
+	if (markersInOrder(page.html, markers)) return [];
+	return [`${page.path}: the skeleton is out of order — art → H1 → scenario cards → GitHub CTA → FAQ → \`← All use cases\` (SPEC §4.3)`];
 }
 
 /** SPEC §4.3: no code block on the page, no social-proof band, no breadcrumbs. */
@@ -354,58 +348,21 @@ function proseIssues(page: ScenarioPage): string[] {
 	return issues;
 }
 
-/* ---------------------------------------------------------------- the head */
-
-/** SPEC §2.6: the meta description verbatim; og:title / og:description reuse the table. */
-export function useCaseHeadIssues(page: ScenarioPage, spec: UseCasePageSpec, title: string): string[] {
-	const issues: string[] = [];
-
-	const description = attributesOf(page.html, 'meta', 'name', 'description', 'content');
-	if (description.length !== 1 || description[0] !== spec.description) {
-		issues.push(`${page.path}: the meta description is not the §2.6 line verbatim`);
-	}
-	const ogDescription = attributesOf(page.html, 'meta', 'property', 'og:description', 'content');
-	if (ogDescription.length !== 1 || ogDescription[0] !== spec.description) {
-		issues.push(`${page.path}: og:description is not the §2.6 line verbatim`);
-	}
-	const ogTitle = attributesOf(page.html, 'meta', 'property', 'og:title', 'content');
-	if (ogTitle.length !== 1 || ogTitle[0] !== title) {
-		issues.push(`${page.path}: og:title is \`${ogTitle.join(', ') || 'missing'}\`, expected \`${title}\` (SPEC §2.6)`);
-	}
-
-	return issues;
-}
-
-/* ---------------------------------------------------------------- the release-status line */
+/* ---------------------------------------------------------------- the release-status regions */
 
 /**
- * Ticket #26: the use-case page's own copy carries no release status. The scan covers the
- * page's own regions (hero, scenario cards, back link, meta description); the header pill, the
- * final CTA and FAQ question 2 are the §6.2 switch points and answer to their own gates.
+ * Ticket #26: the use-case page's own copy carries no release status. These are the regions
+ * the §6.2 scan covers — the page's own sections (hero, scenario cards, back link) and its
+ * meta description; the header pill, the final CTA and FAQ question 2 are the switch points
+ * and answer to their own gates.
  */
-export function useCaseReleaseIssues(page: ScenarioPage): string[] {
-	const regions = [
+export function useCaseReleaseRegions(page: ScenarioPage): string[] {
+	return [
 		elementOf(page.html, 'section', 'data-use-case-hero'),
 		elementOf(page.html, 'section', 'data-scenarios'),
 		elementOf(page.html, 'section', 'data-use-case-back'),
 		...attributesOf(page.html, 'meta', 'name', 'description', 'content'),
 	].filter((region): region is string => region !== null);
-
-	const patterns: readonly { pattern: RegExp; reason: string }[] = [
-		{ pattern: /coming\s+soon/i, reason: 'release status lives in the header pill, the final CTA and FAQ question 2' },
-		{ pattern: /\bv?\d+\.\d+\.\d+\b/, reason: 'the page copy names no version' },
-		{ pattern: /\bpre-?release\b/i, reason: 'the page copy names no release state' },
-	];
-
-	const issues: string[] = [];
-	const text = textOf(regions.join('\n'));
-	for (const { pattern, reason } of patterns) {
-		const match = text.match(pattern);
-		if (match !== null) {
-			issues.push(`${page.path}: the page's own copy reads \`${match[0]}\` — no release status (${reason})`);
-		}
-	}
-	return issues;
 }
 
 /* ---------------------------------------------------------------- the colours */

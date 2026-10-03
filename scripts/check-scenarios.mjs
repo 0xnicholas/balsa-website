@@ -18,6 +18,8 @@
 import path from 'node:path';
 import { builtPages, failGate, readText, runChecks, startGate } from './lib/cli.mjs';
 import { parseLandingTokens } from '../src/lib/brand-tokens.ts';
+import { releaseStatusIssues } from '../src/lib/copy-rules.ts';
+import { headIssues } from '../src/lib/head-rules.ts';
 import { finalCtaIssues } from '../src/lib/hero-rules.ts';
 import { routeOfHtmlFile } from '../src/lib/link-rules.ts';
 import { pages } from '../src/lib/pages.ts';
@@ -26,10 +28,9 @@ import {
 	scenarioContrastIssues,
 	sharedArtIssues,
 	useCaseColourIssues,
-	useCaseHeadIssues,
 	useCasePageIssues,
 	useCasePages,
-	useCaseReleaseIssues,
+	useCaseReleaseRegions,
 } from '../src/lib/scenario-rules.ts';
 
 const { repoRoot, options } = startGate(import.meta.url, process.argv.slice(2), { values: ['dist'] });
@@ -79,8 +80,8 @@ const perPage = [...byRoute.entries()].flatMap(([route, spec]) => {
 			useCasePageIssues(page, spec),
 			`${route}: the §4.3 skeleton — shared art, H1 + tagline, three scenario cards with their package lines, the back link`,
 		],
-		[useCaseHeadIssues(page, spec, title), `${route}: the §2.6 meta description and the og pair`],
-		[useCaseReleaseIssues(page), `${route}: no release status in the page's own copy`],
+		[headIssues(page, { description: spec.description, title }), `${route}: the §2.6 meta description and the og pair`],
+		[releaseStatusIssues(page, useCaseReleaseRegions(page)), `${route}: no release status in the page's own copy`],
 		[useCaseColourIssues(page), `${route}: text only in the §5.5 audited roles on the page background`],
 		[finalCtaIssues(page), `${route}: the shared final CTA — the §3.8 copy, the GitHub action and the passive pill`],
 	];
